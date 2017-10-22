@@ -1,3 +1,4 @@
+import os
 import json
 import shutil
 import subprocess
@@ -28,19 +29,30 @@ class Chromium(object):
             '--no-first-run'
         ]
 
-    def clear_cache(self):
+    def clear_cache(self) -> None:
         shutil.rmtree(self.cache_path)
 
     def set_urls(self, urls):
         self.urls = urls
 
-    def clean_start(self):
+    def _modify_config(self, config_path, changes: dict) -> None:
+        with open(config_path, 'rw') as f:
+            config = json.load(f)
+            config.update(changes)
+            json.dump(config, f)
+
+    def clean_start(self) -> None:
         config_paths = [
             'Default/Preferences',
             'Local State'
         ]
+        for config_path in config_paths:
+            self._modify_config(os.path.join(self.config_path, config_path), {
+                'exited_cleanly': True,
+                'exit_type': 'Normal'
+            })
 
-    def set_kiosk(self, enabled=True):
+    def set_kiosk(self, enabled: bool=True) -> None:
         if enabled:
             self.arguments.append('--kiosk')
 
