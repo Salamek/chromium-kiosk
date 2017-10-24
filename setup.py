@@ -12,7 +12,7 @@ version = re.compile(r'VERSION\s*=\s*\((.*?)\)')
 
 def get_package_version():
     base = os.path.abspath(os.path.dirname(__file__))
-    with open(os.path.join(base, "granad/__init__.py")) as init_f:
+    with open(os.path.join(base, "granad_kiosk/__init__.py")) as init_f:
         for line in init_f:
             m = version.match(line.strip())
             if not m:
