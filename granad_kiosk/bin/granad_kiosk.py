@@ -25,7 +25,10 @@ import hashlib
 import logging
 import logging.handlers
 import os
+import crypt
 import random
+import pwd
+import grp
 import signal
 import subprocess
 import sys
@@ -200,26 +203,8 @@ def post_install():
     options = parse_options()
     user_home = os.path.join('/', 'home', options.USER)
 
-
-    # Configure OS
-    """
-    sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
-    locale-gen # generates en_US.UTF-8 locale
-    ln -sf /usr/share/zoneinfo/America/Mexico_City /etc/localtime # sets time zone
-    echo LANG=en_US.UTF-8 > /etc/locale.conf # sets en_US.UTF-8 as default locale
-    echo KEYMAP=us > /etc/vconsole.conf # sets US keymap as default
-    echo oracle > /etc/hostname # changes the hostname of the machine
-    sed -i 's/gpu_mem=64/gpu_mem=128/g' /boot/config.txt
-    :return: 
-    """
-
-    # Create user if not exists
-    subprocess.call(['useradd', '-m', '-g', 'users', '-s', '/bin/bash', '-d', user_home, options.USER])
-    """
-
-useradd -m -g users -s /bin/bash -d /home/granad-kiosk granad-kiosk -p crypt
-
-    """
+    uid = pwd.getpwnam(options.USER).pw_uid
+    gid = grp.getgrnam(options.GROUP).gr_gid
 
     # Create ~/.xinitrc
     xinitrc_content = [
@@ -230,8 +215,13 @@ useradd -m -g users -s /bin/bash -d /home/granad-kiosk granad-kiosk -p crypt
         'unclutter &     # hides your cursor after inactivity',
         'exec granad-kiosk run --config_prod --log_dir=/var/log'
     ]
-    with open(os.path.join(user_home, '.xinitrc'), 'w+') as f:
+
+    xinitrc_content_path = os.path.join(user_home, '.xinitrc')
+    with open(xinitrc_content_path, 'w') as f:
         f.write('\n'.join(xinitrc_content))
+
+    os.chown(xinitrc_content_path, uid, gid)
+    os.chmod(xinitrc_content_path, 0o644)
 
     # Update autologin service
     systemd_autologin = [
@@ -239,7 +229,7 @@ useradd -m -g users -s /bin/bash -d /home/granad-kiosk granad-kiosk -p crypt
         'ExecStart=',
         'ExecStart=-/usr/bin/agetty --autologin {} --noclear %I $TERM'.format(options.USER),
     ]
-    with open(os.path.join('/', 'etc', 'systemd', 'system', 'getty@tty1.service.d', 'override.conf'), 'w+') as f:
+    with open(os.path.join('/', 'etc', 'systemd', 'system', 'getty@tty1.service.d', 'override.conf'), 'w') as f:
         f.write('\n'.join(systemd_autologin))
 
 
