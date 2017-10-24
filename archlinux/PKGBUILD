@@ -1,0 +1,30 @@
+pkgname=granad-kiosk
+pkgver=0.1.0
+pkgdesc="BESY GraNad kiosk."
+pkgrel=1
+arch=('any')
+backup=('etc/granad-kiosk/config.yml')
+license=('PROPRIETARY')
+url='https://gitlab.salamek.cz/sadam/granad-kiosk'
+source=('granad::git+ssh://git@gitlab.salamek.cz/sadam/granad-kiosk.git')
+md5sums=('SKIP')
+install=granad_kiosk.install
+makedepends=('python-setuptools')
+depends=(
+    'python'
+    'chromium'
+    'xorg-server'
+    'xorg-server-utils'
+    'xorg-xinit'
+    'xf86-video-fbturbo'
+    'alsa-utils'
+    'ttf-dejavu'
+    'unclutter'
+    'python-yaml'
+    'python-docopt'
+)
+
+package() {
+  cd "${srcdir}/${pkgname}"
+  python setup.py install --root="$pkgdir/" --optimize=1
+}

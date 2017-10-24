@@ -2,21 +2,25 @@ import os
 import json
 import shutil
 import subprocess
+from typing import Union
 
 
 class Chromium(object):
     def __init__(self,
-                 executable_path='chromium',
                  config_path='~/.config/chromium/',
                  cache_path='~/.cache/chromium/',
                  urls=None
                  ):
         """
         Initialize Chromium instance
-        :param executable_path: path to chromium binary
         :param config_path: path to chromium config dir
         :param cache_path: path to chromium config cache
         """
+
+        executable_path = self._find_chromium()
+
+        if not executable_path:
+            raise Exception('Unable to find chromium binary')
 
         self.executable_path = executable_path
         self.config_path = config_path
@@ -34,6 +38,21 @@ class Chromium(object):
             '--fast-start',
             '--no-first-run'
         ]
+
+    def _find_chromium(self) -> Union[str, None]:
+        """
+        Find chromium binary
+        :return: 
+        """
+        names = [
+            'chromium',
+            'chromium-browser'
+        ]
+
+        for name in names:
+            found = shutil.which(name)
+            if found:
+                return found
 
     def clear_cache(self) -> None:
         """
@@ -57,7 +76,7 @@ class Chromium(object):
         :param changes: 
         :return: 
         """
-        with open(config_path, 'rw') as f:
+        with open(config_path, 'w+') as f:
             config = json.load(f)
             config.update(changes)
             json.dump(config, f)
@@ -93,5 +112,6 @@ class Chromium(object):
         """
         command = [self.executable_path]
         command.extend(self.arguments)
-        command.append(self.urls)
+        command.extend(self.urls)
+
         subprocess.call(command)

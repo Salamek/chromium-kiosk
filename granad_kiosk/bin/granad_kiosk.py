@@ -8,12 +8,15 @@ Website: git@gitlab.salamek.cz:sadam/granad-kiosk.git
 
 Command details:
     run                 Run the application.
+    post_install        Post install hook.
 Usage:
     granad-kiosk run [--config_prod] [--log_dir]
-    granad (-h | --help)
+    granad-kiosk post_install [--config_prod] [--log_dir]
+    granad-kiosk (-h | --help)
 
 Options:
     --config_prod               Load the production configuration instead of
+    --log_dir                   Directory to log into
 """
 
 from __future__ import print_function
@@ -27,11 +30,15 @@ import signal
 import subprocess
 import sys
 from functools import wraps
+from importlib import import_module
+from granad_kiosk.Chromium import Chromium
+import granad_kiosk as app_root
 
 import yaml
 from docopt import docopt
 
 OPTIONS = docopt(__doc__)
+APP_ROOT_FOLDER = os.path.abspath(os.path.dirname(app_root.__file__))
 
 
 class CustomFormatter(logging.Formatter):
@@ -80,6 +87,45 @@ def setup_logging(name=None, level=logging.DEBUG):
         file_handler = logging.handlers.TimedRotatingFileHandler(file_name, when='d', backupCount=7)
         file_handler.setFormatter(formatter)
         root.addHandler(file_handler)
+
+
+def get_config(config_class_string, yaml_files=None):
+    """Load the Flask config from a class.
+    Positional arguments:
+    config_class_string -- string representation of a configuration class that will be loaded (e.g.
+        'pypi_portal.config.Production').
+    yaml_files -- List of YAML files to load. This is for testing, leave None in dev/production.
+    Returns:
+    A class object to be fed into app.config.from_object().
+    """
+    config_module, config_class = config_class_string.rsplit('.', 1)
+    config_obj = getattr(import_module(config_module), config_class)
+
+    # Expand some options.
+    db_fmt = 'granad_rs232.models.{}'
+    if getattr(config_obj, 'DB_MODELS_IMPORTS', False):
+        config_obj.DB_MODELS_IMPORTS = [db_fmt.format(m) for m in config_obj.DB_MODELS_IMPORTS]
+
+    # Load additional configuration settings.
+    yaml_files = yaml_files or [f for f in [
+        os.path.join('/', 'etc', 'granad-rs232', 'config.yml'),
+        os.path.abspath(os.path.join(APP_ROOT_FOLDER, '..', 'config.yml')),
+        os.path.join(APP_ROOT_FOLDER, 'config.yml'),
+    ] if os.path.exists(f)]
+    additional_dict = dict()
+    for y in yaml_files:
+        with open(y) as f:
+            loaded_data = yaml.load(f.read())
+            if isinstance(loaded_data, dict):
+                additional_dict.update(loaded_data)
+            else:
+                raise Exception('Failed to parse configuration {}'.format(y))
+
+    # Merge the rest into the Flask app config.
+    for key, value in additional_dict.items():
+        setattr(config_obj, key, value)
+
+    return config_obj
 
 
 def parse_options():
@@ -137,11 +183,64 @@ def command(func):
 def run():
     options = parse_options()
     setup_logging('kiosk', logging.DEBUG if options.DEBUG else logging.WARNING)
+    chromium = Chromium()
+    if options.KIOSK:
+        chromium.set_kiosk(True)
+
+    if options.CLEAN_START:
+        chromium.clean_start()
+
+    chromium.set_urls(options.URLS)
+    chromium.run()
+
 
 
 @command
 def post_install():
-    pass
+    options = parse_options()
+    user_home = os.path.join('/', 'home', options.USER)
+
+
+    # Configure OS
+    """
+    sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
+    locale-gen # generates en_US.UTF-8 locale
+    ln -sf /usr/share/zoneinfo/America/Mexico_City /etc/localtime # sets time zone
+    echo LANG=en_US.UTF-8 > /etc/locale.conf # sets en_US.UTF-8 as default locale
+    echo KEYMAP=us > /etc/vconsole.conf # sets US keymap as default
+    echo oracle > /etc/hostname # changes the hostname of the machine
+    sed -i 's/gpu_mem=64/gpu_mem=128/g' /boot/config.txt
+    :return: 
+    """
+
+    # Create user if not exists
+    subprocess.call(['useradd', '-m', '-g', 'users', '-s', '/bin/bash', '-d', user_home, options.USER])
+    """
+
+useradd -m -g users -s /bin/bash -d /home/granad-kiosk granad-kiosk -p crypt
+
+    """
+
+    # Create ~/.xinitrc
+    xinitrc_content = [
+        '#!/bin/sh',
+        'xset -dpms      # disable DPMS (Energy Star) features.',
+        'xset s off      # disable screen saver',
+        'xset s noblank  # don\'t blank the video device',
+        'unclutter &     # hides your cursor after inactivity',
+        'exec granad-kiosk run --config_prod --log_dir=/var/log'
+    ]
+    with open(os.path.join(user_home, '.xinitrc'), 'w+') as f:
+        f.write('\n'.join(xinitrc_content))
+
+    # Update autologin service
+    systemd_autologin = [
+        '[Service]',
+        'ExecStart=',
+        'ExecStart=-/usr/bin/agetty --autologin {} --noclear %I $TERM'.format(options.USER),
+    ]
+    with open(os.path.join('/', 'etc', 'systemd', 'system', 'getty@tty1.service.d', 'override.conf'), 'w+') as f:
+        f.write('\n'.join(systemd_autologin))
 
 
 def main():

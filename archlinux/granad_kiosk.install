@@ -1,0 +1,32 @@
+## arg 1:  the new package version
+pre_install() {
+        :
+}
+
+## arg 1:  the new package version
+post_install() {
+        # Generate default config
+        granad-kiosk post_install --config_prod --log_dir=/var/log
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+pre_upgrade() {
+        :
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+post_upgrade() {
+        :
+}
+
+## arg 1:  the old package version
+pre_remove() {
+        :
+}
+
+## arg 1:  the old package version
+post_remove() {
+        :
+}
