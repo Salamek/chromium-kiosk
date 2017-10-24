@@ -1,0 +1,1 @@
+# Granad kiosk
