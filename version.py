@@ -55,4 +55,8 @@ class VersionModifier(object):
 
 
 version_modifier = VersionModifier()
-version_modifier.set_version(sys.argv[1])
+
+if len(sys.argv) == 2:
+    version_modifier.set_version(sys.argv[1])
+else:
+    print(version_modifier.get_current_version())
