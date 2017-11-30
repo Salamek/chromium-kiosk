@@ -14,7 +14,7 @@ depends=(
     'python'
     'chromium'
     'xorg-server'
-    'xorg-server-utils'
+    'xorg-xset'
     'xorg-xinit'
     'xf86-video-fbturbo'
     'alsa-utils'
