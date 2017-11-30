@@ -10,12 +10,12 @@ Command details:
     run                 Run the application.
     post_install        Post install hook.
 Usage:
-    granad-kiosk run [--config_prod] [--log_dir]
-    granad-kiosk post_install [--config_prod] [--log_dir]
+    granad-kiosk run [-l DIR] [--config_prod]
+    granad-kiosk post_install [--config_prod]
     granad-kiosk (-h | --help)
 
 Options:
-    --config_prod               Load the production configuration instead of
+    --config_prod               Load the production configuration instead of dev
     -l DIR --log_dir=DIR        Directory to log into
 """
 
