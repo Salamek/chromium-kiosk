@@ -30,11 +30,11 @@ import random
 import pwd
 import grp
 import signal
-import subprocess
 import sys
 from functools import wraps
 from importlib import import_module
 from granad_kiosk.Chromium import Chromium
+from granad_kiosk.tools import create_user
 import granad_kiosk as app_root
 
 import yaml
@@ -200,10 +200,15 @@ def run():
 @command
 def post_install():
     options = parse_options()
+
     user_home = os.path.join('/', 'home', options.USER)
 
-    uid = pwd.getpwnam(options.USER).pw_uid
-    gid = grp.getgrnam(options.GROUP).gr_gid
+    try:
+        uid = pwd.getpwnam(options.USER).pw_uid
+    except KeyError:
+        create_user(options.USER, user_home)
+        uid = pwd.getpwnam(options.USER).pw_uid
+    gid = grp.getgrnam(options.USER).gr_gid
 
     # Create ~/.xinitrc
     xinitrc_content = [
