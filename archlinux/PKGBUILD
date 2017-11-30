@@ -12,6 +12,7 @@ install=granad_kiosk.install
 makedepends=('python-setuptools')
 depends=(
     'python'
+    'python-setuptools'
     'chromium'
     'xorg-server'
     'xorg-xset'
