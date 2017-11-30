@@ -11,6 +11,5 @@ def create_user(username, home):
         '--home-dir',
         home,
         '--create-home',
-        '--disabled-login',
         username
     ])

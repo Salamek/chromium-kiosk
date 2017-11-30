@@ -196,6 +196,8 @@ def run():
 
 @command
 def post_install():
+    if not os.geteuid() == 0:
+        sys.exit('Script must be run as root')
     options = parse_options()
 
     user_home = os.path.join('/', 'home', options.USER)
@@ -230,7 +232,14 @@ def post_install():
         'ExecStart=',
         'ExecStart=-/usr/bin/agetty --autologin {} --noclear %I $TERM'.format(options.USER),
     ]
-    with open(os.path.join('/', 'etc', 'systemd', 'system', 'getty@tty1.service.d', 'override.conf'), 'w') as f:
+
+    getty_path = os.path.join('/', 'etc', 'systemd', 'system', 'getty@tty1.service.d', 'override.conf')
+    getty_dir_path = os.path.dirname(getty_path)
+
+    if not os.path.exists(getty_dir_path):
+        os.makedirs(getty_dir_path)
+
+    with open(getty_path, 'w') as f:
         f.write('\n'.join(systemd_autologin))
 
 
