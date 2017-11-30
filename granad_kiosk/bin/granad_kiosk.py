@@ -16,17 +16,14 @@ Usage:
 
 Options:
     --config_prod               Load the production configuration instead of
-    --log_dir                   Directory to log into
+    -l DIR --log_dir=DIR        Directory to log into
 """
 
 from __future__ import print_function
 
-import hashlib
 import logging
 import logging.handlers
 import os
-import crypt
-import random
 import pwd
 import grp
 import signal
