@@ -197,7 +197,6 @@ def run():
     chromium.run()
 
 
-
 @command
 def post_install():
     options = parse_options()

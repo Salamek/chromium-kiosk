@@ -1,0 +1,62 @@
+stages:
+  - test
+  - package
+  - packagetest
+  - deploy
+
+test:archlinux:
+  stage: test
+  script:
+    - pacman -Sy python-pip gcc --noconfirm
+    - pip install -r requirements.txt
+    - python setup.py test
+  tags:
+    - archlinux
+
+package:archlinux:
+  stage: package
+  script:
+    - pacman -Sy git sudo chromium xorg-server xorg-server-utils xorg-xinit xf86-video-fbturbo alsa-utils ttf-dejavu unclutter python-yaml python-docopt
+    - useradd -m -G users -s /bin/bash package
+    - cd archlinux
+    - sudo -H -u package makepkg -f
+  tags:
+    - archlinux
+
+  artifacts:
+    paths:
+      - archlinux/granad-kiosk*.pkg.tar.xz
+    expire_in: 1d
+
+packagetest:archlinux:
+  stage: packagetest
+  script:
+    - pacman -Sy
+    - cd archlinux
+    - pacman -U granad-kiosk*.pkg.tar.xz --noconfirm
+  tags:
+    - virtualbox-archlinux
+  dependencies:
+    - package:archlinux
+  only:
+    - tags
+
+repoupdate:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - mkdir -p ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  script:
+    - scp archlinux/granad-kiosk*.pkg.tar.xz www-data@salamek.cz:/var/www/arch-private.salamek.cz/www/any
+    - ssh www-data@salamek.cz '/var/www/arch-private.salamek.cz/update_repo.sh'
+  dependencies:
+    - package:archlinux
+  tags:
+    - docker
+  only:
+    - tags
