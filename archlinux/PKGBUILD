@@ -16,12 +16,15 @@ depends=(
     'xorg-server'
     'xorg-xset'
     'xorg-xinit'
-    'xf86-video-fbturbo'
     'alsa-utils'
     'ttf-dejavu'
     'unclutter'
     'python-yaml'
     'python-docopt'
+)
+
+optdepends=(
+    'xf86-video-fbturbo: Install on Raspberry PI 3 for faster rendering'
 )
 
 package() {

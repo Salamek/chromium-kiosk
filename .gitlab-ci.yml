@@ -16,7 +16,7 @@ test:archlinux:
 package:archlinux:
   stage: package
   script:
-    - pacman -Sy git sudo chromium xorg-server xorg-xset xorg-xinit xf86-video-fbturbo alsa-utils ttf-dejavu unclutter python-yaml python-docopt
+    - pacman -Sy git sudo chromium xorg-server xorg-xset xorg-xinit alsa-utils ttf-dejavu unclutter python-yaml python-docopt
     - useradd -m -G users -s /bin/bash package
     - cd archlinux
     - sudo -H -u package makepkg -f
