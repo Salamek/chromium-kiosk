@@ -18,7 +18,7 @@ pre_upgrade() {
 ## arg 1:  the new package version
 ## arg 2:  the old package version
 post_upgrade() {
-        :
+        granad-kiosk post_install --config_prod --log_dir=/var/log
 }
 
 ## arg 1:  the old package version
