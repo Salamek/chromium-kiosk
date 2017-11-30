@@ -1,5 +1,5 @@
 pkgname=granad-kiosk
-pkgver=0.1.8
+pkgver=0.1.9
 pkgdesc="BESY GraNad kiosk."
 pkgrel=1
 arch=('any')
