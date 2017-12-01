@@ -23,8 +23,8 @@ class Chromium(object):
             raise Exception('Unable to find chromium binary')
 
         self.executable_path = executable_path
-        self.config_path = config_path
-        self.cache_path = cache_path
+        self.config_path = os.path.expanduser(config_path)
+        self.cache_path = os.path.expanduser(cache_path)
         if not urls:
             urls = []
 
@@ -81,10 +81,11 @@ class Chromium(object):
         :param changes: 
         :return: 
         """
-        with open(config_path, 'w+') as f:
+        with open(config_path, 'r') as f:
             config = json.load(f)
             config.update(changes)
-            json.dump(config, f)
+            with open(config_path, 'w') as fw:
+                json.dump(config, fw)
 
     def clean_start(self) -> None:
         """
@@ -96,10 +97,12 @@ class Chromium(object):
             'Local State'
         ]
         for config_path in config_paths:
-            self._modify_config(os.path.join(self.config_path, config_path), {
-                'exited_cleanly': True,
-                'exit_type': 'Normal'
-            })
+            config_path_abs = os.path.join(self.config_path, config_path)
+            if os.path.isfile(config_path_abs):
+                self._modify_config(config_path_abs, {
+                    'exited_cleanly': True,
+                    'exit_type': 'Normal'
+                })
 
     def set_kiosk(self, enabled: bool=True) -> None:
         """

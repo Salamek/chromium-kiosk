@@ -102,13 +102,13 @@ def get_config(config_class_string, yaml_files=None):
     config_obj = getattr(import_module(config_module), config_class)
 
     # Expand some options.
-    db_fmt = 'granad_rs232.models.{}'
+    db_fmt = 'granad_kiosk.models.{}'
     if getattr(config_obj, 'DB_MODELS_IMPORTS', False):
         config_obj.DB_MODELS_IMPORTS = [db_fmt.format(m) for m in config_obj.DB_MODELS_IMPORTS]
 
     # Load additional configuration settings.
     yaml_files = yaml_files or [f for f in [
-        os.path.join('/', 'etc', 'granad-rs232', 'config.yml'),
+        os.path.join('/', 'etc', 'granad-kiosk', 'config.yml'),
         os.path.abspath(os.path.join(APP_ROOT_FOLDER, '..', 'config.yml')),
         os.path.join(APP_ROOT_FOLDER, 'config.yml'),
     ] if os.path.exists(f)]
@@ -218,7 +218,7 @@ def post_install():
         'xset s noblank  # don\'t blank the video device',
         'unclutter &     # hides your cursor after inactivity',
         'matchbox-window-manager &',
-        'exec granad-kiosk run --config_prod --log_dir=/var/log',
+        'exec granad-kiosk run --config_prod --log_dir=/home/{}'.format(options.USER),
         'reboot'
     ]
 
