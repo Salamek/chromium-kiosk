@@ -101,7 +101,11 @@ class Chromium(object):
             if os.path.isfile(config_path_abs):
                 self._modify_config(config_path_abs, {
                     'exited_cleanly': True,
-                    'exit_type': 'Normal'
+                    'exit_type': 'Normal',
+                    'profile': {
+                        'exited_cleanly': True,
+                        'exit_type': 'Normal'
+                    }
                 })
 
     def set_kiosk(self, enabled: bool=True) -> None:
