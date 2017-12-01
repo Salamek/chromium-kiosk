@@ -218,7 +218,7 @@ def post_install():
         'xset s noblank  # don\'t blank the video device',
         'unclutter &     # hides your cursor after inactivity',
         'matchbox-window-manager &',
-        'exec granad-kiosk run --config_prod --log_dir=/home/{}'.format(options.USER),
+        'exec granad-kiosk run --config_prod --log_dir={}'.format(user_home),
         'reboot'
     ]
 
