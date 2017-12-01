@@ -7,4 +7,3 @@ unclutter &     # hides your cursor after inactivity
 
 #exec chromium --noerrdialogs --disable-infobars --disable-session-crashed-bubble --kiosk --disable-popup-blocking --fast --fast-start --no-first-run http://127.0.0.1:5000?kiosk=1
 exec granad-kiosk run --config_prod --log_dir=/var/log
-reboot

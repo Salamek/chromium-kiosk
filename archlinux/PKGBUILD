@@ -17,6 +17,8 @@ depends=(
     'xorg-server'
     'xorg-xset'
     'xorg-xinit'
+    'xf86-video-fbdev'
+    'matchbox-window-manager'
     'alsa-utils'
     'ttf-dejavu'
     'unclutter'
