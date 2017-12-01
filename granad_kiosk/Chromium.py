@@ -117,6 +117,15 @@ class Chromium(object):
         if enabled:
             self.arguments.append('--kiosk')
 
+    def set_touchscreen(self, enabled: bool=True) -> None:
+        """
+        Sets touchscreen support
+        :param enabled:
+        :return:
+        """
+        if enabled:
+            self.arguments.append('--touch-events')
+
     def run(self) -> None:
         """
         Start chromium

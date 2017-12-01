@@ -8,8 +8,9 @@ class Config(HardCoded):
     DEBUG = True
     CLEAN_START = False
     KIOSK = True
+    TOUCHSCREEN = False
     URLS = [
-        'http://127.0.0.1/?kiosk=1'
+        'http://127.0.0.1/'
     ]
 
 
@@ -22,3 +23,4 @@ class Production(Config):
     CLEAN_START = None  # To be overwritten by a YAML file.
     KIOSK = None  # To be overwritten by a YAML file.
     URLS = None  # To be overwritten by a YAML file.
+    TOUCHSCREEN = None  # To be overwritten by a YAML file.

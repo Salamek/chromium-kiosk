@@ -10,7 +10,7 @@ sys_conf_dir = os.getenv("SYSCONFDIR", "/etc")
 version = re.compile(r'VERSION\s*=\s*\((.*?)\)')
 
 
-def get_package_version():
+def get_package_version() -> str:
     base = os.path.abspath(os.path.dirname(__file__))
     with open(os.path.join(base, "granad_kiosk/__init__.py")) as init_f:
         for line in init_f:
@@ -20,16 +20,17 @@ def get_package_version():
             return ".".join(m.groups()[0].split(", "))
 
 
-def get_requirements(filename):
+def get_requirements(filename: str) -> list:
     return open(os.path.join(filename)).read().splitlines()
 
 
-def package_files(directory):
+def package_files(directory: str) -> str:
     paths = []
     for (path, directories, filenames) in os.walk(directory):
         for filename in filenames:
             paths.append(os.path.join('..', path, filename))
     return paths
+
 
 classes = """
     Development Status :: 4 - Beta

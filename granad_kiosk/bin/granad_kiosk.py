@@ -31,7 +31,7 @@ import sys
 from functools import wraps
 from importlib import import_module
 from granad_kiosk.Chromium import Chromium
-from granad_kiosk.tools import create_user
+from granad_kiosk.tools import create_user, inject_parameters_to_url
 import granad_kiosk as app_root
 
 import yaml
@@ -49,7 +49,7 @@ class CustomFormatter(logging.Formatter):
         return super(CustomFormatter, self).format(record)
 
 
-def setup_logging(name=None, level=logging.DEBUG):
+def setup_logging(name: str=None, level: int=logging.DEBUG) -> None:
     """Setup Google-Style logging for the entire application.
 
     At first I hated this but I had to use it for work, and now I prefer it. Who knew?
@@ -89,7 +89,7 @@ def setup_logging(name=None, level=logging.DEBUG):
         root.addHandler(file_handler)
 
 
-def get_config(config_class_string, yaml_files=None):
+def get_config(config_class_string: str, yaml_files=None):
     """Load the Flask config from a class.
     Positional arguments:
     config_class_string -- string representation of a configuration class that will be loaded (e.g.
@@ -183,14 +183,21 @@ def command(func):
 def run():
     options = parse_options()
     setup_logging('kiosk', logging.DEBUG if options.DEBUG else logging.WARNING)
+
     chromium = Chromium()
+    additional_parameters = {}
     if options.KIOSK:
         chromium.set_kiosk(True)
+        additional_parameters['kiosk'] = 1
+
+    if options.TOUCHSCREEN:
+        chromium.set_touchscreen(True)
+        additional_parameters['touchscreen'] = 1
 
     if options.CLEAN_START:
         chromium.clean_start()
 
-    chromium.set_urls(options.URLS)
+    chromium.set_urls([inject_parameters_to_url(x, additional_parameters) for x in options.URLS])
     chromium.run()
 
 
@@ -266,7 +273,7 @@ def post_install():
         f.write('\n'.join(systemd_autologin))
 
 
-def main():
+def main() -> None:
     signal.signal(signal.SIGINT, lambda *_: sys.exit(0))  # Properly handle Control+C
     getattr(command, 'chosen')()  # Execute the function specified by the user.
 

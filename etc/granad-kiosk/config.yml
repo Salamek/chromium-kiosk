@@ -1,4 +1,5 @@
 CLEAN_START: true
 KIOSK: true
+TOUCHSCREEN: true
 URLS:
-  - http://127.0.0.1/?kiosk=1
+  - http://127.0.0.1/
