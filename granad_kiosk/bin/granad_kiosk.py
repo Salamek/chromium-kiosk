@@ -224,7 +224,7 @@ def post_install():
         'xset s off      # disable screen saver',
         'xset s noblank  # don\'t blank the video device',
         'unclutter &     # hides your cursor after inactivity',
-        'matchbox-window-manager &',
+        'openbox &',
         'exec granad-kiosk run --config_prod --log_dir={}'.format(user_home),
         'reboot'
     ]
