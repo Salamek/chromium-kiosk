@@ -15,6 +15,11 @@ def create_user(username: str, home: str) -> int:
         username
     ])
 
+def set_user_groups(username: str, groups: list):
+    for group in groups:
+        command = ['usermod', '-aG', group, username]
+        subprocess.call(command)
+
 
 def inject_parameters_to_url(url: str, parameters: dict) -> str:
 

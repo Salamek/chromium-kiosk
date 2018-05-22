@@ -31,7 +31,7 @@ import sys
 from functools import wraps
 from importlib import import_module
 from granad_kiosk.Chromium import Chromium
-from granad_kiosk.tools import create_user, inject_parameters_to_url
+from granad_kiosk.tools import create_user, inject_parameters_to_url, set_user_groups
 import granad_kiosk as app_root
 
 import yaml
@@ -213,6 +213,7 @@ def post_install():
         uid = pwd.getpwnam(options.USER).pw_uid
     except KeyError:
         create_user(options.USER, user_home)
+        set_user_groups(options.USER, ['video'])
         uid = pwd.getpwnam(options.USER).pw_uid
     gid = grp.getgrnam(options.USER).gr_gid
 
