@@ -48,7 +48,7 @@ extra_files = [
 
 setup(
     name='granad-kiosk',
-    version='0.1.19',
+    version='0.1.20',
     description='BESY GraNad Kiosk',
     long_description=open('README.md').read(),
     author='Adam Schubert',
