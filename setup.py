@@ -7,18 +7,6 @@ from setuptools import setup, find_packages
 
 sys_conf_dir = os.getenv("SYSCONFDIR", "/etc")
 
-version = re.compile(r'VERSION\s*=\s*\((.*?)\)')
-
-
-def get_package_version() -> str:
-    base = os.path.abspath(os.path.dirname(__file__))
-    with open(os.path.join(base, "granad_kiosk/__init__.py")) as init_f:
-        for line in init_f:
-            m = version.match(line.strip())
-            if not m:
-                continue
-            return ".".join(m.groups()[0].split(", "))
-
 
 def get_requirements(filename: str) -> list:
     return open(os.path.join(filename)).read().splitlines()
@@ -60,7 +48,7 @@ extra_files = [
 
 setup(
     name='granad-kiosk',
-    version=get_package_version(),
+    version='0.1.19',
     description='BESY GraNad Kiosk',
     long_description=open('README.md').read(),
     author='Adam Schubert',
