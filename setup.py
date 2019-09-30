@@ -49,7 +49,7 @@ extra_files = [
 
 setup(
     name='chromium-kiosk',
-    version='0.2.1',
+    version='0.2.2',
     description='Chromium Kiosk',
     long_description=open('README.md').read(),
     author='Adam Schubert',
