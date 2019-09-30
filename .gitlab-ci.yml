@@ -59,6 +59,7 @@ packagetest:debian:
   stage: packagetest
   script:
     - apt-get update -qy
+    - apt-get install python-all -qy
     - cd deb_dist
     - apt install ./*.deb -qy
   tags:
