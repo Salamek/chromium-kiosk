@@ -28,7 +28,7 @@ package:debian:
   script:
     - apt-get update -qy
     - apt-get install -y curl gnupg apt-transport-https
-    - apt-get install -y python3-pip python3-stdeb python3-docopt python3-yaml
+    - apt-get install -y python3-pip python3-stdeb python3-docopt python3-yaml python-all
     - rm -rf "./deb_dist"
     #- export DEB_BUILD_OPTIONS=nocheck
     - python3 setup.py --command-packages=stdeb.command bdist_deb
@@ -59,7 +59,6 @@ packagetest:debian:
   stage: packagetest
   script:
     - apt-get update -qy
-    - apt-get install python-all -qy
     - cd deb_dist
     - apt install ./*.deb -qy
   tags:
