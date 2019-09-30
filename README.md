@@ -10,22 +10,8 @@ Chromium kiosk is simple package turning your Archlinux or Debian (and alike) ba
 
 # Installation
 
-# Debian and derivates
-
-Add repository by running these commands
-
-```bash
-$ wget -O - https://apt.salamek.cz/apt/conf/salamek.gpg.key|sudo apt-key add -
-$ echo "deb     https://apt.salamek.cz/apt all main" | sudo tee /etc/apt/sources.list.d/salamek.cz.list
-```
-
-And then you can install a package python3-gitlab-tools
-
-```bash
-$ apt update && apt install python3-chromium-kiosk
-```
-
 ## Archlinux
+(Use Archlinux ARM for Raspbery install)
 
 Add repository by adding this at end of file /etc/pacman.conf
 
@@ -39,6 +25,22 @@ and then install by running
 
 ```bash
 $ pacman -Sy chromium-kiosk
+```
+
+# Debian and derivates (WIP)
+(For Raspbian i suggest to use Lite relase)
+
+Add repository by running these commands
+
+```bash
+$ wget -O - https://apt.salamek.cz/apt/conf/salamek.gpg.key|sudo apt-key add -
+$ echo "deb     https://apt.salamek.cz/apt all main" | sudo tee /etc/apt/sources.list.d/salamek.cz.list
+```
+
+And then you can install a package python3-gitlab-tools
+
+```bash
+$ apt update && apt install python3-chromium-kiosk
 ```
 
 # Setup
