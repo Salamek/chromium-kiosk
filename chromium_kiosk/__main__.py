@@ -1,7 +1,7 @@
 
 def main() -> None:
     """Entrypoint to the ``celery`` umbrella command."""
-    from granad_kiosk.bin.granad_kiosk import main as _main
+    from chromium_kiosk.bin.chromium_kiosk import main as _main
     _main()
 
 

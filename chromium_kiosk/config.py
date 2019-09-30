@@ -1,7 +1,7 @@
 
 class HardCoded(object):
     ADMINS = ['adam.schubert@sg1-game.net']
-    USER = 'granad-kiosk'
+    USER = 'chromium-kiosk'
 
 
 class Config(HardCoded):

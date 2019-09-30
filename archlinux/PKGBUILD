@@ -1,15 +1,15 @@
-pkgname=granad-kiosk
+pkgname=chromium-kiosk
 pkgver=0.1.20
-pkgdesc="BESY GraNad kiosk."
+pkgdesc="Chromium kiosk."
 pkgrel=1
 arch=('any')
-backup=('etc/granad-kiosk/config.yml')
-license=('PROPRIETARY')
-url='https://gitlab.salamek.cz/sadam/granad-kiosk'
-#source=('granad-kiosk::git+ssh://git@gitlab.salamek.cz/sadam/granad-kiosk.git')
+backup=('etc/chromium-kiosk/config.yml')
+license=('GPL-3.0')
+url='https://github.com/Salamek/chromium-kiosk'
 #md5sums=('SKIP')
-install=granad_kiosk.install
+install=chromium_kiosk.install
 makedepends=('python-setuptools')
+replaces=('granad-kiosk')
 depends=(
     'python'
     'python-setuptools'
@@ -33,7 +33,7 @@ optdepends=(
 prepare() {
   mkdir -p "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../etc" "${srcdir}/${pkgname}"
-  cp -R "${srcdir}/../../granad_kiosk" "${srcdir}/${pkgname}"
+  cp -R "${srcdir}/../../chromium_kiosk" "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../tests" "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../setup.py" "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../requirements.txt" "${srcdir}/${pkgname}"

@@ -3,6 +3,7 @@ import os
 import re
 import sys
 
+from typing import List, Union
 from setuptools import setup, find_packages
 
 sys_conf_dir = os.getenv("SYSCONFDIR", "/etc")
@@ -12,7 +13,7 @@ def get_requirements(filename: str) -> list:
     return open(os.path.join(filename)).read().splitlines()
 
 
-def package_files(directory: str) -> str:
+def package_files(directory: str) -> List[str]:
     paths = []
     for (path, directories, filenames) in os.walk(directory):
         for filename in filenames:
@@ -47,31 +48,31 @@ extra_files = [
 ]
 
 setup(
-    name='granad-kiosk',
+    name='chromium-kiosk',
     version='0.1.20',
-    description='BESY GraNad Kiosk',
+    description='Chromium Kiosk',
     long_description=open('README.md').read(),
     author='Adam Schubert',
     author_email='adam.schubert@sg1-game.net',
-    url='https://gitlab.salamek.cz/sadam/granad-kiosk.git',
-    license='PROPRIETARY',
+    url='https://github.com/Salamek/chromium-kiosk',
+    license='GPL-3.0',
     classifiers=classifiers,
     packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=install_requires,
     test_suite="tests",
     tests_require=install_requires,
-    package_data={'granad-kiosk': extra_files},
+    package_data={'chromium-kiosk': extra_files},
     entry_points={
         'console_scripts': [
-            'granad-kiosk = granad_kiosk.__main__:main',
+            'chromium-kiosk = chromium_kiosk.__main__:main',
         ],
     },
     data_files=[
         (os.path.join(sys_conf_dir, 'systemd', 'system', 'getty@tty1.service.d'), [
             'etc/systemd/system/getty@tty1.service.d/override.conf'
         ]),
-        (os.path.join(sys_conf_dir, 'granad-kiosk'), [
-            'etc/granad-kiosk/config.yml'
+        (os.path.join(sys_conf_dir, 'chromium-kiosk'), [
+            'etc/chromium-kiosk/config.yml'
         ])
     ]
 )
