@@ -2,4 +2,4 @@ CLEAN_START: true  # Force chromium to clean start on each boot (That simply mea
 KIOSK: true # Run in kiosk mode, chromium will use whole screen without any way for user to close it, setting this to false is useful for web application debug (you can access chromium Inspect tool and so on) and initial chromium configuration
 TOUCHSCREEN: true # Enables support for touchscreen
 URLS: # List of urls to load, other urls are loaded as other tabs (on background in this case)
-  - `https://github.com/Salamek/chromium-kiosk`
+  - 'https://github.com/Salamek/chromium-kiosk'
