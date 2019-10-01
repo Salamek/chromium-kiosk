@@ -30,7 +30,6 @@ package:debian:
     - apt-get install -y curl gnupg apt-transport-https
     - apt-get install -y python3-pip python3-stdeb python3-docopt python3-yaml python-all
     - rm -rf "./deb_dist"
-    #- export DEB_BUILD_OPTIONS=nocheck
     - python3 setup.py --command-packages=stdeb.command bdist_deb
   tags:
     - debian
@@ -100,6 +99,7 @@ repoupdate:
     - ssh www-data@salamek.cz '/var/www/apt.salamek.cz/update_repo.sh'
   dependencies:
     - package:archlinux
+    - package:debian
   tags:
     - docker
   only:
