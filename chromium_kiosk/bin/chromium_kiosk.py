@@ -117,11 +117,12 @@ def get_config(config_class_string: str, yaml_files=None):
     additional_dict = dict()
     for y in yaml_files:
         with open(y) as f:
+            config_content = f.read()
             try:
-                loaded_data = yaml.load(f.read(), Loader=yaml.FullLoader)
+                loaded_data = yaml.load(config_content, Loader=yaml.FullLoader)
             except AttributeError:
                 # Handle older versions of yaml library
-                loaded_data = yaml.load(f.read())
+                loaded_data = yaml.load(config_content)
             if isinstance(loaded_data, dict):
                 additional_dict.update(loaded_data)
             else:
