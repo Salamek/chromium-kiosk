@@ -93,7 +93,7 @@ def get_config(config_class_string: str, yaml_files=None):
     """Load the Flask config from a class.
     Positional arguments:
     config_class_string -- string representation of a configuration class that will be loaded (e.g.
-        'pypi_portal.config.Production').
+        'chromium_kiosk.config.Production').
     yaml_files -- List of YAML files to load. This is for testing, leave None in dev/production.
     Returns:
     A class object to be fed into app.config.from_object().
