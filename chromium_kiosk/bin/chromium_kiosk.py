@@ -32,7 +32,7 @@ import shutil
 from functools import wraps
 from importlib import import_module
 from chromium_kiosk.Chromium import Chromium
-from chromium_kiosk.tools import create_user, inject_parameters_to_url, set_user_groups, get_binary_path
+from chromium_kiosk.tools import create_user, inject_parameters_to_url, set_user_groups
 import chromium_kiosk as app_root
 
 import yaml
