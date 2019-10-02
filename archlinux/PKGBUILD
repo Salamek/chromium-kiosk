@@ -24,6 +24,7 @@ depends=(
     'unclutter'
     'python-yaml'
     'python-docopt'
+    'util-linux'
 )
 
 optdepends=(

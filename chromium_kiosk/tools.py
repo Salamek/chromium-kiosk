@@ -31,3 +31,7 @@ def inject_parameters_to_url(url: str, parameters: dict) -> str:
     url_parts[4] = urllib.parse.urlencode(query)
 
     return urllib.parse.urlunparse(url_parts)
+
+
+def get_binary_path(binary_name: str) -> str:
+    return subprocess.check_output(['whereis', '-b', binary_name]).decode().split(':')[1].strip()

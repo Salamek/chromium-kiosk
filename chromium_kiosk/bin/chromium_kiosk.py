@@ -31,7 +31,7 @@ import sys
 from functools import wraps
 from importlib import import_module
 from chromium_kiosk.Chromium import Chromium
-from chromium_kiosk.tools import create_user, inject_parameters_to_url, set_user_groups
+from chromium_kiosk.tools import create_user, inject_parameters_to_url, set_user_groups, get_binary_path
 import chromium_kiosk as app_root
 
 import yaml
@@ -268,7 +268,7 @@ def post_install():
     systemd_autologin = [
         '[Service]',
         'ExecStart=',
-        'ExecStart=-/usr/bin/agetty --autologin {} --noclear %I $TERM'.format(options.USER),
+        'ExecStart=-{} --autologin {} --noclear %I $TERM'.format(get_binary_path('agetty'), options.USER),
     ]
 
     getty_path = os.path.join('/', 'etc', 'systemd', 'system', 'getty@tty1.service.d', 'override.conf')
