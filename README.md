@@ -56,7 +56,7 @@ $ reboot
 
 # Setup
 
-After successful installation you will need to configure chromium-kiosk by editing `/etc/chromium-kiosk/config.yml`, these are the options:
+After successful installation you will want to configure `chromium-kiosk` by editing `/etc/chromium-kiosk/config.yml`, these are the options:
 
 ```yml
 CLEAN_START: true  # Force chromium to clean start on each boot (That simply means do not show "Restore pages" dialog, you want this to be true in 99% of use cases)
