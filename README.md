@@ -1,12 +1,13 @@
 # Chromium kiosk
 
-Chromium kiosk is simple package turning your Archlinux or Debian (and alike) based PC/Raspberry into simple web kiosk using chromium.
+Chromium kiosk is simple package turning your Linux based PC/Raspberry into simple web kiosk using chromium.
 
 # Features
 
 * Simple installation and configuration
 * Installed from repository
 * Restarts whole machine when chromium process crashes/exists
+* Tested on Archlinux, Archlinux ARM, Debian, Raspbian
 
 # Installation
 
