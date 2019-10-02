@@ -28,6 +28,7 @@ import pwd
 import grp
 import signal
 import sys
+import shutil
 from functools import wraps
 from importlib import import_module
 from chromium_kiosk.Chromium import Chromium
@@ -268,7 +269,7 @@ def post_install():
     systemd_autologin = [
         '[Service]',
         'ExecStart=',
-        'ExecStart=-{} --autologin {} --noclear %I $TERM'.format(get_binary_path('agetty'), options.USER),
+        'ExecStart=-{} --autologin {} --noclear %I $TERM'.format(shutil.which('agetty'), options.USER),
     ]
 
     getty_path = os.path.join('/', 'etc', 'systemd', 'system', 'getty@tty1.service.d', 'override.conf')
