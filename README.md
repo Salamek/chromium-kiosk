@@ -11,7 +11,7 @@ Chromium kiosk is simple package turning your Archlinux or Debian (and alike) ba
 # Installation
 
 ## Archlinux
-(Use Archlinux ARM for Raspbery install)
+(Use Archlinux ARM for Raspberry install)
 
 Add repository by adding this at end of file /etc/pacman.conf
 
@@ -25,6 +25,11 @@ and then install by running
 
 ```bash
 $ pacman -Sy chromium-kiosk
+```
+
+after that you can reboot your device, you should be welcomed by `chromium-kiosk` welcome page:
+```bash
+$ reboot
 ```
 
 # Debian and derivates
@@ -41,6 +46,11 @@ And then you can install a package `chromium-kiosk`
 
 ```bash
 $ apt update && apt install chromium-kiosk
+```
+
+after that you can reboot your device, you should be welcomed by `chromium-kiosk` welcome page:
+```bash
+$ reboot
 ```
 
 # Setup
