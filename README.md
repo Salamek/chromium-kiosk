@@ -27,7 +27,7 @@ and then install by running
 $ pacman -Sy chromium-kiosk
 ```
 
-# Debian and derivates (WIP)
+# Debian and derivates
 (For Raspbian i suggest to use Lite relase)
 
 Add repository by running these commands
@@ -37,10 +37,10 @@ $ wget -O - https://apt.salamek.cz/apt/conf/salamek.gpg.key|sudo apt-key add -
 $ echo "deb     https://apt.salamek.cz/apt all main" | sudo tee /etc/apt/sources.list.d/salamek.cz.list
 ```
 
-And then you can install a package python3-gitlab-tools
+And then you can install a package `chromium-kiosk`
 
 ```bash
-$ apt update && apt install python3-chromium-kiosk
+$ apt update && apt install chromium-kiosk
 ```
 
 # Setup
