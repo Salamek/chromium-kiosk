@@ -1,12 +1,13 @@
 # Chromium kiosk
 
-Chromium kiosk is simple package turning your Archlinux or Debian (and alike) based PC/Raspberry into simple web kiosk using chromium.
+Chromium kiosk is simple package turning your Linux based PC/Raspberry into simple web kiosk using chromium.
 
 # Features
 
 * Simple installation and configuration
 * Installed from repository
 * Restarts whole machine when chromium process crashes/exists
+* Tested on Archlinux, Archlinux ARM, Debian, Raspbian
 
 # Installation
 
@@ -55,7 +56,7 @@ $ reboot
 
 # Setup
 
-After successful installation you will need to configure chromium-kiosk by editing `/etc/chromium-kiosk/config.yml`, these are the options:
+After successful installation you will want to configure `chromium-kiosk` by editing `/etc/chromium-kiosk/config.yml`, these are the options:
 
 ```yml
 CLEAN_START: true  # Force chromium to clean start on each boot (That simply means do not show "Restore pages" dialog, you want this to be true in 99% of use cases)
