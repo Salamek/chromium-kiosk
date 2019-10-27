@@ -35,7 +35,8 @@ class Chromium(object):
             '--disable-session-crashed-bubble',
             '--disable-popup-blocking',
             '--disable-translate',
-            '--disable-breakpad'
+            '--disable-features=TranslateUI',
+            '--disable-breakpad',
             '--disable-cloud-import',
             '--disable-signin-promo',
             '--disable-sync',
