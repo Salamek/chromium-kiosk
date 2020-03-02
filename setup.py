@@ -7,6 +7,7 @@ from typing import List, Union
 from setuptools import setup, find_packages
 
 sys_conf_dir = os.getenv("SYSCONFDIR", "/etc")
+lib_dir = os.getenv("LIBDIR", "/var/lib")
 
 
 def get_requirements(filename: str) -> list:
@@ -73,6 +74,10 @@ setup(
         ]),
         (os.path.join(sys_conf_dir, 'chromium-kiosk'), [
             'etc/chromium-kiosk/config.yml'
-        ])
+        ]),
+        (os.path.join(lib_dir, 'chromium-kiosk/chromium-kiosk-extension'), [
+            'chromium-kiosk-extension/dist/chromium-kiosk-extension/'
+        ]),
+
     ]
 )
