@@ -2,7 +2,7 @@ stages:
   - build
   - test
   - package
-  #v- packagetest
+  #- packagetest
   - deploy
 
 build:dist:
@@ -85,31 +85,31 @@ package:archlinux:
     - test:archlinux
     - build:dist
 
-packagetest:debian:
-  stage: packagetest
-  script:
-    - apt-get update -qy
-    - cd deb_dist
-    - apt install ./*.deb -qy
-  tags:
-    - debian-systemd
-  dependencies:
-    - package:debian
-  only:
-    - tags
+#packagetest:debian:
+#  stage: packagetest
+#  script:
+#    - apt-get update -qy
+#    - cd deb_dist
+#    - apt install ./*.deb -qy
+#  tags:
+#    - debian-systemd
+#  dependencies:
+#    - package:debian
+#  only:
+#    - tags
 
-packagetest:archlinux:
-  stage: packagetest
-  script:
-    - pacman -Sy
-    - cd archlinux
-    - pacman -U chromium-kiosk*.pkg.tar.xz --noconfirm
-  tags:
-    - archlinux-systemd
-  dependencies:
-    - package:archlinux
-  only:
-    - tags
+#packagetest:archlinux:
+#  stage: packagetest
+#  script:
+#    - pacman -Sy
+#    - cd archlinux
+#    - pacman -U chromium-kiosk*.pkg.tar.xz --noconfirm
+#  tags:
+#    - archlinux-systemd
+#  dependencies:
+#    - package:archlinux
+#  only:
+#    - tags
 
 repoupdate:
   stage: deploy
