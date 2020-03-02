@@ -1,0 +1,49 @@
+{
+    "background": {
+        "scripts": [
+            "background.js",
+            "runtime.js"
+        ]
+    },
+   "content_scripts": [ {
+      "css": [
+        "styles.css"
+      ],
+      "js": [
+        "runtime.js",
+        "polyfills-es5.js",
+        "polyfills.js",
+        "main.js"
+      ],
+      "matches": [ "*://*/*" ],
+      "run_at": "document_start"
+   } ],
+   "description": "Chromium kiosk plugin allowing extended functionality",
+   "homepage_url": "https://github.com/Salamek/chromium-kiosk",
+   "icons": {
+      "128": "assets/icon.png"
+   },
+   "manifest_version": 2,
+   "minimum_chrome_version": "49",
+   "name": "ChromiumKiosk",
+   "permissions": [
+     "webNavigation",
+     "*://*/*",
+     "storage",
+     "idle",
+     "tabs",
+     "notifications"
+   ],
+   "version": "0.0.1",
+   "web_accessible_resources": [
+     "assets/bar-controls/back.png",
+     "assets/bar-controls/forward.png",
+     "assets/bar-controls/home.png",
+     "assets/bar-controls/reload.png",
+     "MaterialIcons-Regular.woff",
+     "MaterialIcons-Regular.woff2",
+     "MaterialIcons-Regular.eot",
+     "MaterialIcons-Regular.ttf",
+     "blocked_frame.html"
+    ]
+}

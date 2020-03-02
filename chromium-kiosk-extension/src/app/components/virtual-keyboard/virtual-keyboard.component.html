@@ -1,0 +1,32 @@
+<div class="container">
+  <div fxLayout="column">
+    <mat-form-field>
+      <button class="close" color="primary" mat-button mat-mini-fab
+        (click)="close()"
+      >
+        <mat-icon>check</mat-icon>
+      </button>
+
+      <input type="{{type}}" class="chromium-kiosk-virtual-keyboard-input"
+        matInput
+        #keyboardInput
+        (click)="updateCaretPosition()"
+        [(ngModel)]="inputElement.nativeElement.value" placeholder="{{ placeholder }}"
+        [maxLength]="maxLength"
+      />
+    </mat-form-field>
+
+    <div fxLayout="row" fxLayoutAlign="center center"
+      *ngFor="let row of layout; let rowIndex = index"
+      [attr.data-index]="rowIndex"
+    >
+      <virtual-keyboard-key
+        *ngFor="let key of row; let keyIndex = index"
+        [key]="key"
+        [disabled]="disabled"
+        [attr.data-index]="keyIndex"
+        (keyPress)="keyPress($event)"
+      ></virtual-keyboard-key>
+    </div>
+  </div>
+</div>
