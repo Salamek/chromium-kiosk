@@ -17,5 +17,10 @@ NAV_BAR:
   VERTICAL_POSITION: 'bottom' # Vertical position on the screen
   WIDTH: 100 # Width of a bar in %
 
+SCREEN_SAVER:
+  ENABLED: false  # is nav bar enabled
+  IDLE_TIME: 0
+  TEXT: 'Touch me'
+
 VIRTUAL_KEYBOARD:
   ENABLED: false
