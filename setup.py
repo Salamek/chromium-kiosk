@@ -77,7 +77,7 @@ setup(
         ]),
         (
             os.path.join(data_dir, 'chromium-kiosk/chromium-kiosk-extension'),
-            glob('chromium-kiosk-extension/dist/chromium-kiosk-extension/**')
+            glob('chromium-kiosk-extension/dist/chromium-kiosk-extension/**/*', recursive=True)
         ),
     ]
 )
