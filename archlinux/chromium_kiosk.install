@@ -7,6 +7,9 @@ pre_install() {
 post_install() {
         # Generate default config
         chromium-kiosk post_install --config_prod
+        systemctl start chromium-kiosk_configwatcher
+        systemctl enable chromium-kiosk_configwatcher
+
 }
 
 ## arg 1:  the new package version
@@ -19,6 +22,7 @@ pre_upgrade() {
 ## arg 2:  the old package version
 post_upgrade() {
         chromium-kiosk post_install --config_prod
+        systemctl restart chromium-kiosk_configwatcher
 }
 
 ## arg 1:  the old package version

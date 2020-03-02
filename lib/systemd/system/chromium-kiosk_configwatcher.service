@@ -1,0 +1,13 @@
+[Unit]
+Description=Chromium kiosk config watcher
+Requires=network.target
+
+[Service]
+Type=simple
+Restart=on-failure
+RemainAfterExit=no
+RestartSec=5s
+ExecStart=/usr/bin/chromium-kiosk watch_config --config_prod
+
+[Install]
+WantedBy=multi-user.target
