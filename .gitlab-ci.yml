@@ -17,7 +17,7 @@ build:dist:
 
   artifacts:
     paths:
-      - dist/*
+      - chromium-kiosk-extension/dist/*
     expire_in: 1d
 
 
