@@ -12,6 +12,7 @@ Command details:
 Usage:
     chromium-kiosk run [-l DIR] [--config_prod]
     chromium-kiosk post_install [--config_prod]
+    chromium-kiosk watch_config [--config_prod]
     chromium-kiosk (-h | --help)
 
 Options:
@@ -21,6 +22,7 @@ Options:
 
 from __future__ import print_function
 
+import hashlib
 import logging
 import logging.handlers
 import os
@@ -29,6 +31,9 @@ import grp
 import signal
 import sys
 import shutil
+import asyncio
+import json
+import websockets
 from functools import wraps
 from importlib import import_module
 from chromium_kiosk.Chromium import Chromium
@@ -111,7 +116,7 @@ def get_config(config_class_string: str, yaml_files=None):
     yaml_files = yaml_files or [f for f in [
         os.path.join('/', 'etc', 'chromium-kiosk', 'config.yml'),
         # Compability with old proprietary version
-        os.path.join('/', 'etc', 'chromium-kiosk', 'config.yml'),
+        os.path.join('/', 'etc', 'granad-kiosk', 'config.yml'),
         os.path.abspath(os.path.join(APP_ROOT_FOLDER, '..', 'config.yml')),
         os.path.join(APP_ROOT_FOLDER, 'config.yml'),
     ] if os.path.exists(f)]
@@ -148,6 +153,10 @@ def parse_options():
     else:
         config_class_string = 'chromium_kiosk.config.Config'
     config_obj = get_config(config_class_string)
+
+    # Legacy compatibility
+    if config_obj.URLS and not config_obj.HOME_PAGE:
+        config_obj.HOME_PAGE = config_obj.URLS[0]
 
     return config_obj
 
@@ -205,8 +214,57 @@ def run():
     if options.CLEAN_START:
         chromium.clean_start()
 
-    chromium.set_urls([inject_parameters_to_url(x, additional_parameters) for x in options.URLS])
+    chromium.set_urls([inject_parameters_to_url(options.HOME_PAGE, additional_parameters)])
     chromium.run()
+
+
+@command
+def watch_config():
+    async def config_watcher(websocket, path):
+        last_sum = None
+        while True:
+            options = parse_options()
+
+            client_options = {
+                'homePage': options.HOME_PAGE,
+                'idleTime': options.IDLE_TIME,
+                'whiteList': {
+                    'enabled': options.WHITE_LIST.get('ENABLED', False),
+                    'urls': options.WHITE_LIST.get('URLS', []),
+                    'iframeEnabled': options.WHITE_LIST.get('IFRAME_ENABLED', False)
+                },
+                'navBar': {
+                    'enabled': options.NAV_BAR.get('ENABLED', False),
+                    'enabledButtons': options.NAV_BAR.get('ENABLED_BUTTONS', []),
+                    'horizontalPosition': options.NAV_BAR.get('HORIZONTAL_POSITION', 'center'),
+                    'verticalPosition': options.NAV_BAR.get('VERTICAL_POSITION', 'bottom'),
+                    'width': options.NAV_BAR.get('WIDTH', 100)
+                },
+                'virtualKeyboard': {
+                    'enabled': options.VIRTUAL_KEYBOARD.get('ENABLED', False)
+                },
+                'screenSaver':  {
+                    'enabled': options.SCREEN_SAVER.get('ENABLED', False),
+                    'idleTime': options.SCREEN_SAVER.get('IDLE_TIME', 3600),
+                    'text': options.SCREEN_SAVER.get('TEXT', 'Touch me')
+                }
+            }
+
+            out_json = json.dumps({
+                'event': 'onGetClientConfig',
+                'data': client_options
+            })
+
+            current_sum = hashlib.md5(out_json.encode()).hexdigest()
+            if current_sum != last_sum:
+                last_sum = current_sum
+                await websocket.send(out_json)
+            await asyncio.sleep(2)
+
+    start_server = websockets.serve(config_watcher, "127.0.0.1", 5678)
+
+    asyncio.get_event_loop().run_until_complete(start_server)
+    asyncio.get_event_loop().run_forever()
 
 
 @command

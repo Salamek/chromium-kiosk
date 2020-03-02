@@ -9,9 +9,33 @@ class Config(HardCoded):
     CLEAN_START = False
     KIOSK = True
     TOUCHSCREEN = False
-    URLS = [
-        'http://127.0.0.1/'
-    ]
+    HOME_PAGE = 'http://127.0.0.1/'
+    URLS = []  # Deprecated, remove me
+
+    IDLE_TIME = 0
+    WHITE_LIST = {
+        'ENABLED': False,  # is white list enabled
+        'URLS': [],  # List of whitelisted URLs, glob is supported
+        'IFRAME_ENABLED': True,  # True to enable all iframes, list of urls to specify enabled iframes
+    }
+
+    NAV_BAR = {
+        'ENABLED': False,  # is nav bar enabled
+        'ENABLED_BUTTONS': ['home', 'reload', 'back', 'forward'],  # Enabled buttons on navbar, order matters
+        'HORIZONTAL_POSITION': 'center',  # horizontal position on the screen
+        'VERTICAL_POSITION': 'bottom',  # Vertical position on the screen
+        'WIDTH': 100,  # Width of a bar in %
+    }
+
+    SCREEN_SAVER = {
+        'ENABLED': False,  # is nav bar enabled
+        'IDLE_TIME': 0,
+        'TEXT': 'Touch me'
+    }
+
+    VIRTUAL_KEYBOARD = {
+        'ENABLED': False
+    }
 
 
 class Testing(Config):

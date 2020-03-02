@@ -9,7 +9,8 @@ class Chromium(object):
     def __init__(self,
                  config_path='~/.config/chromium/',
                  cache_path='~/.cache/chromium/',
-                 urls=None
+                 urls=None,
+                 load_extension_path=None
                  ):
         """
         Initialize Chromium instance
@@ -25,6 +26,7 @@ class Chromium(object):
         self.executable_path = executable_path
         self.config_path = os.path.expanduser(config_path)
         self.cache_path = os.path.expanduser(cache_path)
+        self.load_extension_path = os.path.expanduser(load_extension_path)
         if not urls:
             urls = []
 
@@ -44,6 +46,9 @@ class Chromium(object):
             '--fast-start',
             '--no-first-run'
         ]
+
+        if self.load_extension_path:
+            self.arguments.append('--load-extension={}'.format(self.load_extension_path))
 
     def _find_chromium(self) -> Union[str, None]:
         """
