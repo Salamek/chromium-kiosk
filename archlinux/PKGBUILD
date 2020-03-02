@@ -33,6 +33,8 @@ optdepends=(
 prepare() {
   mkdir -p "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../etc" "${srcdir}/${pkgname}"
+  cp -R "${srcdir}/../../lib" "${srcdir}/${pkgname}"
+  cp -R "${srcdir}/../../chromium-kiosk-extension/dist" "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../chromium_kiosk" "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../tests" "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../setup.py" "${srcdir}/${pkgname}"

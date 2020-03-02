@@ -77,7 +77,16 @@ setup(
         ]),
         (
             os.path.join(data_dir, 'chromium-kiosk/chromium-kiosk-extension'),
-            glob('chromium-kiosk-extension/dist/chromium-kiosk-extension/**/*', recursive=True)
+            [file for file in glob('chromium-kiosk-extension/dist/chromium-kiosk-extension/*', recursive=True) if not os.path.isdir(file)]
+        ),
+        (
+            os.path.join(data_dir, 'chromium-kiosk/chromium-kiosk-extension/assets'),
+            [file for file in glob('chromium-kiosk-extension/dist/chromium-kiosk-extension/assets/*', recursive=True) if not os.path.isdir(file)]
+        ),
+        (
+            os.path.join(data_dir, 'chromium-kiosk/chromium-kiosk-extension/assets/bar-controls'),
+            [file for file in glob('chromium-kiosk-extension/dist/chromium-kiosk-extension/assets/bar-controls/*', recursive=True) if
+             not os.path.isdir(file)]
         ),
     ]
 )
