@@ -2,7 +2,7 @@ stages:
   - build
   - test
   - package
-  - packagetest
+  #v- packagetest
   - deploy
 
 build:dist:

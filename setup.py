@@ -8,6 +8,7 @@ from setuptools import setup, find_packages
 
 sys_conf_dir = os.getenv("SYSCONFDIR", "/etc")
 data_dir = os.getenv("DATADIR", "/usr/share")
+lib_dir = os.getenv("LIBDIR", "/usr/lib")
 
 
 def get_requirements(filename: str) -> list:
@@ -74,6 +75,9 @@ setup(
         ]),
         (os.path.join(sys_conf_dir, 'chromium-kiosk'), [
             'etc/chromium-kiosk/config.yml'
+        ]),
+        (os.path.join(lib_dir, 'systemd', 'system'), [
+            'lib/systemd/system/chromium-kiosk_configwatcher.service',
         ]),
         (
             os.path.join(data_dir, 'chromium-kiosk/chromium-kiosk-extension'),
