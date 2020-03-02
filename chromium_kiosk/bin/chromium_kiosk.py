@@ -223,42 +223,47 @@ def watch_config():
     async def config_watcher(websocket, path):
         last_sum = None
         while True:
-            options = parse_options()
+            try:
+                options = parse_options()
 
-            client_options = {
-                'homePage': options.HOME_PAGE,
-                'idleTime': options.IDLE_TIME,
-                'whiteList': {
-                    'enabled': options.WHITE_LIST.get('ENABLED', False),
-                    'urls': options.WHITE_LIST.get('URLS', []),
-                    'iframeEnabled': options.WHITE_LIST.get('IFRAME_ENABLED', False)
-                },
-                'navBar': {
-                    'enabled': options.NAV_BAR.get('ENABLED', False),
-                    'enabledButtons': options.NAV_BAR.get('ENABLED_BUTTONS', []),
-                    'horizontalPosition': options.NAV_BAR.get('HORIZONTAL_POSITION', 'center'),
-                    'verticalPosition': options.NAV_BAR.get('VERTICAL_POSITION', 'bottom'),
-                    'width': options.NAV_BAR.get('WIDTH', 100)
-                },
-                'virtualKeyboard': {
-                    'enabled': options.VIRTUAL_KEYBOARD.get('ENABLED', False)
-                },
-                'screenSaver':  {
-                    'enabled': options.SCREEN_SAVER.get('ENABLED', False),
-                    'idleTime': options.SCREEN_SAVER.get('IDLE_TIME', 3600),
-                    'text': options.SCREEN_SAVER.get('TEXT', 'Touch me')
+                client_options = {
+                    'homePage': options.HOME_PAGE,
+                    'idleTime': options.IDLE_TIME,
+                    'whiteList': {
+                        'enabled': options.WHITE_LIST.get('ENABLED', False),
+                        'urls': options.WHITE_LIST.get('URLS', []),
+                        'iframeEnabled': options.WHITE_LIST.get('IFRAME_ENABLED', False)
+                    },
+                    'navBar': {
+                        'enabled': options.NAV_BAR.get('ENABLED', False),
+                        'enabledButtons': options.NAV_BAR.get('ENABLED_BUTTONS', []),
+                        'horizontalPosition': options.NAV_BAR.get('HORIZONTAL_POSITION', 'center'),
+                        'verticalPosition': options.NAV_BAR.get('VERTICAL_POSITION', 'bottom'),
+                        'width': options.NAV_BAR.get('WIDTH', 100)
+                    },
+                    'virtualKeyboard': {
+                        'enabled': options.VIRTUAL_KEYBOARD.get('ENABLED', False)
+                    },
+                    'screenSaver':  {
+                        'enabled': options.SCREEN_SAVER.get('ENABLED', False),
+                        'idleTime': options.SCREEN_SAVER.get('IDLE_TIME', 3600),
+                        'text': options.SCREEN_SAVER.get('TEXT', 'Touch me')
+                    }
                 }
-            }
 
-            out_json = json.dumps({
-                'event': 'onGetClientConfig',
-                'data': client_options
-            })
+                out_json = json.dumps({
+                    'event': 'onGetClientConfig',
+                    'data': client_options
+                })
 
-            current_sum = hashlib.md5(out_json.encode()).hexdigest()
-            if current_sum != last_sum:
-                last_sum = current_sum
-                await websocket.send(out_json)
+                current_sum = hashlib.md5(out_json.encode()).hexdigest()
+                if current_sum != last_sum:
+                    last_sum = current_sum
+                    await websocket.send(out_json)
+
+            except websockets.ConnectionClosed as e:
+                print(e)
+
             await asyncio.sleep(2)
 
     start_server = websockets.serve(config_watcher, "127.0.0.1", 5678)
