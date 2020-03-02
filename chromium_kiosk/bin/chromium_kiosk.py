@@ -200,8 +200,10 @@ def command(func):
 def run():
     options = parse_options()
     setup_logging('kiosk', logging.DEBUG if options.DEBUG else logging.WARNING)
+    data_dir = os.getenv("DATADIR", "/usr/share")
+    extension_path = os.path.join(data_dir, 'chromium-kiosk/chromium-kiosk-extension')
 
-    chromium = Chromium()
+    chromium = Chromium(load_extension_path=extension_path if os.path.isdir(extension_path) else None)
     additional_parameters = {}
     if options.KIOSK:
         chromium.set_kiosk(True)
