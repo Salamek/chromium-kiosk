@@ -1,8 +1,25 @@
 stages:
+  - build
   - test
   - package
   - packagetest
   - deploy
+
+build:dist:
+  stage: build
+  script:
+    - pacman -Syu npm --noconfirm
+    - cd chromium-kiosk-extension
+    - npm i
+    - ./node_modules/@angular/cli/bin/ng build --prod=true --aot
+  tags:
+    - archlinux
+
+  artifacts:
+    paths:
+      - dist/*
+    expire_in: 1d
+
 
 test:debian:
   stage: test
@@ -14,6 +31,9 @@ test:debian:
   tags:
     - debian
 
+  dependencies:
+    - build:dist
+
 test:archlinux:
   stage: test
   script:
@@ -22,6 +42,9 @@ test:archlinux:
     - python setup.py test
   tags:
     - archlinux
+
+  dependencies:
+    - build:dist
 
 package:debian:
   stage: package
@@ -39,6 +62,10 @@ package:debian:
       - deb_dist/*.deb
     expire_in: 1d
 
+  dependencies:
+    - test:debian
+    - build:dist
+
 package:archlinux:
   stage: package
   script:
@@ -53,6 +80,10 @@ package:archlinux:
     paths:
       - archlinux/chromium-kiosk*.pkg.tar.xz
     expire_in: 1d
+
+  dependencies:
+    - test:archlinux
+    - build:dist
 
 packagetest:debian:
   stage: packagetest
