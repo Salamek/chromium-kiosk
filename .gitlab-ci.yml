@@ -123,7 +123,7 @@ repoupdate:
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
     - ssh www-data@repository 'rm -rf /var/www/repository.salamek.cz/www/arch/pub/any/chromium-kiosk*.pkg.tar.xz'
-    - ssh www-data@salamek.cz 'rm -rf /var/www/repository.salamek.cz/cache/deb/pub/chromium-kiosk*.deb'
+    - ssh www-data@repository 'rm -rf /var/www/repository.salamek.cz/cache/deb/pub/chromium-kiosk*.deb'
     - scp archlinux/chromium-kiosk*.pkg.tar.xz www-data@repository:/var/www/repository.salamek.cz/www/arch/pub/any
     - scp deb_dist/*.deb www-data@repository:/var/www/repository.salamek.cz/cache/deb/pub
     - ssh www-data@repository '/var/www/repository.salamek.cz/deb-pub-update.sh'
