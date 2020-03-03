@@ -6,9 +6,9 @@ HOME_PAGE: 'https://salamek.github.io/chromium-kiosk/'  # Url to load as homepag
 # These works only with chromium-kiosk installed
 IDLE_TIME: 0 # How log must be kiosk idle to redirect to HOME_PAGE, 0=disabled (Works only with chromium-kiosk extension installed)
 WHITE_LIST:
-  ENABLED': false  # is white list enabled
-  URLS': []   # List of whitelisted urls, glob format is supported (eg,: *,google.*/news)
-  IFRAME_ENABLED': true  # True to enable all iframes, list of urls to specify enabled iframes
+  ENABLED: false  # is white list enabled
+  URLS: []   # List of whitelisted urls, glob format is supported (eg,: *,google.*/news)
+  IFRAME_ENABLED: true  # True to enable all iframes, list of urls to specify enabled iframes
 
 NAV_BAR:
   ENABLED: false # is nav bar enabled
