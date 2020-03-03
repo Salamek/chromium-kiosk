@@ -56,7 +56,7 @@ def detect_touchscreen_device_name() -> Union[str, None]:
     touchscreen_name = None
     for name in output:
         for match in match_list:
-            if match in name.lower():
+            if match in name.decode('UTF-8').lower():
                 touchscreen_name = name
                 break
 
