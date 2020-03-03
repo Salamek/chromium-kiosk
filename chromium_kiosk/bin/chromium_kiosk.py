@@ -203,8 +203,8 @@ def run():
     data_dir = os.getenv("DATADIR", "/usr/share")
 
     # Rotate screen by config value
-    if options.SCREEN_ROTATION != 'normal':
-        rotate_screen(options.SCREEN_ROTATION)
+    # if options.SCREEN_ROTATION != 'normal':
+    #    rotate_screen(options.SCREEN_ROTATION)
 
     extension_path = os.path.join(data_dir, 'chromium-kiosk/chromium-kiosk-extension')
     chromium = Chromium(load_extension_path=extension_path if os.path.isdir(extension_path) else None)
