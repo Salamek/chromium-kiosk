@@ -3,6 +3,7 @@ Description=Chromium kiosk config watcher
 Requires=network.target
 
 [Service]
+User=chromium-kiosk
 Type=simple
 Restart=on-failure
 RemainAfterExit=no
