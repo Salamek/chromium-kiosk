@@ -42,7 +42,7 @@ def detect_display():
         return display
 
     output = subprocess.check_output(['ps', 'e', '-u', os.getenv('USER')])
-    result = re.search(r'DISPLAY=([\.0-9A-Za-z:]*)', output, re.MULTILINE)
+    result = re.search(r'DISPLAY=([\.0-9A-Za-z:]*)', output.decode('UTF-8'), re.MULTILINE)
     return result.group(1)
 
 
