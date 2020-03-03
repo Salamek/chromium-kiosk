@@ -305,6 +305,10 @@ def post_install():
         'xset s noblank  # don\'t blank the video device',
         'unclutter &     # hides your cursor after inactivity',
         'openbox &',
+        'if [ -e ~/chromium-kiosk-prehook.sh ] # Check if prehook exists and run it',
+        'then'
+        '    ~/chromium-kiosk-prehook.sh',
+        'fi'
         'exec chromium-kiosk run --config_prod --log_dir={}'.format(user_home),
         'reboot'
     ]
