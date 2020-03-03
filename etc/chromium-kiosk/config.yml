@@ -24,3 +24,5 @@ SCREEN_SAVER:
 
 VIRTUAL_KEYBOARD:
   ENABLED: false
+
+SCREEN_ROTATION: 'normal' # normal|left|right|inverted

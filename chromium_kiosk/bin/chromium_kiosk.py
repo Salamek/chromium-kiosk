@@ -37,7 +37,7 @@ import websockets
 from functools import wraps
 from importlib import import_module
 from chromium_kiosk.Chromium import Chromium
-from chromium_kiosk.tools import create_user, inject_parameters_to_url, set_user_groups
+from chromium_kiosk.tools import create_user, inject_parameters_to_url, set_user_groups, rotate_screen
 import chromium_kiosk as app_root
 
 import yaml
@@ -201,8 +201,12 @@ def run():
     options = parse_options()
     setup_logging('kiosk', logging.DEBUG if options.DEBUG else logging.WARNING)
     data_dir = os.getenv("DATADIR", "/usr/share")
-    extension_path = os.path.join(data_dir, 'chromium-kiosk/chromium-kiosk-extension')
 
+    # Rotate screen by config value
+    if options.SCREEN_ROTATION != 'normal':
+        rotate_screen(options.SCREEN_ROTATION)
+
+    extension_path = os.path.join(data_dir, 'chromium-kiosk/chromium-kiosk-extension')
     chromium = Chromium(load_extension_path=extension_path if os.path.isdir(extension_path) else None)
     additional_parameters = {}
     if options.KIOSK:
@@ -231,6 +235,7 @@ def watch_config():
                 client_options = {
                     'homePage': options.HOME_PAGE,
                     'idleTime': options.IDLE_TIME,
+                    'screenRotation': options.SCREEN_ROTATION,
                     'whiteList': {
                         'enabled': options.WHITE_LIST.get('ENABLED', False),
                         'urls': options.WHITE_LIST.get('URLS', []),
@@ -261,6 +266,7 @@ def watch_config():
                 current_sum = hashlib.md5(out_json.encode()).hexdigest()
                 if current_sum != last_sum:
                     last_sum = current_sum
+                    rotate_screen(options.SCREEN_ROTATION)
                     await websocket.send(out_json)
 
             except websockets.ConnectionClosed as e:

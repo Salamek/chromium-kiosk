@@ -13,6 +13,7 @@ case "$1" in
         systemctl enable chromium-kiosk_configwatcher
     else
         chromium-kiosk post_install --config_prod
+        systemctl enable chromium-kiosk_configwatcher
         systemctl restart chromium-kiosk_configwatcher
     fi
     ;;

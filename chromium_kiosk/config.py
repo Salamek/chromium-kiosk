@@ -37,6 +37,8 @@ class Config(HardCoded):
         'ENABLED': False
     }
 
+    SCREEN_ROTATION = 'normal'  # normal|left|right|inverted
+
 
 class Testing(Config):
     TESTING = True

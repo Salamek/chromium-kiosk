@@ -17,6 +17,7 @@ depends=(
     'xorg-server'
     'xorg-xset'
     'xorg-xinit'
+    'xorg-xrandr'
     'xf86-video-fbdev'
     'openbox'
     'alsa-utils'

@@ -31,3 +31,15 @@ def inject_parameters_to_url(url: str, parameters: dict) -> str:
     url_parts[4] = urllib.parse.urlencode(query)
 
     return urllib.parse.urlunparse(url_parts)
+
+
+def rotate_screen(rotation: str) -> int:
+    allowed_rotations = ['left', 'right', 'normal', 'inverted']
+    if rotation not in allowed_rotations:
+        raise Exception('Rotation {} is not allowed'.format(rotation))
+
+    return subprocess.call([
+        'xrandr',
+        '-o',
+        rotation
+    ])
