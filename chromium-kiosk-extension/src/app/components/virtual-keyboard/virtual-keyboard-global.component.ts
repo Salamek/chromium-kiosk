@@ -31,7 +31,7 @@ export class VirtualKeyboardGlobalComponent {
 
     @HostListener('window:focus', ['$event'])
     onWindowFocus(event: Event) {
-      this.proccessRawEvent(event);
+      this.processRawEvent(event);
       setTimeout(() => {
         this.focus = true;
       }, 0);
@@ -39,7 +39,7 @@ export class VirtualKeyboardGlobalComponent {
 
     @HostListener('window:click', ['$event'])
     onWindowClick(event: MouseEvent) {
-      this.proccessRawEvent(event);
+      this.processRawEvent(event);
     }
 
   /**
@@ -54,7 +54,7 @@ export class VirtualKeyboardGlobalComponent {
     });
   }
 
-  proccessRawEvent(event: any): void {
+  processRawEvent(event: any): void {
     if (!this.enabled) {
       return;
     }
@@ -66,7 +66,8 @@ export class VirtualKeyboardGlobalComponent {
       'search',
       'tel',
       'text',
-      'url'
+      'url',
+      'textarea'
     ];
 
     if (

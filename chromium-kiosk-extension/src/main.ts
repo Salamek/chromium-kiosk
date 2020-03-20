@@ -35,9 +35,7 @@ document.onreadystatechange = () => {
       const appRoot = document.createElement('chromium-kiosk-root');
 
       body.insertBefore(appRoot, body.children[0]);
-
       if (chrome.storage !== undefined) {
-
         chrome.storage.local.get(['chromium_kiosk_settings'], (config) => {
           const configFinal = (Object.keys(config).length !== 0 && config.chromium_kiosk_settings !== undefined ? <AppConfig>config.chromium_kiosk_settings : new DefaultSettings());
           loadApp(configFinal);

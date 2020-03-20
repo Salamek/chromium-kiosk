@@ -228,6 +228,7 @@ def run():
 def watch_config():
     async def config_watcher(websocket, path):
         last_sum = None
+        last_screen_rotation = None
         while True:
             try:
                 options = parse_options()
@@ -266,7 +267,9 @@ def watch_config():
                 current_sum = hashlib.md5(out_json.encode()).hexdigest()
                 if current_sum != last_sum:
                     last_sum = current_sum
-                    rotate_screen(options.SCREEN_ROTATION)
+                    if options.SCREEN_ROTATION != last_screen_rotation:
+                        last_screen_rotation = options.SCREEN_ROTATION
+                        rotate_screen(options.SCREEN_ROTATION)
                     await websocket.send(out_json)
 
             except websockets.ConnectionClosed as e:
