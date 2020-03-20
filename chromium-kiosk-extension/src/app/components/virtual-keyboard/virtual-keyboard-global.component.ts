@@ -122,6 +122,6 @@ export class VirtualKeyboardGlobalComponent {
   }
 
   private getType(inputElement: ElementRef): string {
-    return inputElement.nativeElement.type;
+    return inputElement.nativeElement.type || 'text';
   }
 }

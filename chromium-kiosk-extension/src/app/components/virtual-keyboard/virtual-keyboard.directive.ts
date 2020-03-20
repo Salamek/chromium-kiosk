@@ -107,6 +107,6 @@ export class NgVirtualKeyboardDirective {
    * Getter for used type for virtual keyboard input field.
    */
   private getType(): string {
-    return this.element.nativeElement.type;
+    return this.element.nativeElement.type || 'text';
   }
 }
