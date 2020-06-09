@@ -1,3 +1,9 @@
 $material-icons-font-path: '~material-icons/iconfont/';
 @import '~material-icons/iconfont/material-icons.scss';
 @import '@angular/material/prebuilt-themes/purple-green.css';
+
+
+/*Override default cdk-overlay-container for wirtual keyboard to be over other content */
+.cdk-overlay-container {
+    z-index: 2147483645;
+}
