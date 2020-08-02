@@ -89,4 +89,6 @@ SCREEN_SAVER:
   ENABLED: false  # is screen saver enabled
   IDLE_TIME: 0  # how long must be a user idle for screensaver to start
   TEXT: 'Touch me'
+  
+SCREEN_ROTATION: normal # Rotates screen when X server starts options are (normal|left|right|inverted)
 ```
