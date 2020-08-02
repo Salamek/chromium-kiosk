@@ -4,6 +4,10 @@ import subprocess
 import urllib.parse
 from typing import Union
 
+def check_display_env():
+    if not os.getenv('DISPLAY'):
+        # Display is not set, lets do that first
+        os.environ['DISPLAY'] = detect_display()
 
 def create_user(username: str, home: str) -> int:
     return subprocess.call([
@@ -47,26 +51,49 @@ def detect_display():
 
 
 def detect_touchscreen_device_name() -> Union[str, None]:
-    if not os.getenv('DISPLAY'):
-        # Display is not set, lets do that first
-        os.environ['DISPLAY'] = detect_display()
+    check_display_env()
     output = subprocess.check_output(['xinput', '-list', '--name-only']).splitlines()
 
-    match_list = ['touchscreen', 'touchcontroller']
+    match_list = [b'touchscreen', b'touchcontroller']
     touchscreen_name = None
     for name in output:
         for match in match_list:
-            if match in name.decode('UTF-8').lower():
+            if match in name.lower():
                 touchscreen_name = name
                 break
 
-    return touchscreen_name
+    return touchscreen_name.decode('UTF-8')
 
 
-def rotate_screen(rotation: str) -> bool:
-    if not os.getenv('DISPLAY'):
-        # Display is not set, lets do that first
-        os.environ['DISPLAY'] = detect_display()
+def detect_primary_screen() -> str:
+    check_display_env()
+    lines = subprocess.check_output(['xrandr', '--current']).splitlines()
+    for line in lines:
+        if b'primary' in line:
+            return line.split()[0].decode('UTF-8')
+
+
+def get_screen_rotation(screen: str) -> str:
+    check_display_env()
+    lines = subprocess.check_output(['xrandr', '--current', '--verbose']).splitlines()
+    for line in lines:
+        if b'primary' in line:
+            result = re.search(rb'(normal|left|inverted|right)', line)
+            if not result:
+                return 'normal'
+            return result.group(1).decode('UTF-8')
+
+def rotate_screen(rotation: str, screen: str=None, touch_device: str=None) -> bool:
+    check_display_env()
+    if not screen:
+        screen = detect_primary_screen()
+
+    current_rotation = get_screen_rotation(screen)
+    if current_rotation == rotation:
+        return True
+
+    if not touch_device:
+        touch_device = detect_touchscreen_device_name()
 
     allowed_rotations = ['left', 'right', 'normal', 'inverted']
     if rotation not in allowed_rotations:
@@ -81,20 +108,22 @@ def rotate_screen(rotation: str) -> bool:
 
     xrandr_ok = subprocess.call([
         'xrandr',
-        '-o',
+        '--output',
+        screen,
+        '--rotate',
         rotation
     ]) == 0
 
-    device_name = detect_touchscreen_device_name()
-    if device_name:
-        xinput_ok = subprocess.call([
+    if touch_device:
+        command = [
             'xinput',
             'set-prop',
-            device_name,
-            '--type=float',
+            '"{}"'.format(touch_device),
             '"Coordinate Transformation Matrix"',
             rotation_to_xinput_coordinate.get(rotation)
-        ]) == 0
+        ]
+
+        xinput_ok = subprocess.call(' '.join(command), shell=True) == 0
     else:
         xinput_ok = True
 
