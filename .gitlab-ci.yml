@@ -80,13 +80,12 @@ package:archlinux:
     - cd archlinux
     - sudo -H -u package makepkg -f
     - cd -
-    - sleep 600
   tags:
     - archlinux
 
   artifacts:
     paths:
-      - archlinux/chromium-kiosk*.pkg.tar.xz
+      - archlinux/chromium-kiosk*.pkg.tar.zst
     expire_in: 1d
 
   dependencies:
@@ -130,9 +129,9 @@ repoupdate:
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
-    - ssh www-data@repository 'rm -rf /var/www/repository.salamek.cz/www/arch/pub/any/chromium-kiosk*.pkg.tar.xz'
+    - ssh www-data@repository 'rm -rf /var/www/repository.salamek.cz/www/arch/pub/any/chromium-kiosk*.pkg.tar.zst'
     - ssh www-data@repository 'rm -rf /var/www/repository.salamek.cz/cache/deb/pub/chromium-kiosk*.deb'
-    - scp archlinux/chromium-kiosk*.pkg.tar.xz www-data@repository:/var/www/repository.salamek.cz/www/arch/pub/any
+    - scp archlinux/chromium-kiosk*.pkg.tar.zst www-data@repository:/var/www/repository.salamek.cz/www/arch/pub/any
     - scp deb_dist/*.deb www-data@repository:/var/www/repository.salamek.cz/cache/deb/pub
     - ssh www-data@repository '/var/www/repository.salamek.cz/deb-pub-update.sh'
     - ssh www-data@repository '/var/www/repository.salamek.cz/arch-pub-update.sh'
