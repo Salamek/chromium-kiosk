@@ -80,6 +80,7 @@ package:archlinux:
     - cd archlinux
     - sudo -H -u package makepkg -f
     - cd -
+    - sleep 600
   tags:
     - archlinux
 
