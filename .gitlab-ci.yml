@@ -79,6 +79,7 @@ package:archlinux:
     - useradd -m -G users -s /bin/bash package
     - cd archlinux
     - sudo -H -u package makepkg -f
+    - cd -
   tags:
     - archlinux
 
