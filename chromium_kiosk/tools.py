@@ -54,15 +54,15 @@ def detect_touchscreen_device_name() -> Union[str, None]:
     check_display_env()
     output = subprocess.check_output(['xinput', '-list', '--name-only']).splitlines()
 
-    match_list = [b'touchscreen', b'touchcontroller']
+    match_list = [b'touchscreen', b'touchcontroller', b'multi-touch', b'multitouch']
     touchscreen_name = None
     for name in output:
         for match in match_list:
             if match in name.lower():
-                touchscreen_name = name
+                touchscreen_name = name.decode('UTF-8')
                 break
 
-    return touchscreen_name.decode('UTF-8')
+    return touchscreen_name
 
 
 def detect_primary_screen() -> str:
@@ -82,6 +82,7 @@ def get_screen_rotation(screen: str) -> str:
             if not result:
                 return 'normal'
             return result.group(1).decode('UTF-8')
+
 
 def rotate_screen(rotation: str, screen: str=None, touch_device: str=None) -> bool:
     check_display_env()
