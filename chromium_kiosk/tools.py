@@ -55,14 +55,12 @@ def detect_touchscreen_device_name() -> Union[str, None]:
     output = subprocess.check_output(['xinput', '-list', '--name-only']).splitlines()
 
     match_list = [b'touchscreen', b'touchcontroller', b'multi-touch', b'multitouch']
-    touchscreen_name = None
     for name in output:
         for match in match_list:
             if match in name.lower():
-                touchscreen_name = name.decode('UTF-8')
-                break
+                return name.decode('UTF-8')
 
-    return touchscreen_name
+    return None
 
 
 def detect_primary_screen() -> str:
