@@ -4,10 +4,12 @@ import subprocess
 import urllib.parse
 from typing import Union
 
+
 def check_display_env():
     if not os.getenv('DISPLAY'):
         # Display is not set, lets do that first
         os.environ['DISPLAY'] = detect_display()
+
 
 def create_user(username: str, home: str) -> int:
     return subprocess.call([
