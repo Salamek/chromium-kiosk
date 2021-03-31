@@ -43,7 +43,7 @@ test:debian:
 test:archlinux:
   stage: test
   script:
-    - pacman -Syu python-pip gcc --noconfirm
+    - pacman -Sy python-pip gcc --noconfirm
     - pip install -r requirements.txt
     - python setup.py test
   tags:
@@ -75,7 +75,7 @@ package:debian:
 package:archlinux:
   stage: package
   script:
-    - pacman -Syu git python-setuptools openbox fakeroot xf86-video-fbdev xorg-xrandr binutils sudo chromium xorg-server xorg-xset xorg-xinit xorg-xinput alsa-utils ttf-dejavu unclutter python-yaml python-docopt python-websockets --noconfirm
+    - pacman -Sy git python-setuptools openbox fakeroot xf86-video-fbdev xorg-xrandr binutils sudo chromium xorg-server xorg-xset xorg-xinit xorg-xinput alsa-utils ttf-dejavu unclutter python-yaml python-docopt python-websockets --noconfirm
     - useradd -m -G users -s /bin/bash package
     - cd archlinux
     - sudo -H -u package makepkg -f
