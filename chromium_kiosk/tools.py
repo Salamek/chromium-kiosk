@@ -66,22 +66,21 @@ def detect_touchscreen_device_name() -> Union[str, None]:
 
 
 def detect_primary_screen() -> str:
-    check_display_env()
-    lines = subprocess.check_output(['xrandr', '--current']).splitlines()
+    lines = subprocess.check_output(['xrandr', '--listactivemonitors']).splitlines()
     for line in lines:
-        if b'primary' in line:
-            return line.split()[0].decode('UTF-8')
+        found = re.match(rb'^\s+(\d+):\s+(\S+)\s\S+\s+(\S+)$', line)
+        if found:
+            return found.group(3).decode('UTF-8')
 
 
 def get_screen_rotation(screen: str) -> str:
     check_display_env()
     lines = subprocess.check_output(['xrandr', '--current', '--verbose']).splitlines()
     for line in lines:
-        if b'primary' in line:
-            result = re.search(rb'(normal|left|inverted|right)', line)
-            if not result:
-                return 'normal'
-            return result.group(1).decode('UTF-8')
+        result = re.match(r'^{}.+?(normal|left|inverted|right).+$'.format(screen), line.decode('UTF-8'))
+        if result:
+            return result.group(1)
+    return 'normal'
 
 
 def rotate_screen(rotation: str, screen: str=None, touch_device: str=None) -> bool:
