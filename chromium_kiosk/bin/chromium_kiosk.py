@@ -55,7 +55,7 @@ def resolve_rotation_config(options):
         rotate_screen(RotationEnum(options.SCREEN_ROTATION))
         rotate_touchscreen(RotationEnum(options.TOUCHSCREEN_ROTATION))
     elif not options.TOUCHSCREEN_ROTATION and options.SCREEN_ROTATION:
-        rotate_screen(RotationEnum(options.DISPLAY_ROTATION))
+        rotate_screen(RotationEnum(options.SCREEN_ROTATION))
         rotate_touchscreen(RotationEnum.NORMAL)
     elif options.TOUCHSCREEN_ROTATION and not options.SCREEN_ROTATION:
         rotate_screen(RotationEnum.NORMAL)
