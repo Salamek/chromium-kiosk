@@ -2,7 +2,15 @@ import os
 import re
 import subprocess
 import urllib.parse
+from chromium_kiosk.enum.RotationEnum import RotationEnum
 from typing import Union
+
+rotation_to_xinput_coordinate = {
+    RotationEnum.LEFT: '0 -1 1 1 0 0 0 0 1',
+    RotationEnum.RIGHT: '0 1 0 -1 0 1 0 0 1',
+    RotationEnum.NORMAL: '1 0 0 0 1 0 0 0 1',
+    RotationEnum.INVERTED: '-1 0 1 0 -1 1 0 0 1'
+}
 
 
 def check_display_env():
@@ -73,17 +81,56 @@ def detect_primary_screen() -> str:
             return found.group(3).decode('UTF-8')
 
 
-def get_screen_rotation(screen: str) -> str:
+def get_screen_rotation(screen: str) -> RotationEnum:
     check_display_env()
     lines = subprocess.check_output(['xrandr', '--current', '--verbose']).splitlines()
     for line in lines:
         result = re.match(r'^{}.+?(normal|left|inverted|right).+$'.format(screen), line.decode('UTF-8'))
         if result:
-            return result.group(1)
-    return 'normal'
+            return RotationEnum(result.group(1))
+    return RotationEnum.NORMAL
 
 
-def rotate_screen(rotation: str, screen: str=None, touch_device: str=None) -> bool:
+def get_touchscreen_rotation(touch_device) -> RotationEnum:
+    check_display_env()
+    lines = subprocess.check_output(['xinput', 'list-props', touch_device]).splitlines()
+    for line in lines:
+        result = re.match(r'^\s+Coordinate\s+Transformation\s+Matrix\s+\(\d+\):\s+(.+)$', line.decode('UTF-8'))
+        if result:
+            int_list = ' '.join([str(int(float(item.strip()))) for item in result.group(1).split(',')])
+            for rotation, value in rotation_to_xinput_coordinate.items():
+                if value == int_list:
+                    return rotation
+
+    return RotationEnum.NORMAL
+
+
+def rotate_display(rotation: RotationEnum, screen: str=None, touch_device: str=None) -> bool:
+    return rotate_screen(rotation, screen) and rotate_touchscreen(rotation, touch_device)
+
+
+def rotate_touchscreen(rotation: RotationEnum, touch_device: str=None) -> bool:
+    check_display_env()
+
+    if not touch_device:
+        touch_device = detect_touchscreen_device_name()
+
+    current_rotation = get_touchscreen_rotation(touch_device)
+    if current_rotation == rotation:
+        return True
+
+    command = [
+        'xinput',
+        'set-prop',
+        '"{}"'.format(touch_device),
+        '"Coordinate Transformation Matrix"',
+        rotation_to_xinput_coordinate.get(rotation)
+    ]
+
+    return subprocess.call(' '.join(command), shell=True) == 0
+
+
+def rotate_screen(rotation: RotationEnum, screen: str=None) -> bool:
     check_display_env()
     if not screen:
         screen = detect_primary_screen()
@@ -92,39 +139,14 @@ def rotate_screen(rotation: str, screen: str=None, touch_device: str=None) -> bo
     if current_rotation == rotation:
         return True
 
-    if not touch_device:
-        touch_device = detect_touchscreen_device_name()
-
-    allowed_rotations = ['left', 'right', 'normal', 'inverted']
-    if rotation not in allowed_rotations:
+    if rotation not in list(RotationEnum):
         raise Exception('Rotation {} is not allowed'.format(rotation))
 
-    rotation_to_xinput_coordinate = {
-        'left': '0 -1 1 1 0 0 0 0 1',
-        'right': '0 1 0 -1 0 1 0 0 1',
-        'normal': '1 0 0 0 1 0 0 0 1',
-        'inverted': '-1 0 1 0 -1 1 0 0 1'
-    }
-
-    xrandr_ok = subprocess.call([
+    return subprocess.call([
         'xrandr',
         '--output',
         screen,
         '--rotate',
-        rotation
+        rotation.value
     ]) == 0
 
-    if touch_device:
-        command = [
-            'xinput',
-            'set-prop',
-            '"{}"'.format(touch_device),
-            '"Coordinate Transformation Matrix"',
-            rotation_to_xinput_coordinate.get(rotation)
-        ]
-
-        xinput_ok = subprocess.call(' '.join(command), shell=True) == 0
-    else:
-        xinput_ok = True
-
-    return xrandr_ok and xinput_ok

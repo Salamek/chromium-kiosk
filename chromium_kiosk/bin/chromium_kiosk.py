@@ -37,7 +37,8 @@ import websockets
 from functools import wraps
 from importlib import import_module
 from chromium_kiosk.Chromium import Chromium
-from chromium_kiosk.tools import create_user, inject_parameters_to_url, set_user_groups, rotate_screen
+from chromium_kiosk.enum.RotationEnum import RotationEnum
+from chromium_kiosk.tools import create_user, inject_parameters_to_url, set_user_groups, rotate_screen, rotate_display, rotate_touchscreen
 import chromium_kiosk as app_root
 
 import yaml
@@ -45,6 +46,25 @@ from docopt import docopt
 
 OPTIONS = docopt(__doc__)
 APP_ROOT_FOLDER = os.path.abspath(os.path.dirname(app_root.__file__))
+
+
+def resolve_rotation_config(options):
+
+    # Rotation options are set separately, use them
+    if options.TOUCHSCREEN_ROTATION and options.SCREEN_ROTATION:
+        rotate_screen(RotationEnum(options.SCREEN_ROTATION))
+        rotate_touchscreen(RotationEnum(options.TOUCHSCREEN_ROTATION))
+    elif not options.TOUCHSCREEN_ROTATION and options.SCREEN_ROTATION:
+        rotate_screen(RotationEnum(options.DISPLAY_ROTATION))
+        rotate_touchscreen(RotationEnum.NORMAL)
+    elif options.TOUCHSCREEN_ROTATION and not options.SCREEN_ROTATION:
+        rotate_screen(RotationEnum.NORMAL)
+        rotate_touchscreen(RotationEnum(options.TOUCHSCREEN_ROTATION))
+    elif options.DISPLAY_ROTATION:
+        rotate_display(RotationEnum(options.DISPLAY_ROTATION))
+    else:
+        # just fallback to normal
+        rotate_display(RotationEnum.NORMAL)
 
 
 class CustomFormatter(logging.Formatter):
@@ -203,7 +223,7 @@ def run():
     data_dir = os.getenv("DATADIR", "/usr/share")
 
     # Rotate screen by config value
-    rotate_screen(options.SCREEN_ROTATION)
+    resolve_rotation_config(options)
 
     extension_path = os.path.join(data_dir, 'chromium-kiosk/chromium-kiosk-extension')
     chromium = Chromium(load_extension_path=extension_path if os.path.isdir(extension_path) else None)
@@ -234,6 +254,8 @@ def watch_config():
                 client_options = {
                     'homePage': options.HOME_PAGE,
                     'idleTime': options.IDLE_TIME,
+                    'displayRotation': options.DISPLAY_ROTATION,
+                    'touchscreenRotation': options.TOUCHSCREEN_ROTATION,
                     'screenRotation': options.SCREEN_ROTATION,
                     'whiteList': {
                         'enabled': options.WHITE_LIST.get('ENABLED', False),
@@ -265,7 +287,7 @@ def watch_config():
                 current_sum = hashlib.md5(out_json.encode()).hexdigest()
                 if current_sum != last_sum:
                     last_sum = current_sum
-                    rotate_screen(options.SCREEN_ROTATION)
+                    resolve_rotation_config(options)
                     await websocket.send(out_json)
 
             except websockets.ConnectionClosed as e:

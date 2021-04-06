@@ -90,5 +90,7 @@ SCREEN_SAVER:
   IDLE_TIME: 0  # how long must be a user idle for screensaver to start
   TEXT: 'Touch me'
   
-SCREEN_ROTATION: normal # Rotates screen when X server starts options are (normal|left|right|inverted)
+DISPLAY_ROTATION: 'normal' # Rotates display when X server starts options are (normal|left|right|inverted)
+#SCREEN_ROTATION: 'normal'  Rotates screen individually (do not rotate touchscreen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
+#TOUCHSCREEN_ROTATION: 'normal'  Rotates touchscreen individually (do not rotate screen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
 ```

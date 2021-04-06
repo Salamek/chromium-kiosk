@@ -25,4 +25,6 @@ SCREEN_SAVER:
 VIRTUAL_KEYBOARD:
   ENABLED: false
 
-SCREEN_ROTATION: 'normal' # normal|left|right|inverted
+DISPLAY_ROTATION: 'normal' # normal|left|right|inverted
+#SCREEN_ROTATION: 'normal'  #Rotates screen individually (do not rotate touchscreen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
+#TOUCHSCREEN_ROTATION: 'normal'  #Rotates touchscreen individually (do not rotate screen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work

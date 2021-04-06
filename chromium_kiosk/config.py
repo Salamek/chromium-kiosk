@@ -37,6 +37,8 @@ class Config(HardCoded):
         'ENABLED': False
     }
 
+    DISPLAY_ROTATION = 'normal'  # normal|left|right|inverted
+    TOUCHSCREEN_ROTATION = 'normal'  # normal|left|right|inverted
     SCREEN_ROTATION = 'normal'  # normal|left|right|inverted
 
 
@@ -50,3 +52,6 @@ class Production(Config):
     KIOSK = None  # To be overwritten by a YAML file.
     URLS = None  # To be overwritten by a YAML file.
     TOUCHSCREEN = None  # To be overwritten by a YAML file.
+    TOUCHSCREEN_ROTATION = None  # normal|left|right|inverted
+    SCREEN_ROTATION = None  # normal|left|right|inverted
+    DISPLAY_ROTATION = None # normal|left|right|inverted
