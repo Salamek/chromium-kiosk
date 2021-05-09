@@ -64,7 +64,7 @@ def detect_touchscreen_device_name() -> Union[str, None]:
     check_display_env()
     output = subprocess.check_output(['xinput', '-list', '--name-only']).splitlines()
 
-    match_list = [b'touchscreen', b'touchcontroller', b'multi-touch', b'multitouch']
+    match_list = [b'touchscreen', b'touchcontroller', b'multi-touch', b'multitouch', b'raspberrypi-ts']
     for name in output:
         for match in match_list:
             if match in name.lower():
@@ -91,7 +91,7 @@ def get_screen_rotation(screen: str) -> RotationEnum:
     return RotationEnum.NORMAL
 
 
-def get_touchscreen_rotation(touch_device) -> RotationEnum:
+def get_touchscreen_rotation(touch_device: str) -> RotationEnum:
     check_display_env()
     lines = subprocess.check_output(['xinput', 'list-props', touch_device]).splitlines()
     for line in lines:
@@ -115,6 +115,9 @@ def rotate_touchscreen(rotation: RotationEnum, touch_device: str=None) -> bool:
     if not touch_device:
         touch_device = detect_touchscreen_device_name()
 
+    if not touch_device:
+        return False
+
     current_rotation = get_touchscreen_rotation(touch_device)
     if current_rotation == rotation:
         return True
@@ -134,6 +137,9 @@ def rotate_screen(rotation: RotationEnum, screen: str=None) -> bool:
     check_display_env()
     if not screen:
         screen = detect_primary_screen()
+
+    if not screen:
+        return False
 
     current_rotation = get_screen_rotation(screen)
     if current_rotation == rotation:
