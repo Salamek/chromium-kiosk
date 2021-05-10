@@ -26,6 +26,7 @@ depends=(
     'unclutter'
     'python-yaml'
     'python-docopt'
+    'python-websockets'
 )
 
 optdepends=(
