@@ -26,21 +26,21 @@
         display: inline-block;
 
         &.bounce-me {
-          -webkit-animation: bounce 4s infinite ease-in-out;
-          animation: bounce 4s infinite ease-in-out;
+          -webkit-animation: chromium_kiosk_screensaver_bounce 4s infinite ease-in-out;
+          animation: chromium_kiosk_screensaver_bounce 4s infinite ease-in-out;
         }
       }
     }
   }
 }
-@-webkit-keyframes bounce {
+@-webkit-keyframes chromium_kiosk_screensaver_bounce {
   60% {
     -webkit-transform: translate(0px, -200px) scale(1.2);
     opacity: 0.8;
     text-shadow: 0 150px 20px rgba(0, 0, 0, 0.8);
   }
 }
-@keyframes bounce {
+@keyframes chromium_kiosk_screensaver_bounce {
   60% {
     -webkit-transform: translate(0px, -200px) scale(1.2);
     opacity: 0.8;
