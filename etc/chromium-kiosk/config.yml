@@ -18,7 +18,7 @@ NAV_BAR:
   WIDTH: 100 # Width of a bar in %
 
 SCREEN_SAVER:
-  ENABLED: false  # is nav bar enabled
+  ENABLED: false  # is screen saver enabled
   IDLE_TIME: 0
   TEXT: 'Touch me'
 
