@@ -57,6 +57,10 @@ package:debian:
   script:
     - apt-get update -qy
     - apt-get install -y curl gnupg apt-transport-https
+    - curl -sL https://repository.salamek.cz/deb/salamek.gpg.key | apt-key add -
+    - echo "deb     https://repository.salamek.cz/deb/pub all main" | tee /etc/apt/sources.list.d/salamek.cz.list
+    - apt-get update -qy
+    - apt-get install -y curl gnupg apt-transport-https
     - apt-get install -y python3-pip python3-stdeb python3-docopt python3-yaml python-all python3-websockets python3-pygame python3-xscreensaver-config
     - rm -rf "./deb_dist"
     - python3 setup.py --command-packages=stdeb.command bdist_deb
@@ -75,6 +79,9 @@ package:debian:
 package:archlinux:
   stage: package
   script:
+    - echo "[salamek]" >> /etc/pacman.conf
+    - echo "Server = https://repository.salamek.cz/arch/pub/any" >> /etc/pacman.conf
+    - echo "SigLevel = Optional" >> /etc/pacman.conf
     - pacman -Sy git python-setuptools openbox fakeroot xf86-video-fbdev xorg-xrandr binutils sudo chromium xorg-server xorg-xset xorg-xinit xorg-xinput alsa-utils ttf-dejavu unclutter python-yaml python-docopt python-websockets xscreensaver python-xscreensaver-config python-pygame --noconfirm
     - useradd -m -G users -s /bin/bash package
     - cd archlinux
