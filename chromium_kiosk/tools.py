@@ -159,7 +159,7 @@ def rotate_screen(rotation: RotationEnum, screen: str=None) -> bool:
     ]) == 0
 
 
-def generate_xscreensaver_config(config_path: str, enabled: bool, idle_time: int, text: str):
+def generate_xscreensaver_config(config_path: str, enabled: bool, idle_time: int, text: str, reload_service: bool = True) -> bool:
     xscreensaver_config_parser = ConfigParser(config_path)
     xscreensaver_config_parser.update({
         'timeout': str(datetime.timedelta(seconds=idle_time)),
@@ -181,8 +181,10 @@ def generate_xscreensaver_config(config_path: str, enabled: bool, idle_time: int
     })
     xscreensaver_config_parser.save()
 
-    # Reload xscreensaver config
-    return subprocess.call([
-        'xscreensaver-command',
-        '--restart',
-    ]) == 0
+    if reload_service:
+        # Reload xscreensaver config
+        return subprocess.call([
+            'xscreensaver-command',
+            '--restart',
+        ]) == 0
+    return True

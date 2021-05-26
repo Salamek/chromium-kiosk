@@ -396,7 +396,8 @@ def post_install():
         os.path.join(user_home, '.xscreensaver'),
         config.SCREEN_SAVER.get('ENABLED', False),
         config.SCREEN_SAVER.get('IDLE_TIME', 3600),
-        config.SCREEN_SAVER.get('TEXT', 'Touch me')
+        config.SCREEN_SAVER.get('TEXT', 'Touch me'),
+        reload_service=False
     )
 
 
