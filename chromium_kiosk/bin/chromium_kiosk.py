@@ -9,18 +9,18 @@ Website: https://github.com/Salamek/chromium-kiosk
 Command details:
     run                 Run the application.
     post_install        Post install hook.
+    screensaver         Run screensaver.
 Usage:
     chromium-kiosk run [-l DIR] [--config_prod]
     chromium-kiosk post_install [--config_prod]
     chromium-kiosk watch_config [--config_prod]
+    chromium-kiosk screensaver [--text=TEXT] [--config_prod]
     chromium-kiosk (-h | --help)
 
 Options:
     --config_prod               Load the production configuration instead of dev
     -l DIR --log_dir=DIR        Directory to log into
 """
-
-from __future__ import print_function
 
 import hashlib
 import logging
@@ -37,8 +37,9 @@ import websockets
 from functools import wraps
 from importlib import import_module
 from chromium_kiosk.Chromium import Chromium
+from chromium_kiosk.Screensaver import Screensaver
 from chromium_kiosk.enum.RotationEnum import RotationEnum
-from chromium_kiosk.tools import create_user, inject_parameters_to_url, set_user_groups, rotate_screen, rotate_display, rotate_touchscreen
+from chromium_kiosk.tools import create_user, inject_parameters_to_url, set_user_groups, rotate_screen, rotate_display, rotate_touchscreen, generate_xscreensaver_config
 import chromium_kiosk as app_root
 
 import yaml
@@ -161,7 +162,7 @@ def get_config(config_class_string: str, yaml_files=None):
     return config_obj
 
 
-def parse_options():
+def parse_config():
     """Parses command line options for Flask.
 
     Returns:
@@ -218,28 +219,28 @@ def command(func):
 
 @command
 def run():
-    options = parse_options()
-    setup_logging('kiosk', logging.DEBUG if options.DEBUG else logging.WARNING)
+    config = parse_config()
+    setup_logging('kiosk', logging.DEBUG if config.DEBUG else logging.WARNING)
     data_dir = os.getenv("DATADIR", "/usr/share")
 
     # Rotate screen by config value
-    resolve_rotation_config(options)
+    resolve_rotation_config(config)
 
     extension_path = os.path.join(data_dir, 'chromium-kiosk/chromium-kiosk-extension')
     chromium = Chromium(load_extension_path=extension_path if os.path.isdir(extension_path) else None)
     additional_parameters = {}
-    if options.KIOSK:
+    if config.KIOSK:
         chromium.set_kiosk(True)
         additional_parameters['kiosk'] = 1
 
-    if options.TOUCHSCREEN:
+    if config.TOUCHSCREEN:
         chromium.set_touchscreen(True)
         additional_parameters['touchscreen'] = 1
 
-    if options.CLEAN_START:
+    if config.CLEAN_START:
         chromium.clean_start()
 
-    chromium.set_urls([inject_parameters_to_url(options.HOME_PAGE, additional_parameters)])
+    chromium.set_urls([inject_parameters_to_url(config.HOME_PAGE, additional_parameters)])
     chromium.run()
 
 
@@ -249,33 +250,34 @@ def watch_config():
         last_sum = None
         while True:
             try:
-                options = parse_options()
+                config = parse_config()
+                user_home = os.path.join('/', 'home', config.USER)
 
                 client_options = {
-                    'homePage': options.HOME_PAGE,
-                    'idleTime': options.IDLE_TIME,
-                    'displayRotation': options.DISPLAY_ROTATION,
-                    'touchscreenRotation': options.TOUCHSCREEN_ROTATION,
-                    'screenRotation': options.SCREEN_ROTATION,
+                    'homePage': config.HOME_PAGE,
+                    'idleTime': config.IDLE_TIME,
+                    'displayRotation': config.DISPLAY_ROTATION,
+                    'touchscreenRotation': config.TOUCHSCREEN_ROTATION,
+                    'screenRotation': config.SCREEN_ROTATION,
                     'whiteList': {
-                        'enabled': options.WHITE_LIST.get('ENABLED', False),
-                        'urls': options.WHITE_LIST.get('URLS', []),
-                        'iframeEnabled': options.WHITE_LIST.get('IFRAME_ENABLED', False)
+                        'enabled': config.WHITE_LIST.get('ENABLED', False),
+                        'urls': config.WHITE_LIST.get('URLS', []),
+                        'iframeEnabled': config.WHITE_LIST.get('IFRAME_ENABLED', False)
                     },
                     'navBar': {
-                        'enabled': options.NAV_BAR.get('ENABLED', False),
-                        'enabledButtons': options.NAV_BAR.get('ENABLED_BUTTONS', []),
-                        'horizontalPosition': options.NAV_BAR.get('HORIZONTAL_POSITION', 'center'),
-                        'verticalPosition': options.NAV_BAR.get('VERTICAL_POSITION', 'bottom'),
-                        'width': options.NAV_BAR.get('WIDTH', 100)
+                        'enabled': config.NAV_BAR.get('ENABLED', False),
+                        'enabledButtons': config.NAV_BAR.get('ENABLED_BUTTONS', []),
+                        'horizontalPosition': config.NAV_BAR.get('HORIZONTAL_POSITION', 'center'),
+                        'verticalPosition': config.NAV_BAR.get('VERTICAL_POSITION', 'bottom'),
+                        'width': config.NAV_BAR.get('WIDTH', 100)
                     },
                     'virtualKeyboard': {
-                        'enabled': options.VIRTUAL_KEYBOARD.get('ENABLED', False)
+                        'enabled': config.VIRTUAL_KEYBOARD.get('ENABLED', False)
                     },
                     'screenSaver':  {
-                        'enabled': options.SCREEN_SAVER.get('ENABLED', False),
-                        'idleTime': options.SCREEN_SAVER.get('IDLE_TIME', 3600),
-                        'text': options.SCREEN_SAVER.get('TEXT', 'Touch me')
+                        'enabled': False,
+                        'idleTime': config.SCREEN_SAVER.get('IDLE_TIME', 3600),
+                        'text': config.SCREEN_SAVER.get('TEXT', 'Touch me')
                     }
                 }
 
@@ -287,7 +289,13 @@ def watch_config():
                 current_sum = hashlib.md5(out_json.encode()).hexdigest()
                 if current_sum != last_sum:
                     last_sum = current_sum
-                    resolve_rotation_config(options)
+                    resolve_rotation_config(config)
+                    generate_xscreensaver_config(
+                        os.path.join(user_home, '.xscreensaver'),
+                        config.SCREEN_SAVER.get('ENABLED', False),
+                        config.SCREEN_SAVER.get('IDLE_TIME', 3600),
+                        config.SCREEN_SAVER.get('TEXT', 'Touch me')
+                    )
                     await websocket.send(out_json)
 
             except websockets.ConnectionClosed as e:
@@ -305,17 +313,17 @@ def watch_config():
 def post_install():
     if not os.geteuid() == 0:
         sys.exit('Script must be run as root')
-    options = parse_options()
+    config = parse_config()
 
-    user_home = os.path.join('/', 'home', options.USER)
+    user_home = os.path.join('/', 'home', config.USER)
 
     try:
-        uid = pwd.getpwnam(options.USER).pw_uid
+        uid = pwd.getpwnam(config.USER).pw_uid
     except KeyError:
-        create_user(options.USER, user_home)
-        set_user_groups(options.USER, ['video'])
-        uid = pwd.getpwnam(options.USER).pw_uid
-    gid = grp.getgrnam(options.USER).gr_gid
+        create_user(config.USER, user_home)
+        set_user_groups(config.USER, ['video'])
+        uid = pwd.getpwnam(config.USER).pw_uid
+    gid = grp.getgrnam(config.USER).gr_gid
 
     # Create ~/.xinitrc
     xinitrc_content = [
@@ -324,6 +332,7 @@ def post_install():
         'xset -dpms      # disable DPMS (Energy Star) features.',
         'xset s off      # disable screen saver',
         'xset s noblank  # don\'t blank the video device',
+        'xscreensaver -no-splash & # xscreensaver daemon',
         'unclutter &     # hides your cursor after inactivity',
         'openbox &',
         'if [ -e ~/chromium-kiosk-prehook.sh ] # Check if prehook exists and run it',
@@ -370,7 +379,7 @@ def post_install():
     systemd_autologin = [
         '[Service]',
         'ExecStart=',
-        'ExecStart=-{} --skip-login --nonewline --noissue --autologin {} --noclear %I $TERM'.format(shutil.which('agetty'), options.USER),
+        'ExecStart=-{} --skip-login --nonewline --noissue --autologin {} --noclear %I $TERM'.format(shutil.which('agetty'), config.USER),
     ]
 
     getty_path = os.path.join('/', 'etc', 'systemd', 'system', 'getty@tty1.service.d', 'override.conf')
@@ -381,6 +390,20 @@ def post_install():
 
     with open(getty_path, 'w') as f:
         f.write('\n'.join(systemd_autologin))
+
+    # Generate .xscreensaverconfig
+    generate_xscreensaver_config(
+        os.path.join(user_home, '.xscreensaver'),
+        config.SCREEN_SAVER.get('ENABLED', False),
+        config.SCREEN_SAVER.get('IDLE_TIME', 3600),
+        config.SCREEN_SAVER.get('TEXT', 'Touch me')
+    )
+
+
+@command
+def screensaver():
+    s = Screensaver(OPTIONS['--text'], True)
+    s.run()
 
 
 def main() -> None:

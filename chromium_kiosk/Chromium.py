@@ -36,8 +36,6 @@ class Chromium(object):
             '--disable-infobars',
             '--disable-session-crashed-bubble',
             '--disable-popup-blocking',
-            '--disable-translate',
-            '--disable-features=TranslateUI',
             '--disable-breakpad',
             '--disable-cloud-import',
             '--disable-signin-promo',
@@ -49,6 +47,12 @@ class Chromium(object):
 
         if self.load_extension_path:
             self.arguments.append('--load-extension={}'.format(self.load_extension_path))
+
+        self._update_configuration({
+            'translate': {
+                'enabled': False  # Disable translate popup
+            }
+        })
 
     def _find_chromium(self) -> Union[str, None]:
         """
@@ -80,9 +84,9 @@ class Chromium(object):
         """
         self.urls = urls
 
-    def _modify_config(self, config_path, changes: dict) -> None:
+    def _modify_json_file(self, config_path, changes: dict) -> None:
         """
-        Modify chromium config
+        Modify json file
         :param config_path: 
         :param changes: 
         :return: 
@@ -93,11 +97,7 @@ class Chromium(object):
             with open(config_path, 'w') as fw:
                 json.dump(config, fw)
 
-    def clean_start(self) -> None:
-        """
-        Run chromium in clean state
-        :return: 
-        """
+    def _update_configuration(self, changes: dict) -> None:
         config_paths = [
             'Default/Preferences',
             'Local State'
@@ -105,14 +105,21 @@ class Chromium(object):
         for config_path in config_paths:
             config_path_abs = os.path.join(self.config_path, config_path)
             if os.path.isfile(config_path_abs):
-                self._modify_config(config_path_abs, {
-                    'exited_cleanly': True,
-                    'exit_type': 'Normal',
-                    'profile': {
-                        'exited_cleanly': True,
-                        'exit_type': 'Normal'
-                    }
-                })
+                self._modify_json_file(config_path_abs, changes)
+
+    def clean_start(self) -> None:
+        """
+        Run chromium in clean state
+        :return: 
+        """
+        self._update_configuration({
+            'exited_cleanly': True,
+            'exit_type': 'Normal',
+            'profile': {
+                'exited_cleanly': True,
+                'exit_type': 'Normal'
+            }
+        })
 
     def set_kiosk(self, enabled: bool=True) -> None:
         """

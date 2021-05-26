@@ -1,8 +1,10 @@
 import os
 import re
 import subprocess
+import datetime
 import urllib.parse
 from chromium_kiosk.enum.RotationEnum import RotationEnum
+from xscreensaver_config.ConfigParser import ConfigParser
 from typing import Union
 
 rotation_to_xinput_coordinate = {
@@ -156,3 +158,31 @@ def rotate_screen(rotation: RotationEnum, screen: str=None) -> bool:
         rotation.value
     ]) == 0
 
+
+def generate_xscreensaver_config(config_path: str, enabled: bool, idle_time: int, text: str):
+    xscreensaver_config_parser = ConfigParser(config_path)
+    xscreensaver_config_parser.update({
+        'timeout': str(datetime.timedelta(seconds=idle_time)),
+        'cycle': '0',
+        'lock': 'False',
+        'visualID': 'default',
+        'dpmsEnabled': 'False',
+        'splash': 'False',
+        'fade': 'True',
+        'mode': 'one' if enabled else 'off',
+        'selected': '0',
+        'programs': [
+            {
+                'enabled': True,
+                'renderer': 'GL',
+                'command': 'chromium-kiosk screensaver --text=\'{}\''.format(text)
+            }
+        ]
+    })
+    xscreensaver_config_parser.save()
+
+    # Reload xscreensaver config
+    return subprocess.call([
+        'xscreensaver-command',
+        '--restart',
+    ]) == 0
