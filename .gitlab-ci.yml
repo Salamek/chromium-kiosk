@@ -57,7 +57,7 @@ package:debian:
   script:
     - apt-get update -qy
     - apt-get install -y curl gnupg apt-transport-https
-    - apt-get install -y python3-pip python3-stdeb python3-docopt python3-yaml python-all python3-websockets
+    - apt-get install -y python3-pip python3-stdeb python3-docopt python3-yaml python-all python3-websockets python3-pygame python3-xscreensaver-config
     - rm -rf "./deb_dist"
     - python3 setup.py --command-packages=stdeb.command bdist_deb
   tags:
@@ -75,7 +75,7 @@ package:debian:
 package:archlinux:
   stage: package
   script:
-    - pacman -Sy git python-setuptools openbox fakeroot xf86-video-fbdev xorg-xrandr binutils sudo chromium xorg-server xorg-xset xorg-xinit xorg-xinput alsa-utils ttf-dejavu unclutter python-yaml python-docopt python-websockets --noconfirm
+    - pacman -Sy git python-setuptools openbox fakeroot xf86-video-fbdev xorg-xrandr binutils sudo chromium xorg-server xorg-xset xorg-xinit xorg-xinput alsa-utils ttf-dejavu unclutter python-yaml python-docopt python-websockets xscreensaver python-xscreensaver-config python-pygame --noconfirm
     - useradd -m -G users -s /bin/bash package
     - cd archlinux
     - sudo -H -u package makepkg -f
