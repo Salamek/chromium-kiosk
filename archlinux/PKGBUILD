@@ -29,7 +29,7 @@ depends=(
     'python-docopt'
     'python-websockets'
     'python-xscreensaver-config'
-    'python-pygame'
+    'xscreensaver-bouncing-text'
 )
 
 optdepends=(

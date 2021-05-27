@@ -175,7 +175,7 @@ def generate_xscreensaver_config(config_path: str, enabled: bool, idle_time: int
             {
                 'enabled': True,
                 'renderer': 'GL',
-                'command': 'chromium-kiosk screensaver --text=\'{}\''.format(text)
+                'command': 'xscreensaver-bouncing-text --text=\'{}\''.format(text)
             }
         ]
     })

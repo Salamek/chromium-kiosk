@@ -2,4 +2,3 @@ pyyaml
 docopt
 websockets
 xscreensaver-config
-pygame

@@ -9,12 +9,10 @@ Website: https://github.com/Salamek/chromium-kiosk
 Command details:
     run                 Run the application.
     post_install        Post install hook.
-    screensaver         Run screensaver.
 Usage:
     chromium-kiosk run [-l DIR] [--config_prod]
     chromium-kiosk post_install [--config_prod]
     chromium-kiosk watch_config [--config_prod]
-    chromium-kiosk screensaver [--text=TEXT] [--config_prod]
     chromium-kiosk (-h | --help)
 
 Options:
@@ -37,7 +35,6 @@ import websockets
 from functools import wraps
 from importlib import import_module
 from chromium_kiosk.Chromium import Chromium
-from chromium_kiosk.Screensaver import Screensaver
 from chromium_kiosk.enum.RotationEnum import RotationEnum
 from chromium_kiosk.tools import create_user, inject_parameters_to_url, set_user_groups, rotate_screen, rotate_display, rotate_touchscreen, generate_xscreensaver_config
 import chromium_kiosk as app_root
@@ -399,12 +396,6 @@ def post_install():
         config.SCREEN_SAVER.get('TEXT', 'Touch me'),
         reload_service=False
     )
-
-
-@command
-def screensaver():
-    s = Screensaver(OPTIONS['--text'], True)
-    s.run()
 
 
 def main() -> None:
