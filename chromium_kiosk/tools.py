@@ -160,7 +160,7 @@ def rotate_screen(rotation: RotationEnum, screen: str=None) -> bool:
 
 
 def generate_xscreensaver_config(config_path: str, enabled: bool, idle_time: int, text: str, reload_service: bool = True) -> bool:
-    xscreensaver_config_parser = ConfigParser(config_path)
+    xscreensaver_config_parser = ConfigParser(config_path, ignore_missing_file=True)
     xscreensaver_config_parser.update({
         'timeout': str(datetime.timedelta(seconds=idle_time)),
         'cycle': '0',
