@@ -176,7 +176,7 @@ def generate_xscreensaver_config(config_path: str, enabled: bool, idle_time: int
             {
                 'enabled': True,
                 'renderer': 'GL',
-                'command': 'xscreensaver-bouncing-text --text={}'.format(shlex.quote(text).replace('\n', '\\\\n'))
+                'command': 'xscreensaver-bouncing-text --text={}'.format(shlex.quote(text).replace('\\n', '\\\\n'))
             }
         ]
     })
