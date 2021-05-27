@@ -82,7 +82,7 @@ package:archlinux:
     - echo "[salamek]" >> /etc/pacman.conf
     - echo "Server = https://repository.salamek.cz/arch/pub/any" >> /etc/pacman.conf
     - echo "SigLevel = Optional" >> /etc/pacman.conf
-    - pacman -Sy git python-setuptools openbox fakeroot xf86-video-fbdev xorg-xrandr binutils sudo chromium xorg-server xorg-xset xorg-xinit xorg-xinput alsa-utils ttf-dejavu unclutter python-yaml python-docopt python-websockets xscreensaver python-xscreensaver-config python-pygame --noconfirm
+    - pacman -Sy git python-setuptools openbox fakeroot xf86-video-fbdev xorg-xrandr binutils sudo chromium xorg-server xorg-xset xorg-xinit xorg-xinput alsa-utils ttf-dejavu unclutter python-yaml python-docopt python-websockets xscreensaver python-xscreensaver-config xscreensaver-bouncing-text --noconfirm
     - useradd -m -G users -s /bin/bash package
     - cd archlinux
     - sudo -H -u package makepkg -f
