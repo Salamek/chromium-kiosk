@@ -17,9 +17,9 @@ class Background {
   idleTime: number = 0;
   homePage!: string;
   whiteList: string[] = [];
-  iframeEnabled!: string[]|boolean;
+  iframeEnabled!: string[] | boolean;
   whiteListEnabled!: boolean;
-  tabsInfo: {[s: number]: TabInfo; } = {};
+  tabsInfo: { [s: number]: TabInfo; } = {};
 
   constructor(config: AppConfig) {
     this.updateConfig(config);
@@ -123,7 +123,7 @@ class Background {
         // Check url if it is allowed iframe
         if (this.iframeEnabled === false || (Array.isArray(this.iframeEnabled) && !this.isUrlInWhiteList(details.url, this.iframeEnabled))) {
           // Iframes are disababled or url do not match, lets change url of iframe to blocked.html and notify about blocation
-          chrome.tabs.sendMessage(details.tabId, {type: 'BlockFrame', data: details});
+          chrome.tabs.sendMessage(details.tabId, { type: 'BlockFrame', data: details });
           // We will not notify on blocked iframes... this.notifyOfBlockedUrl(details.url);
           console.log('Blocking iframe url: ' + details.url);
         }
@@ -163,33 +163,45 @@ class Background {
 
   registerListeners() {
     // Register idle listener
+    /*
     chrome.idle.onStateChanged.addListener((newState) => {
-      if (newState === 'idle') {
-        if (this.homePage && this.idleTime > 0) {
-          chrome.tabs.create({
-            url: this.homePage,
-            active: true
-          }, (newtab) => {
-            chrome.tabs.query({}, (results) => {
-              for (let i = 0; i < results.length; i++) {
-                const tab = results[i];
-                if (tab.id !== undefined && tab.id !== newtab.id) {
-                  chrome.tabs.remove(tab.id);
+      if (newState === 'idle' && this.homePage && this.idleTime > 0) {
+        chrome.tabs.query({ active: true, currentWindow: true }, (results) => {
+          const activeTab = results[0];
+          if (activeTab.id && activeTab.url != this.homePage) {
+            // Active tab is not on home page, redirect to home page
+            chrome.tabs.update(activeTab.id, {url: this.homePage}, (result) => {
+              // Remove all other tabs
+              chrome.tabs.query({}, (results) => {
+                for (let i = 0; i < results.length; i++) {
+                  const tab = results[i];
+                  if (tab.id !== undefined && tab.id !== activeTab.id) {
+                    chrome.tabs.remove(tab.id);
+                  }
                 }
-              }
+              });
             });
-          });
-        }
-      } else if (newState === 'active') {
-        chrome.tabs.query({}, tabs => {
-          tabs.forEach(tab => {
-            if (tab.id !== undefined) {
-              chrome.tabs.sendMessage(tab.id, {type: 'ScreenSaver', data: {show: false}});
-            }
-          });
+          }
         });
       }
+    });*/
+
+    chrome.idle.onStateChanged.addListener( async (newState) => {
+      if (newState === 'idle' && this.homePage && this.idleTime > 0) {
+        const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (activeTab.id && activeTab.url != this.homePage) {
+          // Active tab is not on home page, redirect to home page
+          await chrome.tabs.update(activeTab.id, {url: this.homePage});
+          const allTabs = await chrome.tabs.query({});
+          allTabs.forEach((tab) => {
+            if (tab.id !== undefined && tab.id !== activeTab.id) {
+              chrome.tabs.remove(tab.id);
+            }
+          });
+        }
+      }
     });
+
 
     // Register whitelist listeners
     chrome.webNavigation.onCompleted.addListener((details: { tabId: number; frameId: number; url: any; }) => this.completedLoadingUrlInTab(details));
@@ -222,12 +234,12 @@ chrome.storage.local.get(['chromium_kiosk_settings'], (config) => {
       chrome.tabs.query({}, tabs => {
         tabs.forEach(tab => {
           if (tab.id !== undefined) {
-            chrome.tabs.sendMessage(tab.id, {type: 'AppConfig', data: data.data});
+            chrome.tabs.sendMessage(tab.id, { type: 'AppConfig', data: data.data });
           }
         });
       });
 
-      chrome.storage.local.set({'chromium_kiosk_settings': data.data});
+      chrome.storage.local.set({ 'chromium_kiosk_settings': data.data });
       chrome.notifications.create({
         type: 'basic',
         iconUrl: Tools.getPluginAsset('assets/icon.png'),
