@@ -11,7 +11,6 @@
       ],
       "js": [
         "runtime.js",
-        "polyfills-es5.js",
         "polyfills.js",
         "main.js"
       ],
