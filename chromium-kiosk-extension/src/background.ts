@@ -163,7 +163,7 @@ class Background {
 
   registerListeners() {
     // Register idle listener
-    /*
+    
     chrome.idle.onStateChanged.addListener((newState) => {
       if (newState === 'idle' && this.homePage && this.idleTime > 0) {
         chrome.tabs.query({ active: true, currentWindow: true }, (results) => {
@@ -184,8 +184,8 @@ class Background {
           }
         });
       }
-    });*/
-
+    });
+    /* This is not working with error on await chrome.tabs.query...
     chrome.idle.onStateChanged.addListener( async (newState) => {
       if (newState === 'idle' && this.homePage && this.idleTime > 0) {
         const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -200,7 +200,7 @@ class Background {
           });
         }
       }
-    });
+    });*/
 
 
     // Register whitelist listeners
