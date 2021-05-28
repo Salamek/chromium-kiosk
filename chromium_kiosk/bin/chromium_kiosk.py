@@ -372,6 +372,9 @@ def post_install():
     with open(hushlogin_path, 'w') as f: 
         pass
 
+    os.chown(hushlogin_path, uid, gid)
+    os.chmod(hushlogin_path, 0o644)
+
     # Update autologin service
     systemd_autologin = [
         '[Service]',
@@ -389,13 +392,17 @@ def post_install():
         f.write('\n'.join(systemd_autologin))
 
     # Generate .xscreensaverconfig
+    xscreensaver_config_path = os.path.join(user_home, '.xscreensaver')
     generate_xscreensaver_config(
-        os.path.join(user_home, '.xscreensaver'),
+        xscreensaver_config_path,
         config.SCREEN_SAVER.get('ENABLED', False),
         config.SCREEN_SAVER.get('IDLE_TIME', 3600),
         config.SCREEN_SAVER.get('TEXT', 'Touch me'),
         reload_service=False
     )
+
+    os.chown(xscreensaver_config_path, uid, gid)
+    os.chmod(xscreensaver_config_path, 0o644)
 
 
 def main() -> None:
