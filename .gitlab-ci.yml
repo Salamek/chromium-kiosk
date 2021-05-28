@@ -11,7 +11,7 @@ build:dist:
     - pacman -Syu npm --noconfirm
     - cd chromium-kiosk-extension
     - npm i
-    - ./node_modules/@angular/cli/bin/ng build --prod=true --aot
+    - ./node_modules/@angular/cli/bin/ng build --configuration production --aot
 
     # Hack to get material icons working inside chromium extension
     - sed -i 's/url(MaterialIcons-Regular.ttf)/url(chrome-extension:\/\/__MSG_@@extension_id__\/MaterialIcons-Regular.ttf)/g' dist/chromium-kiosk-extension/styles.css

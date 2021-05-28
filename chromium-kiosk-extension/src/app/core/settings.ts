@@ -2,11 +2,10 @@ import {
   AppConfig,
   AppNavbarConfig,
   AppVirtualKeyboardConfig,
-  AppWhiteListConfig,
-  AppScreenSaverConfig
+  AppWhiteListConfig
 } from '@app/core/models/app-config';
 
-export class DefaultSettings extends AppConfig {
+export class DefaultSettings implements AppConfig {
   homePage: string = 'https://salamek.github.io/chromium-kiosk/';
   idleTime: number = 0;
   whiteList: AppWhiteListConfig = <AppWhiteListConfig>{
@@ -24,9 +23,4 @@ export class DefaultSettings extends AppConfig {
   virtualKeyboard: AppVirtualKeyboardConfig = <AppVirtualKeyboardConfig>{
     enabled: false
   }; // virtual keyboard settings
-  screenSaver: AppScreenSaverConfig = <AppScreenSaverConfig>{
-    enabled: false,
-    idleTime: 3600,
-    text: 'Touch me'
-  };
 }

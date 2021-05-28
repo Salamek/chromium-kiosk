@@ -4,6 +4,13 @@ import { Tools } from '@app/core/tools';
 import { AppConfigModule } from '@app/app-config.module';
 import { Subscription, Observable } from 'rxjs';
 
+
+interface Button {
+  icon: string;
+  title: string;
+  callback: CallableFunction;
+}
+
 @Component({
   selector: 'chromium-kiosk-navbar',
   templateUrl: './navbar.component.html',
@@ -12,14 +19,14 @@ import { Subscription, Observable } from 'rxjs';
 export class NavbarComponent implements OnInit, OnDestroy {
   enabled: boolean = false;
   barClasses: string[] = ['center', 'bottom', 'center-full-width']; // ['left|center|right', 'bottom|top']
-  homePage: string;
+  homePage!: string;
   width: number = 100;
   marginLeft: number = 0;
   marginRight: number = 0;
-  buttons: {};
-  buttonsEnabled: {}[];
+  buttons!: {[s: string]: Button};
+  buttonsEnabled!: Button[];
 
-  _configSub: Subscription;
+  _configSub!: Subscription;
 
   constructor(
     private appConfigModule: AppConfigModule,
@@ -65,7 +72,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.marginLeft = this.marginRight = (100 - appConfig.navBar.width) / 2;
       }
 
-      const buttonsEnabled: {}[] = [];
+      const buttonsEnabled: Button[] = [];
       const toEnable = appConfig.navBar.enabledButtons || Object.keys(this.buttons);
       toEnable.forEach((buttonKey: string) => {
         if (buttonKey in this.buttons) {

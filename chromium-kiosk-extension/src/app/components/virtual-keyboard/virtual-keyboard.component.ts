@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
+
 
 import { keyboardCapsLockLayout, KeyboardLayout } from './layouts';
 import { VirtualKeyboardService } from './virtual-keyboard.service';
@@ -12,16 +13,16 @@ import { KeyPressInterface } from './key-press.interface';
 })
 
 export class VirtualKeyboardComponent implements OnInit, OnDestroy {
-  @ViewChild('keyboardInput', {static: true}) keyboardInput: ElementRef;
+  @ViewChild('keyboardInput', {static: true}) keyboardInput!: ElementRef;
 
-  public inputElement: ElementRef;
-  public layout: KeyboardLayout;
-  public placeholder: string;
-  public type: string;
-  public disabled: boolean;
-  public maxLength: number|string;
+  public inputElement!: ElementRef;
+  public layout!: KeyboardLayout;
+  public placeholder!: string;
+  public type!: string;
+  public disabled!: boolean;
+  public maxLength!: number|string;
 
-  private caretPosition: number;
+  private caretPosition!: number;
   private shift = false;
 
   /**

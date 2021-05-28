@@ -3,8 +3,10 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { ScreensaverComponent } from './components/screensaver/screensaver.component';
-import { MatButtonModule, MatDialogModule, MatIconModule, MatInputModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { VirtualKeyboardComponent } from './components/virtual-keyboard/virtual-keyboard.component';
@@ -18,7 +20,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   declarations: [
     AppComponent,
     NavbarComponent,
-    ScreensaverComponent,
     VirtualKeyboardComponent,
     VirtualKeyboardKeyComponent,
     VirtualKeyboardGlobalComponent,

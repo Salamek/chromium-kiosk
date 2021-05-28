@@ -1,4 +1,4 @@
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { VirtualKeyboardComponent } from './virtual-keyboard.component';
 import { AppConfig } from '@app/core/models/app-config';
 import { Component, ElementRef, OnDestroy, OnInit, HostListener } from '@angular/core';

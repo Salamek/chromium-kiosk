@@ -3,9 +3,10 @@ import { AppConfig } from '@app/core/models/app-config';
 import { DefaultSettings } from '@app/core/settings';
 
 class TabInfo {
-  completeUrl: string;
-  priorCompleteUrl: string;
+  completeUrl: string | undefined;
+  priorCompleteUrl: string | undefined;
 
+  // Why is this named construct?
   construct(completeUrl: string, priorCompleteUrl: string) {
     this.completeUrl = (typeof completeUrl !== 'string') ? '' : completeUrl;
     this.priorCompleteUrl = (typeof priorCompleteUrl !== 'string') ? '' : priorCompleteUrl;
@@ -14,14 +15,11 @@ class TabInfo {
 
 class Background {
   idleTime: number = 0;
-  homePage: string;
+  homePage!: string;
   whiteList: string[] = [];
-  iframeEnabled: string[]|boolean;
-  whiteListEnabled: boolean;
-  screenSaverIdleTime: number = 0;
-  screenSaverEnabled: boolean = false;
-  timeOutUsingScreenSaverTime: boolean = false;
-  tabsInfo = {};
+  iframeEnabled!: string[]|boolean;
+  whiteListEnabled!: boolean;
+  tabsInfo: {[s: number]: TabInfo; } = {};
 
   constructor(config: AppConfig) {
     this.updateConfig(config);
@@ -34,8 +32,6 @@ class Background {
     this.whiteList = config.whiteList.urls || [];
     this.whiteListEnabled = config.whiteList.enabled;
     this.iframeEnabled = config.whiteList.iframeEnabled || false;
-    this.screenSaverIdleTime = config.screenSaver.idleTime;
-    this.screenSaverEnabled = config.screenSaver.enabled;
 
     // Make sure that homepage is whitelisted
     if (this.whiteListEnabled) {
@@ -49,11 +45,7 @@ class Background {
 
     // setup
     if (this.idleTime) {
-      this.timeOutUsingScreenSaverTime = false;
       chrome.idle.setDetectionInterval(this.idleTime);
-    } else if (this.screenSaverIdleTime) {
-      this.timeOutUsingScreenSaverTime = true;
-      chrome.idle.setDetectionInterval(this.screenSaverIdleTime);
     }
     this.checkTabsForBlockedUrls();
   }
@@ -61,18 +53,20 @@ class Background {
   checkTabsForBlockedUrls() {
     chrome.tabs.query({}, tabs => {
       tabs.forEach(tab => {
-        this.createTabRecordIfNeeded(tab.id);
-        this.tabsInfo[tab.id].completeUrl = tab.url;
-        this.blockUrlIfMatch({
-          tabId: tab.id,
-          frameId: 0,
-          url: tab.url
-        });
+        if (tab.id) {
+          this.createTabRecordIfNeeded(tab.id);
+          this.tabsInfo[tab.id].completeUrl = tab.url;
+          this.blockUrlIfMatch({
+            tabId: tab.id,
+            frameId: 0,
+            url: tab.url
+          });
+        }
       });
     });
   }
 
-  completedLoadingUrlInTab(details: { tabId: string | number; frameId: number; url: any; }) {
+  completedLoadingUrlInTab(details: { tabId: number; frameId: number; url: any; }) {
     // We have completed loading a URL.
     this.createTabRecordIfNeeded(details.tabId);
     if (details.frameId !== 0) {
@@ -81,11 +75,13 @@ class Background {
     }
     // Remember the newUrl so we can check against it the next time
     //  an event is fired.
-    this.tabsInfo[details.tabId].priorCompleteUrl = this.tabsInfo[details.tabId].completeUrl;
-    this.tabsInfo[details.tabId].completeUrl = details.url;
+    if (details.tabId !== undefined) {
+      this.tabsInfo[details.tabId].priorCompleteUrl = this.tabsInfo[details.tabId].completeUrl;
+      this.tabsInfo[details.tabId].completeUrl = details.url;
+    }
   }
 
-  createTabRecordIfNeeded(tabId: string | number | symbol) {
+  createTabRecordIfNeeded(tabId: number) {
     if (!this.tabsInfo.hasOwnProperty(tabId) || typeof this.tabsInfo[tabId] !== 'object') {
       // This is the first time we have encountered this tab.
       // Create an object to hold the collected info for the tab.
@@ -147,7 +143,7 @@ class Background {
 
           chrome.tabs.update(details.tabId, { url: urlToUse }, () => {
             if (chrome.runtime.lastError) {
-              if (chrome.runtime.lastError.message.indexOf('No tab with id:') > -1) {
+              if (chrome.runtime.lastError.message && chrome.runtime.lastError.message.indexOf('No tab with id:') > -1) {
                 // Chrome is probably loading a page in a tab which it is expecting to
                 //  swap out with a current tab.  Need to decide how to handle this
                 //  case.
@@ -177,45 +173,27 @@ class Background {
             chrome.tabs.query({}, (results) => {
               for (let i = 0; i < results.length; i++) {
                 const tab = results[i];
-                if (tab.id !== newtab.id) {
+                if (tab.id !== undefined && tab.id !== newtab.id) {
                   chrome.tabs.remove(tab.id);
                 }
               }
             });
           });
         }
-
-        // Screensaver timeout
-        if (this.screenSaverEnabled) {
-          if (this.timeOutUsingScreenSaverTime) {
-            chrome.tabs.query({}, tabs => {
-              tabs.forEach(tab => {
-                chrome.tabs.sendMessage(tab.id, {type: 'ScreenSaver', data: {show: true}});
-              });
-            });
-          } else {
-            setTimeout(() => {
-              chrome.tabs.query({}, tabs => {
-                tabs.forEach(tab => {
-                  chrome.tabs.sendMessage(tab.id, {type: 'ScreenSaver', data: {show: true}});
-                });
-              });
-            }, (this.screenSaverIdleTime - this.idleTime) * 1000);
-          }
-        }
-
       } else if (newState === 'active') {
         chrome.tabs.query({}, tabs => {
           tabs.forEach(tab => {
-            chrome.tabs.sendMessage(tab.id, {type: 'ScreenSaver', data: {show: false}});
+            if (tab.id !== undefined) {
+              chrome.tabs.sendMessage(tab.id, {type: 'ScreenSaver', data: {show: false}});
+            }
           });
         });
       }
     });
 
     // Register whitelist listeners
-    chrome.webNavigation.onCompleted.addListener((details: { tabId: string | number; frameId: number; url: any; }) => this.completedLoadingUrlInTab(details));
-    chrome.webNavigation.onBeforeNavigate.addListener((details: { tabId: any; frameId: any; url: any; }) => this.blockUrlIfMatch(details));
+    chrome.webNavigation.onCompleted.addListener((details: { tabId: number; frameId: number; url: any; }) => this.completedLoadingUrlInTab(details));
+    chrome.webNavigation.onBeforeNavigate.addListener((details: { tabId: number; frameId: number; url: any; }) => this.blockUrlIfMatch(details));
   }
 }
 
@@ -243,7 +221,9 @@ chrome.storage.local.get(['chromium_kiosk_settings'], (config) => {
       background.updateConfig(data.data);
       chrome.tabs.query({}, tabs => {
         tabs.forEach(tab => {
-          chrome.tabs.sendMessage(tab.id, {type: 'AppConfig', data: data.data});
+          if (tab.id !== undefined) {
+            chrome.tabs.sendMessage(tab.id, {type: 'AppConfig', data: data.data});
+          }
         });
       });
 

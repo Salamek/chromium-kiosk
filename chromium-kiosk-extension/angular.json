@@ -34,14 +34,13 @@
             "styles": [
               "src/styles.scss"
             ],
-            "extractCss": true,
             "scripts": []
           },
           "configurations": {
             "dev": {
               "customWebpackConfig": {
                 "path": "./webpack/webpack.dev.js"
-              },
+              }
             },
             "production": {
               "fileReplacements": [
@@ -53,7 +52,6 @@
               "optimization": true,
               "outputHashing": "none",
               "sourceMap": true,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,

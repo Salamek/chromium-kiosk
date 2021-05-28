@@ -54,19 +54,19 @@ export const specialKeys: Array<string> = [
   'Shift',
 ];
 
-export const specialKeyIcons = {
-  Enter: 'keyboard_return',
-  Backspace: 'backspace',
-  Escape: 'close',
-  SpaceBar: 'space_bar',
-  Shift: 'keyboard_capslock'
+export const specialKeyIcons: {[s: string]: string} = {
+  'Enter': 'keyboard_return',
+  'Backspace': 'backspace',
+  'Escape': 'close',
+  'SpaceBar': 'space_bar',
+  'Shift': 'keyboard_capslock'
 };
 
-export const specialKeyTexts = {
-  CapsLock: 'Caps'
+export const specialKeyTexts: {[s: string]: string} = {
+  'CapsLock': 'Caps'
 };
 
-export const notDisabledSpecialKeys = [
+export const notDisabledSpecialKeys: Array<string> = [
   'Enter',
   'Backspace',
   'Escape',

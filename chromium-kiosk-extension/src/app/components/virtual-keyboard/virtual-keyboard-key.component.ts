@@ -44,16 +44,16 @@ import { isSpacer, isSpecial, notDisabledSpecialKeys, specialKeyIcons, specialKe
 })
 
 export class VirtualKeyboardKeyComponent implements OnInit {
-  @Input() key: string;
-  @Input() disabled: boolean;
+  @Input() key!: string;
+  @Input() disabled!: boolean;
   @Output() keyPress = new EventEmitter<KeyPressInterface>();
 
   public special = false;
   public spacer = false;
-  public flexValue: string;
-  public keyValue: string;
-  public icon: string;
-  public text: string;
+  public flexValue!: string;
+  public keyValue!: string;
+  public icon!: string;
+  public text!: string;
 
   /**
    * Constructor of the class.
@@ -75,12 +75,13 @@ export class VirtualKeyboardKeyComponent implements OnInit {
       this.special = isSpecial(this.key);
 
       const matches = /^(\w+)(:(\d+(\.\d+)?))?$/g.exec(this.key);
+      if (matches) {
+        this.keyValue = matches[1];
 
-      this.keyValue = matches[1];
-
-      if (matches[3]) {
-        multiplier = parseFloat(matches[3]);
-        fix = (multiplier - 1) * 4;
+        if (matches[3]) {
+          multiplier = parseFloat(matches[3]);
+          fix = (multiplier - 1) * 4;
+        }
       }
     } else {
       this.keyValue = this.key;

@@ -272,7 +272,7 @@ def watch_config():
                         'enabled': config.VIRTUAL_KEYBOARD.get('ENABLED', False)
                     },
                     'screenSaver':  {
-                        'enabled': False,
+                        'enabled': config.SCREEN_SAVER.get('ENABLED', False),
                         'idleTime': config.SCREEN_SAVER.get('IDLE_TIME', 3600),
                         'text': config.SCREEN_SAVER.get('TEXT', 'Touch me')
                     }
