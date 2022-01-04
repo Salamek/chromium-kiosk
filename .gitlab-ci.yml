@@ -61,7 +61,7 @@ package:debian:
     - echo "deb     https://repository.salamek.cz/deb/pub all main" | tee /etc/apt/sources.list.d/salamek.cz.list
     - apt-get update -qy
     - apt-get install -y curl gnupg apt-transport-https
-    - apt-get install -y python3-pip python3-stdeb python3-docopt python3-yaml python-all python3-websockets python3-pygame python3-xscreensaver-config
+    - apt-get install -y python3-pip python3-stdeb python3-docopt python3-yaml python-all python3-websockets python3-pygame python3-xscreensaver-config dh-python
     - rm -rf "./deb_dist"
     - python3 setup.py --command-packages=stdeb.command bdist_deb
   tags:
