@@ -1,5 +1,5 @@
 pkgname=chromium-kiosk
-pkgver=0.5.10
+pkgver=0.5.11
 pkgdesc="Chromium kiosk."
 pkgrel=1
 arch=('any')
