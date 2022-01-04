@@ -13,6 +13,7 @@ Usage:
     chromium-kiosk run [-l DIR] [--config_prod]
     chromium-kiosk post_install [--config_prod]
     chromium-kiosk watch_config [--config_prod]
+    chromium-kiosk system_info [--config_prod]
     chromium-kiosk (-h | --help)
 
 Options:
@@ -36,7 +37,18 @@ from functools import wraps
 from importlib import import_module
 from chromium_kiosk.Chromium import Chromium
 from chromium_kiosk.enum.RotationEnum import RotationEnum
-from chromium_kiosk.tools import create_user, inject_parameters_to_url, set_user_groups, rotate_screen, rotate_display, rotate_touchscreen, generate_xscreensaver_config
+from chromium_kiosk.tools import create_user, \
+    inject_parameters_to_url, \
+    set_user_groups, \
+    rotate_screen, \
+    rotate_display, \
+    rotate_touchscreen, \
+    generate_xscreensaver_config, \
+    detect_display, \
+    detect_touchscreen_device_name, \
+    detect_primary_screen, \
+    get_screen_rotation, \
+    get_touchscreen_rotation
 import chromium_kiosk as app_root
 
 import yaml
@@ -403,6 +415,23 @@ def post_install():
 
     os.chown(xscreensaver_config_path, uid, gid)
     os.chmod(xscreensaver_config_path, 0o644)
+
+
+@command
+def system_info() -> None:
+    primary_screen = detect_primary_screen()
+    touchscreen_device = detect_touchscreen_device_name()
+
+    info_items = {
+        'Display': detect_display(),
+        'Touchscreen device name': touchscreen_device,
+        'Primary screen': primary_screen,
+        'Screen rotation': get_screen_rotation(primary_screen),
+        'Touchscreen rotation': get_touchscreen_rotation(touchscreen_device),
+    }
+
+    for name, output in info_items.items():
+        print('{}: {}'.format(name, output))
 
 
 def main() -> None:
