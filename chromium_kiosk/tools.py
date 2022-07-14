@@ -3,10 +3,11 @@ import re
 import subprocess
 import datetime
 import shlex
+import shutil
 import urllib.parse
 from chromium_kiosk.enum.RotationEnum import RotationEnum
 from xscreensaver_config.ConfigParser import ConfigParser
-from typing import Union
+from typing import Union, List
 
 rotation_to_xinput_coordinate = {
     RotationEnum.LEFT: '0 -1 1 1 0 0 0 0 1',
@@ -189,3 +190,14 @@ def generate_xscreensaver_config(config_path: str, enabled: bool, idle_time: int
             '--restart',
         ]) == 0
     return True
+
+
+def find_binary(names: List[str]) -> Union[str, None]:
+    """
+    Find binary
+    :return:
+    """
+    for name in names:
+        found = shutil.which(name)
+        if found:
+            return found

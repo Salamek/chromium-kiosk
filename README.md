@@ -22,7 +22,7 @@ Add repository by adding this at end of file /etc/pacman.conf
 
 ```
 [salamek]
-Server = https://repository.salamek.cz/arch/pub/any
+Server = https://repository.salamek.cz/arch/pub/$arch
 SigLevel = Optional
 ```
 
@@ -63,7 +63,6 @@ $ reboot
 After successful installation you will want to configure `chromium-kiosk` by editing `/etc/chromium-kiosk/config.yml`, these are the options:
 
 ```yml
-CLEAN_START: true  # Force chromium to clean start on each boot (That simply means do not show "Restore pages" dialog, you want this to be true in 99% of use cases)
 KIOSK: true # Run in kiosk mode, chromium will use whole screen without any way for user to close it, setting this to false is useful for web application debug (you can access chromium Inspect tool and so on) and initial chromium configuration
 TOUCHSCREEN: true # Enables support for touchscreen
 HOME_PAGE: 'https://salamek.github.io/chromium-kiosk/'  # Url to load as homepage
@@ -93,4 +92,25 @@ SCREEN_SAVER:
 DISPLAY_ROTATION: 'normal' # Rotates display when X server starts options are (normal|left|right|inverted)
 #SCREEN_ROTATION: 'normal'  Rotates screen individually (do not rotate touchscreen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
 #TOUCHSCREEN_ROTATION: 'normal'  Rotates touchscreen individually (do not rotate screen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
+#EXTRA_ARGUMENTS: Pass extra arguments to used browser
+```
+
+New options when using qiosk a kiosk first browser:
+
+```yml
+FULL_SCREEN: true  # Run qiosk in full screen, this replaces KIOSK config option
+# Allowed features in browser
+# Uncomment feature you want to enable
+#ALLOWED_FEATURES:
+#  - desktop-audio-video-capture  # Allows recording desktop audio and video
+#  - desktop-video-capture  # Allows recording desktop video
+#  - geolocation  # Allows geolocation
+#  - invalid-certificate  # Ignores invalid certificate
+#  - media-audio-capture  # Allows recording audio from capture device (MIC)
+#  - media-audio-video-capture  # Allows recording audio and video from capture device (Camera w/ MIC)
+#  - media-video-capture  # Allows recording vide from capture device (Camera)
+#  - mouse-lock  # Allows locking mouse inside browser full screen window
+#  - notifications  # Allows notifications to be accepted from website
+
+#REMOTE_DEBUGGING:  # Set to port number to enable available only when using qiosk browser
 ```

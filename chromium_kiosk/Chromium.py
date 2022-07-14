@@ -1,36 +1,32 @@
 import os
 import json
-import shutil
 import subprocess
-from typing import Union
+from chromium_kiosk.IBrowser import IBrowser
+from chromium_kiosk.tools import find_binary
+from chromium_kiosk.config import Config
 
 
-class Chromium(object):
-    def __init__(self,
-                 config_path='~/.config/chromium/',
-                 cache_path='~/.cache/chromium/',
-                 urls=None,
-                 load_extension_path=None
-                 ):
+class Chromium(IBrowser):
+    config = None
+
+    def __init__(self, load_extension_path=None):
         """
         Initialize Chromium instance
-        :param config_path: path to chromium config dir
-        :param cache_path: path to chromium config cache
         """
 
-        executable_path = self._find_chromium()
+        executable_path = find_binary([
+            'chromium',
+            'chromium-browser'
+        ])
 
         if not executable_path:
             raise Exception('Unable to find chromium binary')
 
         self.executable_path = executable_path
-        self.config_path = os.path.expanduser(config_path)
-        self.cache_path = os.path.expanduser(cache_path)
+        self.config_path = os.path.expanduser('~/.config/chromium/')
+        self.cache_path = os.path.expanduser('~/.cache/chromium/')
         self.load_extension_path = os.path.expanduser(load_extension_path)
-        if not urls:
-            urls = []
 
-        self.urls = urls
         self.arguments = [
             '--noerrdialogs',
             '--disable-infobars',
@@ -54,35 +50,10 @@ class Chromium(object):
             }
         })
 
-    def _find_chromium(self) -> Union[str, None]:
-        """
-        Find chromium binary
-        :return: 
-        """
-        names = [
-            'chromium',
-            'chromium-browser'
-        ]
+        self._clean_start()
 
-        for name in names:
-            found = shutil.which(name)
-            if found:
-                return found
-
-    def clear_cache(self) -> None:
-        """
-        Clears chromium cache
-        :return: 
-        """
-        shutil.rmtree(self.cache_path)
-
-    def set_urls(self, urls):
-        """
-        Sets list of urls to open
-        :param urls: 
-        :return: 
-        """
-        self.urls = urls
+    def set_config(self, config: Config):
+        self.config = config
 
     def _modify_json_file(self, config_path, changes: dict) -> None:
         """
@@ -107,7 +78,7 @@ class Chromium(object):
             if os.path.isfile(config_path_abs):
                 self._modify_json_file(config_path_abs, changes)
 
-    def clean_start(self) -> None:
+    def _clean_start(self) -> None:
         """
         Run chromium in clean state
         :return: 
@@ -121,31 +92,24 @@ class Chromium(object):
             }
         })
 
-    def set_kiosk(self, enabled: bool=True) -> None:
-        """
-        Set chromium to run in kiosk mode
-        :param enabled: 
-        :return: 
-        """
-        if enabled:
-            self.arguments.append('--kiosk')
-
-    def set_touchscreen(self, enabled: bool=True) -> None:
-        """
-        Sets touchscreen support
-        :param enabled:
-        :return:
-        """
-        if enabled:
-            self.arguments.append('--touch-events')
-
     def run(self) -> None:
         """
         Start chromium
         :return: 
         """
+
+        if self.config.TOUCHSCREEN:
+            self.arguments.append('--touch-events')
+
+        if self.config.KIOSK:
+            self.arguments.append('--kiosk')
+
         command = [self.executable_path]
         command.extend(self.arguments)
-        command.extend(self.urls)
+
+        if self.config.EXTRA_ARGUMENTS:
+            command.extend(self.config.EXTRA_ARGUMENTS.split(' '))
+
+        command.append(self.config.HOME_PAGE)
 
         subprocess.call(command)

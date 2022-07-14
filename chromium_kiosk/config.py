@@ -6,11 +6,10 @@ class HardCoded(object):
 
 class Config(HardCoded):
     DEBUG = True
-    CLEAN_START = False
-    KIOSK = True
+    KIOSK = True  #@TODO Deprecated in qiosk replaced by FULLSCREEN
+    FULL_SCREEN = True
     TOUCHSCREEN = False
     HOME_PAGE = 'http://127.0.0.1/'
-    URLS = []  # Deprecated, remove me
 
     IDLE_TIME = 0
     WHITE_LIST = {
@@ -28,18 +27,34 @@ class Config(HardCoded):
     }
 
     SCREEN_SAVER = {
-        'ENABLED': False,  # is nav bar enabled
+        'ENABLED': False,  # is screen saver controlled by chromium kiosk
         'IDLE_TIME': 0,
         'TEXT': 'Touch me'
     }
 
-    VIRTUAL_KEYBOARD = {
+    VIRTUAL_KEYBOARD = {  #@TODO Deprecated, there is no reason to have this option for qiosk, VIRTUAL_KEYBOARD is enabled at all times
         'ENABLED': False
     }
 
     DISPLAY_ROTATION = 'normal'  # normal|left|right|inverted
     TOUCHSCREEN_ROTATION = 'normal'  # normal|left|right|inverted
     SCREEN_ROTATION = 'normal'  # normal|left|right|inverted
+
+    ALLOWED_FEATURES = [  # Set enabled features, available only when using qiosk browser
+        #'desktop-audio-video-capture',
+        #'desktop-video-capture',
+        #'geolocation',
+        #'invalid-certificate',
+        #'media-audio-capture',
+        #'media-audio-video-capture',
+        #'media-video-capture',
+        #'mouse-lock',
+        #'notifications'
+    ]
+
+    REMOTE_DEBUGGING = None  # Set to port number to enable available only when using qiosk browser
+
+    EXTRA_ARGUMENTS = None  # Pass extra arguments to used browser
 
 
 class Testing(Config):

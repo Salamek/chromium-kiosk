@@ -34,6 +34,7 @@ depends=(
 
 optdepends=(
     'xf86-video-fbturbo: Install on Raspberry PI 3 for faster rendering'
+    'qiosk: Alternative kiosk first browser, soon to replace chromium as main browser'
 )
 
 prepare() {

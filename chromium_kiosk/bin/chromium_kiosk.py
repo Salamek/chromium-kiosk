@@ -36,6 +36,7 @@ import websockets
 from functools import wraps
 from importlib import import_module
 from chromium_kiosk.Chromium import Chromium
+from chromium_kiosk.Qiosk import Qiosk
 from chromium_kiosk.enum.RotationEnum import RotationEnum
 from chromium_kiosk.tools import create_user, \
     inject_parameters_to_url, \
@@ -48,7 +49,8 @@ from chromium_kiosk.tools import create_user, \
     detect_touchscreen_device_name, \
     detect_primary_screen, \
     get_screen_rotation, \
-    get_touchscreen_rotation
+    get_touchscreen_rotation, \
+    find_binary
 import chromium_kiosk as app_root
 
 import yaml
@@ -230,27 +232,22 @@ def command(func):
 def run():
     config = parse_config()
     setup_logging('kiosk', logging.DEBUG if config.DEBUG else logging.WARNING)
-    data_dir = os.getenv("DATADIR", "/usr/share")
 
     # Rotate screen by config value
     resolve_rotation_config(config)
 
-    extension_path = os.path.join(data_dir, 'chromium-kiosk/chromium-kiosk-extension')
-    chromium = Chromium(load_extension_path=extension_path if os.path.isdir(extension_path) else None)
-    additional_parameters = {}
-    if config.KIOSK:
-        chromium.set_kiosk(True)
-        additional_parameters['kiosk'] = 1
+    # detect what browser is installed to deduce what browser we will be using, qiosk has priority
+    found_qiosk = find_binary(['qiosk'])
+    if found_qiosk:
+        selected_browser = Qiosk()
+    else:
+        # Fallback to chromium
+        data_dir = os.getenv("DATADIR", "/usr/share")
+        extension_path = os.path.join(data_dir, 'chromium-kiosk/chromium-kiosk-extension')
+        selected_browser = Chromium(load_extension_path=extension_path if os.path.isdir(extension_path) else None)
 
-    if config.TOUCHSCREEN:
-        chromium.set_touchscreen(True)
-        additional_parameters['touchscreen'] = 1
-
-    if config.CLEAN_START:
-        chromium.clean_start()
-
-    chromium.set_urls([inject_parameters_to_url(config.HOME_PAGE, additional_parameters)])
-    chromium.run()
+    selected_browser.set_config(config)
+    selected_browser.run()
 
 
 @command
