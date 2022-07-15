@@ -52,4 +52,7 @@ class Qiosk(IBrowser):
         if self.config.EXTRA_ARGUMENTS:
             my_env['QTWEBENGINE_CHROMIUM_FLAGS'] = self.config.EXTRA_ARGUMENTS
 
+        if self.config.VIRTUAL_KEYBOARD.get('ENABLED', False):
+            my_env['QT_IM_MODULE'] = 'qtvirtualkeyboard'
+
         subprocess.call(command, env=my_env)

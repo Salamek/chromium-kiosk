@@ -31,7 +31,7 @@ class Config(HardCoded):
         'TEXT': 'Touch me'
     }
 
-    VIRTUAL_KEYBOARD = {  #@TODO Deprecated, there is no reason to have this option for qiosk, VIRTUAL_KEYBOARD is enabled at all times
+    VIRTUAL_KEYBOARD = {
         'ENABLED': False
     }
 
