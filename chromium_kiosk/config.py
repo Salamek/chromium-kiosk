@@ -65,7 +65,7 @@ class Production(Config):
     DEBUG = False
     CLEAN_START = None  # To be overwritten by a YAML file.
     KIOSK = None  # To be overwritten by a YAML file.
-    URLS = None  # To be overwritten by a YAML file.
+    HOME_PAGE = None  # To be overwritten by a YAML file.
     TOUCHSCREEN = None  # To be overwritten by a YAML file.
     TOUCHSCREEN_ROTATION = None  # normal|left|right|inverted
     SCREEN_ROTATION = None  # normal|left|right|inverted

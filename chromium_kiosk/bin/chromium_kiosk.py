@@ -186,10 +186,6 @@ def parse_config():
         config_class_string = 'chromium_kiosk.config.Config'
     config_obj = get_config(config_class_string)
 
-    # Legacy compatibility
-    if config_obj.URLS and not config_obj.HOME_PAGE:
-        config_obj.HOME_PAGE = config_obj.URLS[0]
-
     return config_obj
 
 

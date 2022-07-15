@@ -63,7 +63,8 @@ $ reboot
 After successful installation you will want to configure `chromium-kiosk` by editing `/etc/chromium-kiosk/config.yml`, these are the options:
 
 ```yml
-KIOSK: true # Run in kiosk mode, chromium will use whole screen without any way for user to close it, setting this to false is useful for web application debug (you can access chromium Inspect tool and so on) and initial chromium configuration
+# kiosk option is deprecated, use FULL_SCREEN, KIOSK: true # Run in kiosk mode, chromium will use whole screen without any way for user to close it, setting this to false is useful for web application debug (you can access chromium Inspect tool and so on) and initial chromium configuration
+FULL_SCREEN: true # Run in full screen mode, browser will use whole screen without any way for user to close it
 TOUCHSCREEN: true # Enables support for touchscreen
 HOME_PAGE: 'https://salamek.github.io/chromium-kiosk/'  # Url to load as homepage
 
@@ -80,6 +81,7 @@ NAV_BAR:
   HORIZONTAL_POSITION: 'center' # horizontal position on the screen
   VERTICAL_POSITION: 'bottom' # Vertical position on the screen
   WIDTH: 100 # Width of a bar in %
+  HEIGHT: 5 # Height of a bar in % works only for qiosk
 
 VIRTUAL_KEYBOARD:
   ENABLED: false # is virutal keyboard enabled

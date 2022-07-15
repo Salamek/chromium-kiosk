@@ -38,7 +38,8 @@ class Qiosk(IBrowser):
 
         command.extend(['--navbar-horizontal-position', self.config.NAV_BAR.get('HORIZONTAL_POSITION', 'center')])
         command.extend(['--navbar-vertical-position', self.config.NAV_BAR.get('VERTICAL_POSITION', 'bottom')])
-        command.extend(['--navbar-width', self.config.NAV_BAR.get('WIDTH', 100)])
+        command.extend(['--navbar-width', str(self.config.NAV_BAR.get('WIDTH', 100))])
+        command.extend(['--navbar-height', str(self.config.NAV_BAR.get('HEIGHT', 5))])
 
         for allowed_feature in self.config.ALLOWED_FEATURES:
             command.extend(['-a', allowed_feature])
