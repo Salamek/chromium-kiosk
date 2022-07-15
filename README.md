@@ -30,6 +30,9 @@ and then install by running
 
 ```bash
 $ pacman -Sy chromium-kiosk
+
+# Optionally you can install new backend kiosk first browser (https://github.com/Salamek/qiosk) that is used by default insted of chromium when installed
+$ pacman -Sy qiosk
 ```
 
 after that you can reboot your device, you should be welcomed by `chromium-kiosk` welcome page:
@@ -51,6 +54,8 @@ And then you can install a package `chromium-kiosk`
 
 ```bash
 $ apt update && apt install chromium-kiosk
+# Optionally you can install new backend kiosk first browser (https://github.com/Salamek/qiosk) that is used by default insted of chromium when installed
+$ apt install qiosk
 ```
 
 after that you can reboot your device, you should be welcomed by `chromium-kiosk` welcome page:
