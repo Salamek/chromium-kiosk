@@ -28,6 +28,7 @@ VIRTUAL_KEYBOARD:
 DISPLAY_ROTATION: 'normal' # normal|left|right|inverted
 #SCREEN_ROTATION: 'normal'  #Rotates screen individually (do not rotate touchscreen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
 #TOUCHSCREEN_ROTATION: 'normal'  #Rotates touchscreen individually (do not rotate screen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
+#EXTRA_ARGUMENTS: # Pass extra arguments to used browser, in case of qiosk thse arguments are passed to chromium using QTWEBENGINE_CHROMIUM_FLAGS
 
 # Allowed features in browser
 # Uncomment feature you want to enable
