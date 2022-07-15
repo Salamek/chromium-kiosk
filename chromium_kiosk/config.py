@@ -6,7 +6,6 @@ class HardCoded(object):
 
 class Config(HardCoded):
     DEBUG = True
-    KIOSK = True  #@TODO Deprecated in qiosk replaced by FULLSCREEN
     FULL_SCREEN = True
     TOUCHSCREEN = False
     HOME_PAGE = 'http://127.0.0.1/'
@@ -64,9 +63,8 @@ class Testing(Config):
 class Production(Config):
     DEBUG = False
     CLEAN_START = None  # To be overwritten by a YAML file.
-    KIOSK = None  # To be overwritten by a YAML file.
     HOME_PAGE = None  # To be overwritten by a YAML file.
     TOUCHSCREEN = None  # To be overwritten by a YAML file.
     TOUCHSCREEN_ROTATION = None  # normal|left|right|inverted
     SCREEN_ROTATION = None  # normal|left|right|inverted
-    DISPLAY_ROTATION = None # normal|left|right|inverted
+    DISPLAY_ROTATION = None  # normal|left|right|inverted

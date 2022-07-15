@@ -1,5 +1,4 @@
-# kiosk option is deprecated, use FULL_SCREEN, KIOSK: true # Run in kiosk mode, chromium will use whole screen without any way for user to close it, setting this to false is useful for web application debug (you can access chromium Inspect tool and so on) and initial chromium configuration
-FULL_SCREEN: true
+FULL_SCREEN: true # Run in full screen mode, browser will use whole screen without any way for user to close it
 TOUCHSCREEN: true # Enables support for touchscreen
 HOME_PAGE: 'https://salamek.github.io/chromium-kiosk/'  # Url to load as homepage
 

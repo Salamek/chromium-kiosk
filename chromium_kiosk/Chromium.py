@@ -101,7 +101,7 @@ class Chromium(IBrowser):
         if self.config.TOUCHSCREEN:
             self.arguments.append('--touch-events')
 
-        if self.config.FULL_SCREEN or self.config.KIOSK:
+        if self.config.FULL_SCREEN:
             self.arguments.append('--kiosk')
 
         command = [self.executable_path]

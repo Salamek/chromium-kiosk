@@ -26,7 +26,7 @@ class Qiosk(IBrowser):
         """
         command = [self.executable_path, self.config.HOME_PAGE]
 
-        if self.config.FULL_SCREEN or self.config.KIOSK:  #@TODO KIOSK is deprecated replaced with fullscreen
+        if self.config.FULL_SCREEN:
             command.append('-f')
 
         if self.config.IDLE_TIME:
