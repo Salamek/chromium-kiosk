@@ -341,8 +341,7 @@ def post_install():
         'then',
         '    ~/chromium-kiosk-prehook.sh',
         'fi',
-        'exec chromium-kiosk run --config_prod --log_dir={}'.format(user_home),
-        'reboot'
+        'exec chromium-kiosk run --config_prod --log_dir={} && killall -u $USER'.format(user_home)
     ]
 
     xinitrc_content_path = os.path.join(user_home, '.xinitrc')
