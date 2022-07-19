@@ -10,6 +10,7 @@ Chromium kiosk is simple package turning your Linux based PC/Raspberry into simp
 * Tested on Archlinux, Archlinux ARM, Debian, Raspbian
 * Integrated virtual keyboard (via chromium extension)
 * Integrated whitelist (via chromium extension)
+* Configurable navbar with back|forward|reload/stop|home buttons
 * Redirect to homepage when idle for specified amount of time
 * Show screen saver when idle for specified amount of time
 
