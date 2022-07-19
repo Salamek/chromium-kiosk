@@ -30,7 +30,7 @@ class Qiosk(IBrowser):
             command.append('-f')
 
         if self.config.IDLE_TIME:
-            command.extend(['-i', self.config.IDLE_TIME])
+            command.extend(['-i', str(self.config.IDLE_TIME)])
 
         if self.config.WHITE_LIST.get('ENABLED', False):
             for white_list_url in self.config.WHITE_LIST.get('URLS', []):
