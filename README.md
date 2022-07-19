@@ -16,6 +16,9 @@ Chromium kiosk is simple package turning your Linux based PC/Raspberry into simp
 # Installation
 
 ## Archlinux
+
+Use clean barebone install of Archlinux
+
 (Use Archlinux ARM for Raspberry install)
 
 Add repository by adding this at end of file /etc/pacman.conf
@@ -41,6 +44,9 @@ $ reboot
 ```
 
 # Debian and derivates
+
+Use clean barebone install of Debian/Ubuntu (no DE)
+
 (For Raspbian i suggest to use Lite relase)
 
 Add repository by running these commands
