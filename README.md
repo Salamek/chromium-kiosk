@@ -80,7 +80,7 @@ TOUCHSCREEN: true # Enables support for touchscreen
 HOME_PAGE: 'https://salamek.github.io/chromium-kiosk/'  # Url to load as homepage
 
 # These works only with chromium-kiosk installed
-IDLE_TIME: 0 # How long must be kiosk idle to redirect to HOME_PAGE, 0=disabled (Works only with chromium-kiosk extension installed)
+IDLE_TIME: 0 # Seconds, How long must be kiosk idle to redirect to HOME_PAGE, 0=disabled (Works only with chromium-kiosk extension installed)
 WHITE_LIST:
   ENABLED': false  # is white list enabled
   URLS': []   # List of whitelisted urls, glob format is supported (eg,: *,google.*/news)
