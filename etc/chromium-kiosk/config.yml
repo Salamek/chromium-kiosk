@@ -2,8 +2,7 @@ FULL_SCREEN: true # Run in full screen mode, browser will use whole screen witho
 TOUCHSCREEN: true # Enables support for touchscreen
 HOME_PAGE: 'https://salamek.github.io/chromium-kiosk/'  # Url to load as homepage
 
-# These works only with chromium-kiosk installed
-IDLE_TIME: 0 # Seconds, How log must be kiosk idle to redirect to HOME_PAGE, 0=disabled (Works only with chromium-kiosk extension installed)
+IDLE_TIME: 0 # Seconds, How log must be kiosk idle to redirect to HOME_PAGE, 0=disabled
 WHITE_LIST:
   ENABLED: false  # is white list enabled
   URLS: []   # List of whitelisted urls, glob format is supported (eg,: *,google.*/news)
@@ -30,6 +29,13 @@ DISPLAY_ROTATION: 'normal' # normal|left|right|inverted
 #TOUCHSCREEN_ROTATION: 'normal'  #Rotates touchscreen individually (do not rotate screen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
 #EXTRA_ARGUMENTS: # Pass extra arguments to used browser, in case of qiosk thse arguments are passed to chromium using QTWEBENGINE_CHROMIUM_FLAGS
 
+# ==========
+# New options when using qiosk a kiosk first browser:
+# ==========
+
+#ADDRESS_BAR:
+#  ENABLED: false
+
 # Allowed features in browser
 # Uncomment feature you want to enable
 #ALLOWED_FEATURES:
@@ -42,3 +48,5 @@ DISPLAY_ROTATION: 'normal' # normal|left|right|inverted
 #  - media-video-capture  # Allows recording vide from capture device (Camera)
 #  - mouse-lock  # Allows locking mouse inside browser full screen window
 #  - notifications  # Allows notifications to be accepted from website
+
+#REMOTE_DEBUGGING:  # Set to port number to enable available only when using qiosk browser

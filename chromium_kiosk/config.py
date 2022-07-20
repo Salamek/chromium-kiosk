@@ -55,6 +55,10 @@ class Config(HardCoded):
 
     EXTRA_ARGUMENTS = None  # Pass extra arguments to used browser
 
+    ADDRESS_BAR = {
+        'ENABLED': False
+    }
+
 
 class Testing(Config):
     TESTING = True

@@ -75,17 +75,15 @@ $ reboot
 After successful installation you will want to configure `chromium-kiosk` by editing `/etc/chromium-kiosk/config.yml`, these are the options:
 
 ```yml
-# kiosk option is deprecated, use FULL_SCREEN, KIOSK: true # Run in kiosk mode, chromium will use whole screen without any way for user to close it, setting this to false is useful for web application debug (you can access chromium Inspect tool and so on) and initial chromium configuration
 FULL_SCREEN: true # Run in full screen mode, browser will use whole screen without any way for user to close it
 TOUCHSCREEN: true # Enables support for touchscreen
 HOME_PAGE: 'https://salamek.github.io/chromium-kiosk/'  # Url to load as homepage
 
-# These works only with chromium-kiosk installed
-IDLE_TIME: 0 # Seconds, How long must be kiosk idle to redirect to HOME_PAGE, 0=disabled (Works only with chromium-kiosk extension installed)
+IDLE_TIME: 0 # Seconds, How log must be kiosk idle to redirect to HOME_PAGE, 0=disabled
 WHITE_LIST:
-  ENABLED': false  # is white list enabled
-  URLS': []   # List of whitelisted urls, glob format is supported (eg,: *,google.*/news)
-  IFRAME_ENABLED': true  # True to enable all iframes, list of urls to specify enabled iframes
+  ENABLED: false  # is white list enabled
+  URLS: []   # List of whitelisted urls, glob format is supported (eg,: *,google.*/news)
+  IFRAME_ENABLED: true  # True to enable all iframes, list of urls to specify enabled iframes
 
 NAV_BAR:
   ENABLED: false # is nav bar enabled
@@ -95,24 +93,26 @@ NAV_BAR:
   WIDTH: 100 # Width of a bar in %
   HEIGHT: 5 # Height of a bar in % works only for qiosk
 
-VIRTUAL_KEYBOARD:
-  ENABLED: false # is virutal keyboard enabled
-
 SCREEN_SAVER:
   ENABLED: false  # is screen saver enabled
-  IDLE_TIME: 0  # how long must be a user idle for screensaver to start
+  IDLE_TIME: 0
   TEXT: 'Touch me'
-  
-DISPLAY_ROTATION: 'normal' # Rotates display when X server starts options are (normal|left|right|inverted)
-#SCREEN_ROTATION: 'normal'  Rotates screen individually (do not rotate touchscreen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
-#TOUCHSCREEN_ROTATION: 'normal'  Rotates touchscreen individually (do not rotate screen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
-#EXTRA_ARGUMENTS: Pass extra arguments to used browser
-```
 
-New options when using qiosk a kiosk first browser:
+VIRTUAL_KEYBOARD:
+  ENABLED: false
 
-```yml
-FULL_SCREEN: true  # Run qiosk in full screen, this replaces KIOSK config option
+DISPLAY_ROTATION: 'normal' # normal|left|right|inverted
+#SCREEN_ROTATION: 'normal'  #Rotates screen individually (do not rotate touchscreen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
+#TOUCHSCREEN_ROTATION: 'normal'  #Rotates touchscreen individually (do not rotate screen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
+#EXTRA_ARGUMENTS: # Pass extra arguments to used browser, in case of qiosk thse arguments are passed to chromium using QTWEBENGINE_CHROMIUM_FLAGS
+
+# ==========
+# New options when using qiosk a kiosk first browser:
+# ==========
+
+#ADDRESS_BAR:
+#  ENABLED: false
+
 # Allowed features in browser
 # Uncomment feature you want to enable
 #ALLOWED_FEATURES:
