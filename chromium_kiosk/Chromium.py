@@ -15,8 +15,8 @@ class Chromium(IBrowser):
         """
 
         executable_path = find_binary([
-            'chromium',
-            'chromium-browser'
+            'chromium-browser',
+            'chromium'
         ])
 
         if not executable_path:
