@@ -78,6 +78,7 @@ def detect_touchscreen_device_name() -> Union[str, None]:
 
 
 def detect_primary_screen() -> str:
+    check_display_env()
     lines = subprocess.check_output(['xrandr', '--listactivemonitors']).splitlines()
     for line in lines:
         found = re.match(rb'^\s+(\d+):\s+(\S+)\s\S+\s+(\S+)$', line)

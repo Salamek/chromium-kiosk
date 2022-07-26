@@ -419,7 +419,7 @@ def system_info() -> None:
         'Touchscreen device name': touchscreen_device,
         'Primary screen': primary_screen,
         'Screen rotation': get_screen_rotation(primary_screen),
-        'Touchscreen rotation': get_touchscreen_rotation(touchscreen_device),
+        'Touchscreen rotation': get_touchscreen_rotation(touchscreen_device) if touchscreen_device else None,
     }
 
     for name, output in info_items.items():
