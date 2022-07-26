@@ -44,11 +44,11 @@ after that you can reboot your device, you should be welcomed by `chromium-kiosk
 $ reboot
 ```
 
-# Debian and derivates
+# Debian and derivatives
 
-Use clean barebone install of Debian/Ubuntu (no DE)
+Use clean bare bone install of Debian/Ubuntu (no DE)
 
-(For Raspbian i suggest to use Lite relase)
+(For Raspbian I suggest to use Lite release)
 
 Add repository by running these commands
 
@@ -61,6 +61,10 @@ And then you can install a package `chromium-kiosk`
 
 ```bash
 $ apt update && apt install chromium-kiosk
+
+# On latest Raspbian you have to install chromium-browser package since chromium package is broken see issue #51
+$ apt install chromium-browser
+
 # Optionally you can install new backend kiosk first browser (https://github.com/Salamek/qiosk) that is used by default insted of chromium when installed
 $ apt install qiosk
 ```
