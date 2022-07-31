@@ -93,7 +93,7 @@ pacman -Sy qiosk
 ### Raspberry Pi
 
 Installation on Raspberry Pi is a bit different since we use Debian arm64 for Raspberry installs:
-(Official Raspbian images/repos have broken `chromium` package, are missing some `qiosk` dependencies...)
+(Official Raspbian images/repos have broken `chromium` package and are missing some `qiosk` dependencies...)
 
 1) Download required image (Debian 12) from https://raspi.debian.net/tested-images/ for you Raspberry Pi version
 
@@ -109,7 +109,7 @@ xzcat 20220121_raspi_3_bookworm.img.xz | dd of=/dev/sdX status=progress
 sync
 ```
 
-3) After successful boot of your Raspberry Pi, you can continue with installation by fallowing steps for [Debian](#debian)
+3) After successful boot of your Raspberry Pi, you can continue with installation by following steps for [Debian](#debian)
 
 
 ## Configuration
