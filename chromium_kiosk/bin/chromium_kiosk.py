@@ -336,7 +336,7 @@ def post_install():
         'xset s noblank  # don\'t blank the video device',
         'xscreensaver -no-splash & # xscreensaver daemon',
         'unclutter &     # hides your cursor after inactivity',
-        'openbox &',
+        'xfwm4 &',
         'if [ -e ~/chromium-kiosk-prehook.sh ] # Check if prehook exists and run it',
         'then',
         '    ~/chromium-kiosk-prehook.sh',

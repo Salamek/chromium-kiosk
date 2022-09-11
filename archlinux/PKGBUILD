@@ -21,7 +21,7 @@ depends=(
     'xorg-xrandr'
     'xorg-xinput'
     'xf86-video-fbdev'
-    'openbox'
+    'xfwm4'
     'alsa-utils'
     'ttf-dejavu'
     'unclutter'
