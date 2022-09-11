@@ -43,7 +43,7 @@ test:debian:
 test:archlinux:
   stage: test
   script:
-    - pacman -Sy python-pip gcc --noconfirm
+    - pacman -Sy python-pip python-setuptools gcc --noconfirm
     - pip install -r requirements.txt
     - python setup.py test
   tags:
