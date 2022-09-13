@@ -35,7 +35,6 @@ import json
 import websockets
 from functools import wraps
 from importlib import import_module
-from chromium_kiosk.Chromium import Chromium
 from chromium_kiosk.Qiosk import Qiosk
 from chromium_kiosk.enum.RotationEnum import RotationEnum
 from chromium_kiosk.tools import create_user, \
@@ -230,16 +229,7 @@ def run():
     # Rotate screen by config value
     resolve_rotation_config(config)
 
-    # detect what browser is installed to deduce what browser we will be using, qiosk has priority
-    found_qiosk = find_binary(['qiosk'])
-    if found_qiosk:
-        selected_browser = Qiosk()
-    else:
-        # Fallback to chromium
-        data_dir = os.getenv("DATADIR", "/usr/share")
-        extension_path = os.path.join(data_dir, 'chromium-kiosk/chromium-kiosk-extension')
-        selected_browser = Chromium(load_extension_path=extension_path if os.path.isdir(extension_path) else None)
-
+    selected_browser = Qiosk()
     selected_browser.set_config(config)
     selected_browser.run()
 
@@ -251,7 +241,6 @@ def watch_config():
         while True:
             try:
                 config = parse_config()
-                user_home = os.path.join('/', 'home', config.USER)
 
                 client_options = {
                     'homePage': config.HOME_PAGE,

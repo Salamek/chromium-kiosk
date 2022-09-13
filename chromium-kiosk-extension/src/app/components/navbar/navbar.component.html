@@ -1,3 +1,0 @@
-<div *ngIf="enabled" id="navbar-navigator" [ngClass]="barClasses" [ngStyle]="{'width': width + '%', 'margin-left': marginLeft + '%', 'margin-right': marginRight + '%'}">
-    <button *ngFor="let button of buttonsEnabled" class="navbar-button" [ngStyle]="{'background-image': 'url(' + button.icon + ')'}" title="{{button.title}}" (click)="onButtonClick(button)"></button>
-</div>

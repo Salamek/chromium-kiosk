@@ -13,7 +13,7 @@ replaces=('granad-kiosk')
 depends=(
     'python'
     'python-setuptools'
-    'chromium'
+    'qiosk'
     'xorg-server'
     'xorg-xset'
     'xorg-xinit'
@@ -22,7 +22,6 @@ depends=(
     'xf86-video-fbdev'
     'xfwm4'
     'alsa-utils'
-    'ttf-dejavu'
     'unclutter'
     'python-yaml'
     'python-docopt'
@@ -31,15 +30,12 @@ depends=(
 
 optdepends=(
     'xf86-video-fbturbo: Install on Raspberry PI 3 for faster rendering'
-    'qiosk: Alternative kiosk first browser, soon to replace chromium as main browser'
 )
 
 prepare() {
   mkdir -p "${srcdir}/${pkgname}"
-  mkdir -p "${srcdir}/${pkgname}/chromium-kiosk-extension"
   cp -R "${srcdir}/../../etc" "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../lib" "${srcdir}/${pkgname}"
-  cp -R "${srcdir}/../../chromium-kiosk-extension/dist" "${srcdir}/${pkgname}/chromium-kiosk-extension"
   cp -R "${srcdir}/../../chromium_kiosk" "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../tests" "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../setup.py" "${srcdir}/${pkgname}"
