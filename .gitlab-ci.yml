@@ -15,8 +15,6 @@ test:debian:
   tags:
     - debian
 
-  dependencies:
-    - build:dist
 
 test:archlinux:
   stage: test
@@ -27,8 +25,6 @@ test:archlinux:
   tags:
     - archlinux
 
-  dependencies:
-    - build:dist
 
 package:debian:
   stage: package
@@ -52,7 +48,6 @@ package:debian:
 
   dependencies:
     - test:debian
-    - build:dist
 
 package:archlinux:
   stage: package
@@ -75,7 +70,6 @@ package:archlinux:
 
   dependencies:
     - test:archlinux
-    - build:dist
 
 
 repoupdate:
