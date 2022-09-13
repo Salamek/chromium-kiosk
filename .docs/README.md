@@ -4,9 +4,8 @@ Chromium kiosk is simple package turning your Linux based PC/Raspberry into simp
 
 Currently `chromium-kiosk` supports these backends:
 
-* [qiosk](https://github.com/Salamek/qiosk) [will be default in future] a kiosk first browser specially made for `chromium-kiosk` written in QT5
-* [chromium](https://www.chromium.org/Home/) [default, deprecated] standard chromium browser that is part of ~every linux distribution repository
-* `chromium-browser` [rasbian only, deprecated] standard chromium browser that is named this way on Raspbian to distinguish from broken `chromium` package
+* [qiosk](https://github.com/Salamek/qiosk) A kiosk first browser specially made for `chromium-kiosk` written in QT5/QT6
+
 
 
 ## Content
@@ -21,7 +20,7 @@ Currently `chromium-kiosk` supports these backends:
 
 ## Installation
 
-Chromium kiosk can be installed on multiple Linux based distributions, officially supported are Debian 12 and Archlinux other distributions based on Debian may work too.
+Chromium kiosk can be installed on multiple Linux based distributions, officially supported are Debian 11 and Archlinux other distributions based on Debian may work too.
 
 - **Debian**
 - **Archlinux**
@@ -59,9 +58,6 @@ echo "deb     [signed-by=/usr/share/keyrings/salamek-archive-keyring.gpg] https:
 
 ```bash
 apt install chromium-kiosk
-
-# Optionally you can install qiosk, a kiosk first browser specially designed for chromium-kiosk
-apt install qiosk
 ```
 
 
@@ -87,20 +83,17 @@ SigLevel = Optional
 
 ```bash
 pacman -Sy chromium-kiosk
-
-# Optionally you can install qiosk, a kiosk first browser specially designed for chromium-kiosk
-pacman -Sy qiosk
 ```
 
 ### Raspberry Pi
 
 Installation on Raspberry Pi is a bit different since we use Debian arm64 for Raspberry installs:
-(Official Raspbian images/repos have broken `chromium` package and are missing some `qiosk` dependencies...)
+(Official Raspbian images/repos are missing some `qiosk` dependencies...)
 
-1) Download required image (Debian 12) from https://raspi.debian.net/tested-images/ for you Raspberry Pi version
+1) Download required image (Debian 11) from https://raspi.debian.net/tested-images/ for you Raspberry Pi version
 
 ```bash
-# Example download for RPI3B+
+# Example download for RPI3B+ (Please use URL you have obtained from link above, this one my not work)
 wget https://raspi.debian.net/tested/20220121_raspi_3_bookworm.img.xz
 ```
 
@@ -135,12 +128,7 @@ NAV_BAR:
   HORIZONTAL_POSITION: 'center' # horizontal position on the screen
   VERTICAL_POSITION: 'bottom' # Vertical position on the screen
   WIDTH: 100 # Width of a bar in %
-  HEIGHT: 5 # Height of a bar in % works only for qiosk
-
-SCREEN_SAVER:
-  ENABLED: false  # is screen saver enabled
-  IDLE_TIME: 0
-  TEXT: 'Touch me'
+  HEIGHT: 5 # Height of a bar in %
 
 VIRTUAL_KEYBOARD:
   ENABLED: false
@@ -149,10 +137,6 @@ DISPLAY_ROTATION: 'normal' # normal|left|right|inverted
 #SCREEN_ROTATION: 'normal'  #Rotates screen individually (do not rotate touchscreen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
 #TOUCHSCREEN_ROTATION: 'normal'  #Rotates touchscreen individually (do not rotate screen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
 #EXTRA_ARGUMENTS: # Pass extra arguments to used browser, in case of qiosk thse arguments are passed to chromium using QTWEBENGINE_CHROMIUM_FLAGS
-
-# ==========
-# New options when using qiosk a kiosk first browser:
-# ==========
 
 #ADDRESS_BAR:
 #  ENABLED: false
