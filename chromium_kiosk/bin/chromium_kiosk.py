@@ -39,12 +39,10 @@ from chromium_kiosk.Chromium import Chromium
 from chromium_kiosk.Qiosk import Qiosk
 from chromium_kiosk.enum.RotationEnum import RotationEnum
 from chromium_kiosk.tools import create_user, \
-    inject_parameters_to_url, \
     set_user_groups, \
     rotate_screen, \
     rotate_display, \
     rotate_touchscreen, \
-    generate_xscreensaver_config, \
     detect_display, \
     detect_touchscreen_device_name, \
     detect_primary_screen, \
@@ -287,12 +285,6 @@ def watch_config():
                 if current_sum != last_sum:
                     last_sum = current_sum
                     resolve_rotation_config(config)
-                    generate_xscreensaver_config(
-                        os.path.join(user_home, '.xscreensaver'),
-                        config.SCREEN_SAVER.get('ENABLED', False),
-                        config.SCREEN_SAVER.get('IDLE_TIME', 3600),
-                        config.SCREEN_SAVER.get('TEXT', 'Touch me')
-                    )
                     await websocket.send(out_json)
 
             except websockets.ConnectionClosed as e:

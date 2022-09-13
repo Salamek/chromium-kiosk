@@ -1,12 +1,9 @@
 import os
 import re
 import subprocess
-import datetime
-import shlex
 import shutil
 import urllib.parse
 from chromium_kiosk.enum.RotationEnum import RotationEnum
-from xscreensaver_config.ConfigParser import ConfigParser
 from typing import Union, List
 
 rotation_to_xinput_coordinate = {
