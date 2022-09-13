@@ -25,12 +25,6 @@ class Config(HardCoded):
         'WIDTH': 100,  # Width of a bar in %
     }
 
-    SCREEN_SAVER = {
-        'ENABLED': False,  # is screen saver controlled by chromium kiosk
-        'IDLE_TIME': 0,
-        'TEXT': 'Touch me'
-    }
-
     VIRTUAL_KEYBOARD = {
         'ENABLED': False
     }

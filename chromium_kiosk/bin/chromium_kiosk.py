@@ -275,11 +275,6 @@ def watch_config():
                     },
                     'virtualKeyboard': {
                         'enabled': config.VIRTUAL_KEYBOARD.get('ENABLED', False)
-                    },
-                    'screenSaver':  {
-                        'enabled': config.SCREEN_SAVER.get('ENABLED', False),
-                        'idleTime': config.SCREEN_SAVER.get('IDLE_TIME', 3600),
-                        'text': config.SCREEN_SAVER.get('TEXT', 'Touch me')
                     }
                 }
 
@@ -334,7 +329,14 @@ def post_install():
         'xset -dpms      # disable DPMS (Energy Star) features.',
         'xset s off      # disable screen saver',
         'xset s noblank  # don\'t blank the video device',
-        'xscreensaver -no-splash & # xscreensaver daemon',
+        '',
+        '# Check if xscreensaver is installed, if it is run it',
+        '',
+        'if command -v xscreensaver &> /dev/null',
+        'then',
+        '    xscreensaver -no-splash & # xscreensaver daemon',
+        'fi',
+        '',
         'unclutter &     # hides your cursor after inactivity',
         'xfwm4 &',
         'if [ -e ~/chromium-kiosk-prehook.sh ] # Check if prehook exists and run it',
@@ -394,19 +396,6 @@ def post_install():
 
     with open(getty_path, 'w') as f:
         f.write('\n'.join(systemd_autologin))
-
-    # Generate .xscreensaverconfig
-    xscreensaver_config_path = os.path.join(user_home, '.xscreensaver')
-    generate_xscreensaver_config(
-        xscreensaver_config_path,
-        config.SCREEN_SAVER.get('ENABLED', False),
-        config.SCREEN_SAVER.get('IDLE_TIME', 3600),
-        config.SCREEN_SAVER.get('TEXT', 'Touch me'),
-        reload_service=False
-    )
-
-    os.chown(xscreensaver_config_path, uid, gid)
-    os.chmod(xscreensaver_config_path, 0o644)
 
 
 @command

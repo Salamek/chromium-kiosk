@@ -16,11 +16,6 @@ NAV_BAR:
   WIDTH: 100 # Width of a bar in %
   HEIGHT: 5 # Height of a bar in % works only for qiosk
 
-SCREEN_SAVER:
-  ENABLED: false  # is screen saver enabled
-  IDLE_TIME: 0
-  TEXT: 'Touch me'
-
 VIRTUAL_KEYBOARD:
   ENABLED: false
 

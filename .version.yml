@@ -10,6 +10,6 @@ REGEXPS:
     'PKGBUILD': pkgver\s*=\s*(?P<version>.*)
 
 VERSION_FILES:
-    'granad_kiosk/__init__.py': 'python'
+    'chromium_kiosk/__init__.py': 'python'
     'setup.py': 'setup.py'
     'archlinux/PKGBUILD': 'PKGBUILD'

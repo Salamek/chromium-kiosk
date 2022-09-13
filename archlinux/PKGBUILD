@@ -14,7 +14,6 @@ depends=(
     'python'
     'python-setuptools'
     'chromium'
-    'xscreensaver'
     'xorg-server'
     'xorg-xset'
     'xorg-xinit'
@@ -28,8 +27,6 @@ depends=(
     'python-yaml'
     'python-docopt'
     'python-websockets'
-    'python-xscreensaver-config'
-    'xscreensaver-bouncing-text'
 )
 
 optdepends=(

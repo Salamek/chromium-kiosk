@@ -162,37 +162,6 @@ def rotate_screen(rotation: RotationEnum, screen: str=None) -> bool:
     ]) == 0
 
 
-def generate_xscreensaver_config(config_path: str, enabled: bool, idle_time: int, text: str, reload_service: bool = True) -> bool:
-    xscreensaver_config_parser = ConfigParser(config_path, ignore_missing_file=True)
-    xscreensaver_config_parser.update({
-        'timeout': str(datetime.timedelta(seconds=idle_time)),
-        'cycle': '0',
-        'lock': 'False',
-        'visualID': 'default',
-        'dpmsEnabled': 'False',
-        'splash': 'False',
-        'fade': 'True',
-        'mode': 'one' if enabled else 'off',
-        'selected': '0',
-        'programs': [
-            {
-                'enabled': True,
-                'renderer': 'GL',
-                'command': 'xscreensaver-bouncing-text --text={}'.format(shlex.quote(text).replace('\\n', '\\\\n'))
-            }
-        ]
-    })
-    xscreensaver_config_parser.save()
-
-    if reload_service:
-        # Reload xscreensaver config
-        return subprocess.call([
-            'xscreensaver-command',
-            '--restart',
-        ]) == 0
-    return True
-
-
 def find_binary(names: List[str]) -> Union[str, None]:
     """
     Find binary
