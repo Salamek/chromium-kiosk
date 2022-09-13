@@ -15,6 +15,8 @@ Currently `chromium-kiosk` supports these backends:
   - [Archlinux](#archlinux)
   - [Raspberry Pi](#raspberry-pi)
 - [Configuration](#configuration)
+- [Tips and tricks](#tips-and-tricks)
+  - [Screensaver](#screensaver)
 
 
 ## Installation
@@ -170,3 +172,53 @@ DISPLAY_ROTATION: 'normal' # normal|left|right|inverted
 
 #REMOTE_DEBUGGING:  # Set to port number to enable available only when using qiosk browser
 ```
+
+# Tips and tricks
+
+## Screensaver
+
+Since version 1.1.0 `chromium-kiosk` no longer manages screensaver or installs xscreensaver dependencies for you, but it is still compatible with xscreensaver, you can install and configure xscreensaver in a standart way:
+
+### Installation
+```bash
+# For standart xscreensaver install
+apt get install xscreensaver
+
+# If you want to use chromium-kiosk text screensaver as before, you will need to install `xscreensaver-bouncing-text` package
+apt get install xscreensaver-bouncing-text
+```
+
+### Configuration
+For xscreensaver configuration we use standart xscreensaver configuration file in users home folder a ~/.xscreensaver:
+
+```bash
+nano /home/chromium-kiosk/.xscreensaver
+```
+and insert this configuration:
+
+```
+timeout: 0:00:10
+cycle: 0
+lock: False
+visualID: default
+dpmsEnabled: False
+splash: False
+fade: True
+mode: one
+selected: 0
+programs: \
+  GL: 				xscreensaver-bouncing-text --text='Touch me please'			    \n\
+
+```
+
+`timeout` is time to wait before displaying the screensaver in format H:mm:ss. to change the text, change text inside `'Touch me please'` to desired value. You can also configure screensaver from standart xscreensaver GUI config (xscreensaver-demo)
+
+
+
+
+
+
+
+
+
+
