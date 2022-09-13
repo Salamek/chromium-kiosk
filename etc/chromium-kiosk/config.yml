@@ -14,7 +14,7 @@ NAV_BAR:
   HORIZONTAL_POSITION: 'center' # horizontal position on the screen
   VERTICAL_POSITION: 'bottom' # Vertical position on the screen
   WIDTH: 100 # Width of a bar in %
-  HEIGHT: 5 # Height of a bar in % works only for qiosk
+  HEIGHT: 5 # Height of a bar in %
 
 VIRTUAL_KEYBOARD:
   ENABLED: false
@@ -24,9 +24,6 @@ DISPLAY_ROTATION: 'normal' # normal|left|right|inverted
 #TOUCHSCREEN_ROTATION: 'normal'  #Rotates touchscreen individually (do not rotate screen) when X server starts options are (normal|left|right|inverted), remove DISPLAY_ROTATION for this to work
 #EXTRA_ARGUMENTS: # Pass extra arguments to used browser, in case of qiosk thse arguments are passed to chromium using QTWEBENGINE_CHROMIUM_FLAGS
 
-# ==========
-# New options when using qiosk a kiosk first browser:
-# ==========
 
 #ADDRESS_BAR:
 #  ENABLED: false
