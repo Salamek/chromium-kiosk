@@ -16,6 +16,7 @@ Currently `chromium-kiosk` supports these backends:
 - [Configuration](#configuration)
 - [Tips and tricks](#tips-and-tricks)
   - [Screensaver](#screensaver)
+  - [Periodic reboot](#periodic-reboot)
 
 
 ## Installation
@@ -196,6 +197,25 @@ programs: \
 ```
 
 `timeout` is time to wait before displaying the screensaver in format H:mm:ss. to change the text, change text inside `'Touch me please'` to desired value. You can also configure screensaver from standart xscreensaver GUI config (xscreensaver-demo)
+
+## Periodic reboot
+Sometines (when web page you are displaying has memory leak) only way how to keep your kiosk working is periodically restart the kiosk browser or even whole machine, here you can see how to do it:
+
+We will use CRON, create file in `/etc/cron.d/chromium-kiosk`
+
+```bash
+nano /etc/cron.d/chromium-kiosk
+```
+With this content for browser restart each midnight:
+
+```
+0 0 * * * root /usr/bin/killall -u chromium-kiosk
+```
+
+or with this content for machine restart each midnight:
+```
+0 0 * * * root /usr/sbin/shutdown -r
+```
 
 
 
