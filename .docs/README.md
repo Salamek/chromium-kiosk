@@ -61,6 +61,19 @@ echo "deb     [signed-by=/usr/share/keyrings/salamek-archive-keyring.gpg] https:
 apt install chromium-kiosk
 ```
 
+WARNING: Current debian stable `libqt5webengine5` has broken integrated PDF reader, if you need to use PDFs in your kiosk, you will need to add debian backports repo and install `qt6-qiosk` (QT6 port of qiosk):
+
+1) Add backports repository
+
+```bash
+echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-free" | tee /etc/apt/sources.list.d/backports.list
+```
+
+2) Install QT6 version of qiosk
+```
+apt install qt6-qiosk
+```
+
 
 ### Archlinux
 
