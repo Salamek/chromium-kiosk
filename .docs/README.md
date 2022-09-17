@@ -108,13 +108,13 @@ Installation on Raspberry Pi is a bit different since we use Debian arm64 for Ra
 
 ```bash
 # Example download for RPI3B+ (Please use URL you have obtained from link above, this one my not work)
-wget https://raspi.debian.net/tested/20220121_raspi_3_bookworm.img.xz
+wget https://raspi.debian.net/tested/20220121_raspi_3_bullseye.img.xz
 ```
 
 2) Extract image to SD-CARD (You can also use GUI apps like disks-tool, Etcher, rufus, etc...)
 
 ```bash
-xzcat 20220121_raspi_3_bookworm.img.xz | dd of=/dev/sdX status=progress
+xzcat 20220121_raspi_3_bullseye.img.xz | dd of=/dev/sdX status=progress
 sync
 ```
 
