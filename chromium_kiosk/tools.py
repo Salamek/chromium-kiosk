@@ -65,7 +65,7 @@ def detect_touchscreen_device_name() -> Union[str, None]:
     check_display_env()
     output = subprocess.check_output(['xinput', '-list', '--name-only']).splitlines()
 
-    match_list = [b'touchscreen', b'touchcontroller', b'multi-touch', b'multitouch', b'raspberrypi-ts']
+    match_list = [b'touchscreen', b'touchcontroller', b'multi-touch', b'multitouch', b'raspberrypi-ts', b'touch']
     for name in output:
         for match in match_list:
             if match in name.lower():
