@@ -55,7 +55,13 @@ wget -O- https://repository.salamek.cz/deb/salamek.gpg | tee /usr/share/keyrings
 echo "deb     [signed-by=/usr/share/keyrings/salamek-archive-keyring.gpg] https://repository.salamek.cz/deb/pub all main" | tee /etc/apt/sources.list.d/salamek.cz.list
 ```
 
-5) Install chromium-kiosk
+5) Update packages info
+
+```bash
+apt update
+```
+
+6) Install chromium-kiosk
 
 ```bash
 apt install chromium-kiosk
