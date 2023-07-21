@@ -17,7 +17,10 @@ rotation_to_xinput_coordinate = {
 def check_display_env() -> None:
     if not os.getenv('DISPLAY'):
         # Display is not set, lets do that first
-        os.environ['DISPLAY'] = detect_display()
+        display = detect_display()
+        if not display:
+            raise Exception('No display was detected! Are you running this under user with active X session?')
+        os.environ['DISPLAY'] = display
 
 
 def create_user(username: str, home: str) -> int:
