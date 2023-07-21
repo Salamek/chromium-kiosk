@@ -4,7 +4,7 @@ import subprocess
 import shutil
 import urllib.parse
 from chromium_kiosk.enum.RotationEnum import RotationEnum
-from typing import Union, List
+from typing import List, Optional
 
 rotation_to_xinput_coordinate = {
     RotationEnum.LEFT: '0 -1 1 1 0 0 0 0 1',
@@ -14,7 +14,7 @@ rotation_to_xinput_coordinate = {
 }
 
 
-def check_display_env():
+def check_display_env() -> None:
     if not os.getenv('DISPLAY'):
         # Display is not set, lets do that first
         os.environ['DISPLAY'] = detect_display()
@@ -34,7 +34,7 @@ def create_user(username: str, home: str) -> int:
     ])
 
 
-def set_user_groups(username: str, groups: list):
+def set_user_groups(username: str, groups: list) -> None:
     for group in groups:
         command = ['usermod', '-aG', group, username]
         subprocess.call(command)
@@ -51,17 +51,19 @@ def inject_parameters_to_url(url: str, parameters: dict) -> str:
     return urllib.parse.urlunparse(url_parts)
 
 
-def detect_display():
+def detect_display() -> Optional[str]:
     display = os.getenv('DISPLAY')
     if display:
         return display
 
     output = subprocess.check_output(['ps', 'e', '-u', os.getenv('USER')])
     result = re.search(r'DISPLAY=([\.0-9A-Za-z:]*)', output.decode('UTF-8'), re.MULTILINE)
+    if not result:
+        return None
     return result.group(1)
 
 
-def detect_touchscreen_device_name() -> Union[str, None]:
+def detect_touchscreen_device_name() -> Optional[str]:
     check_display_env()
     output = subprocess.check_output(['xinput', '-list', '--name-only']).splitlines()
 
@@ -71,10 +73,9 @@ def detect_touchscreen_device_name() -> Union[str, None]:
             if match in name.lower():
                 return name.decode('UTF-8')
 
-    return None
 
 
-def detect_primary_screen() -> str:
+def detect_primary_screen() -> Optional[str]:
     check_display_env()
     lines = subprocess.check_output(['xrandr', '--listactivemonitors']).splitlines()
     for line in lines:
@@ -159,7 +160,7 @@ def rotate_screen(rotation: RotationEnum, screen: str=None) -> bool:
     ]) == 0
 
 
-def find_binary(names: List[str]) -> Union[str, None]:
+def find_binary(names: List[str]) -> Optional[str]:
     """
     Find binary
     :return:
