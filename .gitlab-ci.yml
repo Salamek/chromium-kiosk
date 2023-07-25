@@ -46,8 +46,8 @@ package:debian:
       - deb_dist/*.deb
     expire_in: 1d
 
-  dependencies:
-    - test:debian
+#  dependencies:
+#    - test:debian
 
 package:archlinux:
   stage: package
@@ -68,8 +68,8 @@ package:archlinux:
       - archlinux/chromium-kiosk*.pkg.tar.zst
     expire_in: 1d
 
-  dependencies:
-    - test:archlinux
+#  dependencies:
+#    - test:archlinux
 
 
 repoupdate:
