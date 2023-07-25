@@ -100,7 +100,7 @@ def get_screen_rotation(screen: str) -> RotationEnum:
 
 def get_touchscreen_rotation(touch_device: int) -> RotationEnum:
     check_display_env()
-    lines = subprocess.check_output(['xinput', 'list-props', touch_device]).splitlines()
+    lines = subprocess.check_output(['xinput', 'list-props', str(touch_device)]).splitlines()
     for line in lines:
         result = re.match(r'^\s+Coordinate\s+Transformation\s+Matrix\s+\(\d+\):\s+(.+)$', line.decode('UTF-8'))
         if result:
