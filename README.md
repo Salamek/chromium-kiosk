@@ -8,7 +8,7 @@ Chromium kiosk is simple package turning your Linux based PC/Raspberry into simp
 
 * Simple installation and configuration
 * Installed from repository
-* Restarts whole machine when chromium process crashes/exists
+* Reloads session when chromium process crashes/exists
 * Tested on Archlinux, Archlinux ARM, Debian, RaspberryPi
 * Integrated virtual keyboard
 * Integrated whitelist
