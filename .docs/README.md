@@ -67,7 +67,7 @@ apt update
 apt install chromium-kiosk
 ```
 
-WARNING: Current debian stable `libqt5webengine5` has broken integrated PDF reader, if you need to use PDFs in your kiosk, you will need to add debian backports repo and install `qt6-qiosk` (QT6 port of qiosk):
+WARNING: Debian 11 `libqt5webengine5` has broken integrated PDF reader, if you need to use PDFs in your kiosk, you will need to add debian backports repo and install `qt6-qiosk` (QT6 port of qiosk):
 
 1) Add backports repository
 
