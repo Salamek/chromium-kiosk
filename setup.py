@@ -70,14 +70,17 @@ setup(
         ],
     },
     data_files=[
-        (os.path.join(sys_conf_dir, 'systemd', 'system', 'getty@tty1.service.d'), [
-            'etc/systemd/system/getty@tty1.service.d/override.conf'
-        ]),
         (os.path.join(sys_conf_dir, 'chromium-kiosk'), [
             'etc/chromium-kiosk/config.yml'
         ]),
+        (os.path.join(lib_dir, 'systemd', 'system', 'getty@tty1.service.d'), [
+            'usr/lib/systemd/system/getty@tty1.service.d/override.conf'
+        ]),
         (os.path.join(lib_dir, 'systemd', 'system'), [
-            'lib/systemd/system/chromium-kiosk_configwatcher.service',
+            'usr/lib/systemd/system/chromium-kiosk_configwatcher.service',
+        ]),
+        (os.path.join(lib_dir, 'sysusers.d'), [
+            'usr/lib/sysusers.d/chromium-kiosk.conf',
         ]),
     ]
 )
