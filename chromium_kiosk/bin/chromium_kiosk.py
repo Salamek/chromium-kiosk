@@ -371,7 +371,7 @@ def system_info() -> None:
 
     info_items = {
         'Display': detect_display(),
-        'Touchscreen device name': touchscreen_device,
+        'Touchscreen device': touchscreen_device,
         'Primary screen': primary_screen,
         'Screen rotation': get_screen_rotation(primary_screen),
         'Touchscreen rotation': get_touchscreen_rotation(touchscreen_device.xinput_id) if touchscreen_device else None,
