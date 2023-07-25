@@ -292,13 +292,11 @@ def post_install():
         sys.exit('Script must be run as root')
     config = parse_config()
 
-    user_home = os.path.join('/', 'home', config.USER)
+    user_home = os.path.expanduser('~{}'.format(config.USER))
 
     try:
         uid = pwd.getpwnam(config.USER).pw_uid
     except KeyError:
-        create_user(config.USER, user_home)
-        set_user_groups(config.USER, ['video'])
         uid = pwd.getpwnam(config.USER).pw_uid
     gid = grp.getgrnam(config.USER).gr_gid
 

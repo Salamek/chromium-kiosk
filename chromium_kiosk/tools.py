@@ -29,26 +29,6 @@ def check_display_env() -> None:
         os.environ['DISPLAY'] = display
 
 
-def create_user(username: str, home: str) -> int:
-    return subprocess.call([
-        'useradd',
-        '--system',
-        '--user-group',
-        '--shell',
-        '/bin/bash',
-        '--home-dir',
-        home,
-        '--create-home',
-        username
-    ])
-
-
-def set_user_groups(username: str, groups: list) -> None:
-    for group in groups:
-        command = ['usermod', '-aG', group, username]
-        subprocess.call(command)
-
-
 def inject_parameters_to_url(url: str, parameters: dict) -> str:
 
     url_parts = list(urllib.parse.urlparse(url))
