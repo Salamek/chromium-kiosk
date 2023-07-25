@@ -292,13 +292,17 @@ def post_install():
         sys.exit('Script must be run as root')
     config = parse_config()
 
+    # Fetch user info
     user_home = os.path.expanduser('~{}'.format(config.USER))
-
-    try:
-        uid = pwd.getpwnam(config.USER).pw_uid
-    except KeyError:
-        uid = pwd.getpwnam(config.USER).pw_uid
+    uid = pwd.getpwnam(config.USER).pw_uid
     gid = grp.getgrnam(config.USER).gr_gid
+
+    # Make sure that home dir exists
+    os.makedirs(user_home, exist_ok=True)
+
+    # Make sure that home dir has correct rights
+    os.chown(user_home, uid, gid)
+
 
     # Create ~/.xinitrc
     xinitrc_content = [
