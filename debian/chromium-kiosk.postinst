@@ -6,6 +6,16 @@ case "$1" in
     ;;
 
   configure)
+    # Intentionally not using dh_installsysusers: we need enough control
+    # over sequencing to run post_install after doing this
+    if command -v systemd-sysusers >/dev/null; then
+        systemd-sysusers ${DPKG_ROOT:+--root="$DPKG_ROOT"} chromium-kiosk.conf
+    else
+        adduser --group --system --quiet --gecos 'chromium-kiosk' \
+             --home /var/lib/chromium-kiosk chromium-kiosk
+        addgroup --system --quiet chromium-kiosk
+    fi
+
     if [ -z "$2" ]; then
         systemctl daemon-reload
         chromium-kiosk post_install --config_prod
