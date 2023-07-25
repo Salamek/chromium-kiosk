@@ -1,5 +1,5 @@
 
-class HardCoded(object):
+class HardCoded:
     ADMINS = ['adam.schubert@sg1-game.net']
     USER = 'chromium-kiosk'
 
@@ -7,7 +7,7 @@ class HardCoded(object):
 class Config(HardCoded):
     DEBUG = True
     FULL_SCREEN = True
-    TOUCHSCREEN = False
+    TOUCHSCREEN = None  # None=autodetect, set to device name to force
     HOME_PAGE = 'http://127.0.0.1/'
 
     IDLE_TIME = 0

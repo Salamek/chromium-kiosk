@@ -3,8 +3,9 @@ import re
 import subprocess
 import shutil
 import urllib.parse
+import dataclasses
 from chromium_kiosk.enum.RotationEnum import RotationEnum
-from typing import List, Optional
+from typing import List, Optional, Iterator
 
 rotation_to_xinput_coordinate = {
     RotationEnum.LEFT: '0 -1 1 1 0 0 0 0 1',
@@ -12,6 +13,11 @@ rotation_to_xinput_coordinate = {
     RotationEnum.NORMAL: '1 0 0 0 1 0 0 0 1',
     RotationEnum.INVERTED: '-1 0 1 0 -1 1 0 0 1'
 }
+
+@dataclasses.dataclass
+class TouchDevice:
+    name: bytes
+    xinput_id: int
 
 
 def check_display_env() -> None:
@@ -66,15 +72,30 @@ def detect_display() -> Optional[str]:
     return result.group(1)
 
 
-def detect_touchscreen_device_name() -> Optional[str]:
+def get_xinput_devices() -> Iterator[TouchDevice]:
     check_display_env()
-    output = subprocess.check_output(['xinput', '-list', '--name-only']).splitlines()
+    output = subprocess.check_output(['xinput', '-list']).splitlines()
+    xinput_regex = re.compile(rb"^(?:[^\x00-\x7F]|\s)+(.+?)\s+id=(\d+)\s+\[.+\]$")
+    for line in output:
+        result = xinput_regex.match(line)
+        if result:
+            name = result.group(1)
+            xinput_id = int(result.group(2))
+            yield TouchDevice(name=name, xinput_id=xinput_id)
+
+
+def find_touchscreen_device(force_device_name: Optional[str] = None) -> Optional[TouchDevice]:
+    xinput_devices = get_xinput_devices()
 
     match_list = [b'touchscreen', b'touchcontroller', b'multi-touch', b'multitouch', b'raspberrypi-ts', b'touch']
-    for name in output:
+    for xinput_device in xinput_devices:
+
+        if force_device_name and force_device_name == xinput_device.name:
+            return xinput_device
+
         for match in match_list:
-            if match in name.lower():
-                return name.decode('UTF-8')
+            if match in xinput_device.name.lower():
+                return xinput_device
 
 
 
@@ -97,7 +118,7 @@ def get_screen_rotation(screen: str) -> RotationEnum:
     return RotationEnum.NORMAL
 
 
-def get_touchscreen_rotation(touch_device: str) -> RotationEnum:
+def get_touchscreen_rotation(touch_device: int) -> RotationEnum:
     check_display_env()
     lines = subprocess.check_output(['xinput', 'list-props', touch_device]).splitlines()
     for line in lines:
@@ -111,27 +132,26 @@ def get_touchscreen_rotation(touch_device: str) -> RotationEnum:
     return RotationEnum.NORMAL
 
 
-def rotate_display(rotation: RotationEnum, screen: str=None, touch_device: str=None) -> bool:
-    return rotate_screen(rotation, screen) and rotate_touchscreen(rotation, touch_device)
+def rotate_display(rotation: RotationEnum, screen: Optional[str] = None, force_touchscreen_name: Optional[str] = None) -> bool:
+    return rotate_screen(rotation, screen) and rotate_touchscreen(rotation, force_touchscreen_name)
 
 
-def rotate_touchscreen(rotation: RotationEnum, touch_device: str=None) -> bool:
+def rotate_touchscreen(rotation: RotationEnum, force_device_name: Optional[str] = None) -> bool:
     check_display_env()
 
-    if not touch_device:
-        touch_device = detect_touchscreen_device_name()
+    touch_device = find_touchscreen_device(force_device_name)
 
     if not touch_device:
         return False
 
-    current_rotation = get_touchscreen_rotation(touch_device)
+    current_rotation = get_touchscreen_rotation(touch_device.xinput_id)
     if current_rotation == rotation:
         return True
 
     command = [
         'xinput',
         'set-prop',
-        '"{}"'.format(touch_device),
+        touch_device.xinput_id,
         '"Coordinate Transformation Matrix"',
         rotation_to_xinput_coordinate.get(rotation)
     ]
@@ -139,7 +159,7 @@ def rotate_touchscreen(rotation: RotationEnum, touch_device: str=None) -> bool:
     return subprocess.call(' '.join(command), shell=True) == 0
 
 
-def rotate_screen(rotation: RotationEnum, screen: str=None) -> bool:
+def rotate_screen(rotation: RotationEnum, screen: Optional[str] = None) -> bool:
     check_display_env()
     if not screen:
         screen = detect_primary_screen()

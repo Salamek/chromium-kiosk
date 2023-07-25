@@ -29,51 +29,50 @@ import pwd
 import grp
 import signal
 import sys
-import shutil
 import asyncio
 import json
 import websockets
 from functools import wraps
 from importlib import import_module
+import yaml
+from docopt import docopt
+
 from chromium_kiosk.Qiosk import Qiosk
+from chromium_kiosk.config import Config
 from chromium_kiosk.enum.RotationEnum import RotationEnum
-from chromium_kiosk.tools import create_user, \
-    set_user_groups, \
-    rotate_screen, \
+from chromium_kiosk.tools import rotate_screen, \
     rotate_display, \
     rotate_touchscreen, \
     detect_display, \
-    detect_touchscreen_device_name, \
+    find_touchscreen_device, \
     detect_primary_screen, \
     get_screen_rotation, \
-    get_touchscreen_rotation, \
-    find_binary
+    get_touchscreen_rotation
+
 import chromium_kiosk as app_root
 
-import yaml
-from docopt import docopt
 
 OPTIONS = docopt(__doc__)
 APP_ROOT_FOLDER = os.path.abspath(os.path.dirname(app_root.__file__))
 
 
-def resolve_rotation_config(options):
+def resolve_rotation_config(options: Config):
 
     # Rotation options are set separately, use them
     if options.TOUCHSCREEN_ROTATION and options.SCREEN_ROTATION:
         rotate_screen(RotationEnum(options.SCREEN_ROTATION))
-        rotate_touchscreen(RotationEnum(options.TOUCHSCREEN_ROTATION))
+        rotate_touchscreen(RotationEnum(options.TOUCHSCREEN_ROTATION), options.TOUCHSCREEN)
     elif not options.TOUCHSCREEN_ROTATION and options.SCREEN_ROTATION:
         rotate_screen(RotationEnum(options.SCREEN_ROTATION))
-        rotate_touchscreen(RotationEnum.NORMAL)
+        rotate_touchscreen(RotationEnum.NORMAL, options.TOUCHSCREEN)
     elif options.TOUCHSCREEN_ROTATION and not options.SCREEN_ROTATION:
         rotate_screen(RotationEnum.NORMAL)
-        rotate_touchscreen(RotationEnum(options.TOUCHSCREEN_ROTATION))
+        rotate_touchscreen(RotationEnum(options.TOUCHSCREEN_ROTATION), options.TOUCHSCREEN)
     elif options.DISPLAY_ROTATION:
-        rotate_display(RotationEnum(options.DISPLAY_ROTATION))
+        rotate_display(RotationEnum(options.DISPLAY_ROTATION), force_touchscreen_name=options.TOUCHSCREEN)
     else:
         # just fallback to normal
-        rotate_display(RotationEnum.NORMAL)
+        rotate_display(RotationEnum.NORMAL, force_touchscreen_name=options.TOUCHSCREEN)
 
 
 class CustomFormatter(logging.Formatter):
@@ -362,34 +361,22 @@ def post_install():
     os.chown(hushlogin_path, uid, gid)
     os.chmod(hushlogin_path, 0o644)
 
-    # Update autologin service
-    systemd_autologin = [
-        '[Service]',
-        'ExecStart=',
-        'ExecStart=-{} --skip-login --nonewline --noissue --autologin {} --noclear %I $TERM'.format(shutil.which('agetty'), config.USER),
-    ]
-
-    getty_path = os.path.join('/', 'etc', 'systemd', 'system', 'getty@tty1.service.d', 'override.conf')
-    getty_dir_path = os.path.dirname(getty_path)
-
-    if not os.path.exists(getty_dir_path):
-        os.makedirs(getty_dir_path)
-
-    with open(getty_path, 'w') as f:
-        f.write('\n'.join(systemd_autologin))
 
 
 @command
 def system_info() -> None:
+    config = parse_config()
+    setup_logging('system_info', logging.DEBUG if config.DEBUG else logging.WARNING)
+
     primary_screen = detect_primary_screen()
-    touchscreen_device = detect_touchscreen_device_name()
+    touchscreen_device = find_touchscreen_device(config.TOUCHSCREEN)
 
     info_items = {
         'Display': detect_display(),
         'Touchscreen device name': touchscreen_device,
         'Primary screen': primary_screen,
         'Screen rotation': get_screen_rotation(primary_screen),
-        'Touchscreen rotation': get_touchscreen_rotation(touchscreen_device) if touchscreen_device else None,
+        'Touchscreen rotation': get_touchscreen_rotation(touchscreen_device.xinput_id) if touchscreen_device else None,
     }
 
     for name, output in info_items.items():
