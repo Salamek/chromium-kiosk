@@ -82,5 +82,8 @@ setup(
         (os.path.join(lib_dir, 'sysusers.d'), [
             'usr/lib/sysusers.d/chromium-kiosk.conf',
         ]),
+        (os.path.join(lib_dir, 'tmpfiles.d'), [
+            'usr/lib/tmpfiles.d/chromium-kiosk.conf',
+        ]),
     ]
 )

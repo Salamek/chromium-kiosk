@@ -18,11 +18,9 @@ case "$1" in
 
     if [ -z "$2" ]; then
         systemctl daemon-reload
-        chromium-kiosk post_install --config_prod
         systemctl start chromium-kiosk_configwatcher
         systemctl enable chromium-kiosk_configwatcher
     else
-        chromium-kiosk post_install --config_prod
         systemctl enable chromium-kiosk_configwatcher
         systemctl restart chromium-kiosk_configwatcher
     fi
