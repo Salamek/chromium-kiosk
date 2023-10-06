@@ -7,8 +7,8 @@ from typing import List, Union
 from setuptools import setup, find_packages
 
 sys_conf_dir = os.getenv("SYSCONFDIR", "/etc")
-data_dir = os.getenv("DATADIR", "/usr/share")
-lib_dir = os.getenv("LIBDIR", "/usr/lib")
+usr_lib_dir = os.getenv("LIBDIR", "/usr/lib")
+var_lib_dir = os.getenv("VARLIBDIR", "/var/lib")
 
 
 def get_requirements(filename: str) -> list:
@@ -73,17 +73,22 @@ setup(
         (os.path.join(sys_conf_dir, 'chromium-kiosk'), [
             'etc/chromium-kiosk/config.yml'
         ]),
-        (os.path.join(lib_dir, 'systemd', 'system', 'getty@tty1.service.d'), [
+        (os.path.join(usr_lib_dir, 'systemd', 'system', 'getty@tty1.service.d'), [
             'usr/lib/systemd/system/getty@tty1.service.d/override.conf'
         ]),
-        (os.path.join(lib_dir, 'systemd', 'system'), [
+        (os.path.join(usr_lib_dir, 'systemd', 'system'), [
             'usr/lib/systemd/system/chromium-kiosk_configwatcher.service',
         ]),
-        (os.path.join(lib_dir, 'sysusers.d'), [
+        (os.path.join(usr_lib_dir, 'sysusers.d'), [
             'usr/lib/sysusers.d/chromium-kiosk.conf',
         ]),
-        (os.path.join(lib_dir, 'tmpfiles.d'), [
+        (os.path.join(usr_lib_dir, 'tmpfiles.d'), [
             'usr/lib/tmpfiles.d/chromium-kiosk.conf',
+        ]),
+        (os.path.join(var_lib_dir, 'chromium-kiosk'), [
+            'var/lib/chromium-kiosk/.bash_profile',
+            'var/lib/chromium-kiosk/.hushlogin',
+            'var/lib/chromium-kiosk/.xinitrc',
         ]),
     ]
 )
