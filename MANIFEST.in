@@ -1,5 +1,7 @@
 include requirements.txt
 include README.md
 recursive-include etc *
+recursive-include var *
+recursive-include usr *
 recursive-include tests *
 recursive-include debian *
