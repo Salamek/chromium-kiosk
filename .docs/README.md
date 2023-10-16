@@ -155,6 +155,7 @@ NAV_BAR:
   VERTICAL_POSITION: 'bottom' # Vertical position on the screen
   WIDTH: 100 # Width of a bar in %
   HEIGHT: 5 # Height of a bar in %
+  UNDERLAY: false  # true to display navbar under the web view
 
 VIRTUAL_KEYBOARD:
   ENABLED: false
@@ -181,6 +182,11 @@ DISPLAY_ROTATION: 'normal' # normal|left|right|inverted
 #  - notifications  # Allows notifications to be accepted from website
 
 #REMOTE_DEBUGGING:  # Set to port number to enable available only when using qiosk browser
+
+# EXTRA_ENV_VARS:  # Extra env vars set to the kiosk session
+#    VAR_NAME: VAR_VALUE
+
+# PROFILE_NAME: 'default' # Name of profile to use, default for default off-the-record profile
 ```
 
 # Tips and tricks
