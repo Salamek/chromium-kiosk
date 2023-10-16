@@ -23,6 +23,7 @@ class Config(HardCoded):
         'HORIZONTAL_POSITION': 'center',  # horizontal position on the screen
         'VERTICAL_POSITION': 'bottom',  # Vertical position on the screen
         'WIDTH': 100,  # Width of a bar in %
+        'UNDERLAY': False  # If set to True, the navbar will be displayed under the web view
     }
 
     VIRTUAL_KEYBOARD = {
@@ -48,6 +49,10 @@ class Config(HardCoded):
     REMOTE_DEBUGGING = None  # Set to port number to enable available only when using qiosk browser
 
     EXTRA_ARGUMENTS = None  # Pass extra arguments to used browser
+
+    EXTRA_ENV_VARS = {}
+
+    PROFILE_NAME = "default"  # Name of profile used by browser, default is name of default off-the-record profile, use custom name to persist cookies and other data
 
     ADDRESS_BAR = {
         'ENABLED': False

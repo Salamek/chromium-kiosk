@@ -43,6 +43,11 @@ class Qiosk(IBrowser):
             command.extend(['--navbar-width', str(self.config.NAV_BAR.get('WIDTH', 100))])
             command.extend(['--navbar-height', str(self.config.NAV_BAR.get('HEIGHT', 5))])
 
+            if self.config.NAV_BAR.get('UNDERLAY', False):
+                command.append('--underlay-navbar')
+
+        command.extend(['--profile-name', self.config.PROFILE_NAME])
+
         for allowed_feature in self.config.ALLOWED_FEATURES:
             command.extend(['-a', allowed_feature])
 
@@ -50,6 +55,8 @@ class Qiosk(IBrowser):
             command.append('--display-addressbar')
 
         my_env = os.environ.copy()
+
+        my_env.update(self.config.EXTRA_ENV_VARS)
 
         if self.config.REMOTE_DEBUGGING:
             my_env['QTWEBENGINE_REMOTE_DEBUGGING'] = self.config.REMOTE_DEBUGGING
