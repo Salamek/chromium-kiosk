@@ -37,7 +37,7 @@ package:debian:
     - apt-get install -y curl gnupg apt-transport-https
     - apt-get install -y python3-pip python3-stdeb python3-docopt python3-yaml python3-websockets python3-pygame dh-python
     - rm -rf "./deb_dist"
-    - python3 setup.py --command-packages=stdeb.command bdist_deb
+    - python3 setup.py --command-packages=stdeb.command sdist_dsc --compat 14 bdist_deb
   tags:
     - debian
 
