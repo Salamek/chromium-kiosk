@@ -67,7 +67,7 @@ apt update
 apt install chromium-kiosk
 ```
 
-WARNING: Debian 11 `libqt5webengine5` has broken integrated PDF reader, if you need to use PDFs in your kiosk, you will need to add debian backports repo and install `qt6-qiosk` (QT6 port of qiosk):
+> WARNING: Debian 11 `libqt5webengine5` has broken integrated PDF reader, if you need to use PDFs in your kiosk, you will need to add debian backports repo and install `qt6-qiosk` (QT6 port of qiosk):
 
 1) Add backports repository
 
@@ -80,6 +80,12 @@ echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-free"
 apt install qt6-qiosk
 ```
 
+WARNING: Debian 12 armhf `qt6-webengine` used by QT6 `qiosk` is crashing with `SIGBUS` code but QT5 version works fine, use `qt5-qiosk` (QT5 port of qiosk):
+
+2) Install QT5 version of qiosk
+```
+apt install qt5-qiosk
+```
 
 ### Archlinux
 
