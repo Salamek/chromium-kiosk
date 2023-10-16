@@ -16,4 +16,4 @@ if [ -e ~/chromium-kiosk-prehook.sh ] # Check if prehook exists and run it
 then
     ~/chromium-kiosk-prehook.sh
 fi
-exec chromium-kiosk run --config_prod --log_dir=~/ && killall -u $USER
+exec chromium-kiosk run --config_prod --log_dir=$HOME && killall -u $USER
