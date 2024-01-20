@@ -289,6 +289,8 @@ Setup your VNC password
 
 ```bash
 x11vnc -storepasswd YOUR_VNC_PASSWORD /etc/x11vnc.pwd
+chmod 600 /etc/x11vnc.pwd
+chown chromium-kiosk:chromium-kiosk /etc/x11vnc.pwd
 ```
 
 Enable and start VNC service
