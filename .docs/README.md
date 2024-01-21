@@ -17,6 +17,7 @@ Currently `chromium-kiosk` supports these backends:
 - [Tips and tricks](#tips-and-tricks)
   - [Screensaver](#screensaver)
   - [Periodic reboot](#periodic-reboot)
+  - [VNC](#vnc)
 
 
 ## Installation
@@ -155,6 +156,7 @@ NAV_BAR:
   VERTICAL_POSITION: 'bottom' # Vertical position on the screen
   WIDTH: 100 # Width of a bar in %
   HEIGHT: 5 # Height of a bar in %
+  UNDERLAY: false  # true to display navbar under the web view
 
 VIRTUAL_KEYBOARD:
   ENABLED: false
@@ -181,6 +183,11 @@ DISPLAY_ROTATION: 'normal' # normal|left|right|inverted
 #  - notifications  # Allows notifications to be accepted from website
 
 #REMOTE_DEBUGGING:  # Set to port number to enable available only when using qiosk browser
+
+# EXTRA_ENV_VARS:  # Extra env vars set to the kiosk session
+#    VAR_NAME: VAR_VALUE
+
+# PROFILE_NAME: 'default' # Name of profile to use, default for default off-the-record profile
 ```
 
 # Tips and tricks
@@ -233,18 +240,65 @@ nano /etc/cron.d/chromium-kiosk
 ```
 With this content for browser restart each midnight:
 
-```
+```crontab
 0 0 * * * root /usr/bin/killall -u chromium-kiosk
 ```
 
 or with this content for machine restart each midnight:
-```
+```crontab
 0 0 * * * root /usr/sbin/shutdown -r
 ```
 
+## Vnc
 
+How to configure VNC access to chromium-kiosk
 
+Install x11vnc
+```bash
+apt update
+apt install x11vnc
+```
 
+Setup systemd startup script
+```bash
+nano /etc/systemd/system/x11vnc.service
+```
+
+And insert this configuration into it (use CTRL+0 to save and CTRL+X to exit the nano editor)
+```
+[Unit]
+Description=VNC Server for X11
+After=syslog.target network-online.target multi-user.target
+Wants=syslog.target network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+User=chromium-kiosk
+Group=chromium-kiosk
+ExecStart=/usr/bin/x11vnc -display :0 -rfbauth /etc/x11vnc.pwd -shared -forever -auth guess
+ExecStop=/usr/bin/x11vnc -R stop
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical.target
+```
+
+Setup your VNC password
+
+```bash
+x11vnc -storepasswd YOUR_VNC_PASSWORD /etc/x11vnc.pwd
+chmod 600 /etc/x11vnc.pwd
+chown chromium-kiosk:chromium-kiosk /etc/x11vnc.pwd
+```
+
+Enable and start VNC service
+```bash
+systemctl daemon-reload
+systemctl enable x11vnc
+systemctl start x11vnc
+```
 
 
 
