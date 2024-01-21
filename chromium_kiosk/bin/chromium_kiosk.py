@@ -19,7 +19,6 @@ Options:
     -l DIR --log_dir=DIR        Directory to log into
 """
 
-import hashlib
 import logging
 import logging.handlers
 import os
@@ -27,12 +26,14 @@ import signal
 import sys
 import asyncio
 import json
+
 import websockets
 from functools import wraps
 from importlib import import_module
+from typing import Optional, List, Callable, TypeVar
 import yaml
+from websockets.client import WebSocketClientProtocol
 from docopt import docopt
-
 from chromium_kiosk.Qiosk import Qiosk
 from chromium_kiosk.config import Config
 from chromium_kiosk.enum.RotationEnum import RotationEnum
@@ -47,6 +48,7 @@ from chromium_kiosk.tools import rotate_screen, \
 
 import chromium_kiosk as app_root
 
+CT = TypeVar('CT')
 
 OPTIONS = docopt(__doc__)
 APP_ROOT_FOLDER = os.path.abspath(os.path.dirname(app_root.__file__))
@@ -74,12 +76,12 @@ def resolve_rotation_config(options: Config):
 class CustomFormatter(logging.Formatter):
     LEVEL_MAP = {logging.FATAL: 'F', logging.ERROR: 'E', logging.WARN: 'W', logging.INFO: 'I', logging.DEBUG: 'D'}
 
-    def format(self, record):
-        record.levelletter = self.LEVEL_MAP[record.levelno]
-        return super(CustomFormatter, self).format(record)
+    def format(self, record: logging.LogRecord) -> str:
+        record.levelletter = self.LEVEL_MAP[record.levelno]  # type: ignore
+        return super().format(record)
 
 
-def setup_logging(name: str=None, level: int=logging.DEBUG) -> None:
+def setup_logging(name: Optional[str] = None, level: int = logging.DEBUG) -> None:
     """Setup Google-Style logging for the entire application.
 
     At first I hated this but I had to use it for work, and now I prefer it. Who knew?
@@ -119,7 +121,17 @@ def setup_logging(name: str=None, level: int=logging.DEBUG) -> None:
         root.addHandler(file_handler)
 
 
-def get_config(config_class_string: str, yaml_files=None):
+def find_config_files(yaml_files: Optional[List[str]] = None) -> List[str]:
+    return yaml_files or [f for f in [
+        os.path.join('/', 'etc', 'chromium-kiosk', 'config.yml'),
+        # Compability with old proprietary version
+        os.path.join('/', 'etc', 'granad-kiosk', 'config.yml'),
+        os.path.abspath(os.path.join(APP_ROOT_FOLDER, '..', 'config.yml')),
+        os.path.join(APP_ROOT_FOLDER, 'config.yml'),
+    ] if os.path.exists(f)]
+
+
+def get_config(config_class_string: str) -> Config:
     """Load the Flask config from a class.
     Positional arguments:
     config_class_string -- string representation of a configuration class that will be loaded (e.g.
@@ -137,22 +149,12 @@ def get_config(config_class_string: str, yaml_files=None):
         config_obj.DB_MODELS_IMPORTS = [db_fmt.format(m) for m in config_obj.DB_MODELS_IMPORTS]
 
     # Load additional configuration settings.
-    yaml_files = yaml_files or [f for f in [
-        os.path.join('/', 'etc', 'chromium-kiosk', 'config.yml'),
-        # Compability with old proprietary version
-        os.path.join('/', 'etc', 'granad-kiosk', 'config.yml'),
-        os.path.abspath(os.path.join(APP_ROOT_FOLDER, '..', 'config.yml')),
-        os.path.join(APP_ROOT_FOLDER, 'config.yml'),
-    ] if os.path.exists(f)]
-    additional_dict = dict()
+    yaml_files = find_config_files()
+    additional_dict = {}
     for y in yaml_files:
-        with open(y) as f:
-            config_content = f.read()
-            try:
-                loaded_data = yaml.load(config_content, Loader=yaml.FullLoader)
-            except AttributeError:
-                # Handle older versions of yaml library
-                loaded_data = yaml.load(config_content)
+        logging.debug('Loading config from {}'.format(y))
+        with open(y, encoding='UTF-8') as f:
+            loaded_data = yaml.load(f.read(), Loader=yaml.FullLoader)
             if isinstance(loaded_data, dict):
                 additional_dict.update(loaded_data)
             else:
@@ -165,7 +167,7 @@ def get_config(config_class_string: str, yaml_files=None):
     return config_obj
 
 
-def parse_config():
+def parse_config() -> Config:
     """Parses command line options for Flask.
 
     Returns:
@@ -181,7 +183,7 @@ def parse_config():
     return config_obj
 
 
-def command(func):
+def command(name: Optional[str] = None) -> Callable[[Callable[..., CT]], Callable[..., CT]]:
     """Decorator that registers the chosen command/function.
 
     If a function is decorated with @command but that function name is not a valid "command" according to the docstring,
@@ -203,87 +205,85 @@ def command(func):
     func -- the function to decorate
     """
 
-    @wraps(func)
-    def wrapped():
-        return func()
+    def function_wrap(func: Callable[..., CT]) -> Callable[..., CT]:
 
-    # Register chosen function.
-    if func.__name__ not in OPTIONS:
-        raise KeyError('Cannot register {}, not mentioned in docstring/docopt.'.format(func.__name__))
-    if OPTIONS[func.__name__]:
-        command.chosen = func
+        @wraps(func)
+        def wrapped() -> CT:
+            return func()
 
-    return wrapped
+        command_name = name if name else func.__name__
+
+        # Register chosen function.
+        if command_name not in OPTIONS:
+            raise KeyError('Cannot register {}, not mentioned in docstring/docopt.'.format(command_name))
+        if OPTIONS[command_name]:
+            command.chosen = func  # type: ignore
+
+        return wrapped
+
+    return function_wrap
 
 
-@command
-def run():
+@command()
+def run() -> None:
     config = parse_config()
     setup_logging('kiosk', logging.DEBUG if config.DEBUG else logging.WARNING)
 
     # Rotate screen by config value
     resolve_rotation_config(config)
 
-    selected_browser = Qiosk()
-    selected_browser.set_config(config)
+    selected_browser = Qiosk(config)
     selected_browser.run()
 
 
-@command
-def watch_config():
-    async def config_watcher(websocket, path):
-        last_sum = None
+@command()
+def watch_config() -> None:
+    setup_logging('watch_config', logging.WARNING)
+
+    async def receive_message(websocket: WebSocketClientProtocol):
         while True:
+            response = await websocket.recv()
+            logging.debug(response)
+
+    async def send_message(websocket: WebSocketClientProtocol):
+        current_config = Qiosk.resolve_command_mappings_config(parse_config())
+
+        while True:
+            raw_config = parse_config()
+            check_config = Qiosk.resolve_command_mappings_config(raw_config)
+            diffs = Qiosk.diff_command_mappings_config_value(current_config, check_config)
+            if diffs:
+                resolve_rotation_config(raw_config)
+
+                for command_name, config_value in diffs.items():
+                    # Emit changes
+                    payload = json.dumps({
+                        'command': command_name,
+                        'data': config_value.payload
+                    })
+
+                    await websocket.send(payload)
+                # Set new config as old
+                current_config = check_config
+
+            await asyncio.sleep(1)
+
+    async def main():
+        uri = "ws://localhost:1791"
+
+        async for websocket in websockets.connect(uri):
             try:
-                config = parse_config()
+                await send_message(websocket)
+                #asyncio.create_task(send_message(websocket))
+                #asyncio.create_task(receive_message(websocket))
+                #await asyncio.Future()
+            except websockets.ConnectionClosed:
+                continue
 
-                client_options = {
-                    'homePage': config.HOME_PAGE,
-                    'idleTime': config.IDLE_TIME,
-                    'displayRotation': config.DISPLAY_ROTATION,
-                    'touchscreenRotation': config.TOUCHSCREEN_ROTATION,
-                    'screenRotation': config.SCREEN_ROTATION,
-                    'whiteList': {
-                        'enabled': config.WHITE_LIST.get('ENABLED', False),
-                        'urls': config.WHITE_LIST.get('URLS', []),
-                        'iframeEnabled': config.WHITE_LIST.get('IFRAME_ENABLED', False)
-                    },
-                    'navBar': {
-                        'enabled': config.NAV_BAR.get('ENABLED', False),
-                        'enabledButtons': config.NAV_BAR.get('ENABLED_BUTTONS', []),
-                        'horizontalPosition': config.NAV_BAR.get('HORIZONTAL_POSITION', 'center'),
-                        'verticalPosition': config.NAV_BAR.get('VERTICAL_POSITION', 'bottom'),
-                        'width': config.NAV_BAR.get('WIDTH', 100)
-                    },
-                    'virtualKeyboard': {
-                        'enabled': config.VIRTUAL_KEYBOARD.get('ENABLED', False)
-                    }
-                }
-
-                out_json = json.dumps({
-                    'event': 'onGetClientConfig',
-                    'data': client_options
-                })
-
-                current_sum = hashlib.md5(out_json.encode()).hexdigest()
-                if current_sum != last_sum:
-                    last_sum = current_sum
-                    resolve_rotation_config(config)
-                    await websocket.send(out_json)
-
-            except websockets.ConnectionClosed as e:
-                print(e)
-
-            await asyncio.sleep(2)
-
-    start_server = websockets.serve(config_watcher, "127.0.0.1", 5678)
-
-    asyncio.get_event_loop().run_until_complete(start_server)
-    asyncio.get_event_loop().run_forever()
+    asyncio.run(main())
 
 
-
-@command
+@command()
 def system_info() -> None:
     config = parse_config()
     setup_logging('system_info', logging.DEBUG if config.DEBUG else logging.WARNING)

@@ -23,6 +23,7 @@ class Config(HardCoded):
         'HORIZONTAL_POSITION': 'center',  # horizontal position on the screen
         'VERTICAL_POSITION': 'bottom',  # Vertical position on the screen
         'WIDTH': 100,  # Width of a bar in %
+        'HEIGHT': 5,  # Width of a bar in %
         'UNDERLAY': False  # If set to True, the navbar will be displayed under the web view
     }
 
@@ -34,7 +35,7 @@ class Config(HardCoded):
     TOUCHSCREEN_ROTATION = 'normal'  # normal|left|right|inverted
     SCREEN_ROTATION = 'normal'  # normal|left|right|inverted
 
-    ALLOWED_FEATURES = [  # Set enabled features, available only when using qiosk browser
+    ALLOWED_FEATURES = [  # Set enabled features
         #'desktop-audio-video-capture',
         #'desktop-video-capture',
         #'geolocation',
@@ -46,7 +47,7 @@ class Config(HardCoded):
         #'notifications'
     ]
 
-    REMOTE_DEBUGGING = None  # Set to port number to enable available only when using qiosk browser
+    REMOTE_DEBUGGING = None  # Set to port number to enable
 
     EXTRA_ARGUMENTS = None  # Pass extra arguments to used browser
 
