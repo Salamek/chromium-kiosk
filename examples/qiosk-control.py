@@ -12,6 +12,7 @@ Website: https://github.com/Salamek/chromium-kiosk
 
 Command details:
     setUrl                 Set displayed url.
+    setHomePage            Set homePageUrl.
     setWindowMode          Sets window mode.
     setIdleTime            Set idle time.
     setWhiteList           Set white list items.
@@ -27,6 +28,7 @@ Command details:
     exit                   Exit the interface.
 Usage:
     q setUrl <url>
+    q setHomePage <homePageUrl>
     q setWindowMode <fullscreen>
     q setIdleTime <idleTime>
     q setWhiteList [<whitelist>...]
@@ -44,6 +46,7 @@ Usage:
 
 allowed_commands = [
     'setUrl',
+    'setHomePage',
     'setWindowMode',
     'setIdleTime',
     'setWhiteList',
@@ -84,6 +87,12 @@ async def send_message(websocket: WebSocketClientProtocol):
                     option_value = True
                 elif option_value == 'false':
                     option_value = False
+                elif isinstance(option_value, str):
+                    try:
+                        option_value = int(option_value)
+                    except TypeError:
+                        pass
+
                 data[option_name.replace('<', '').replace('>', '')] = option_value
 
         command = json.dumps({
@@ -105,7 +114,7 @@ async def receive_message(websocket: WebSocketClientProtocol):
 async def main():
     uri = "ws://localhost:1791"
     async with websockets.connect(uri) as websocket:
-        asyncio.create_task(send_message(websocket))
+        #asyncio.create_task(send_message(websocket))
         asyncio.create_task(receive_message(websocket))
         await asyncio.Future()
 
