@@ -90,7 +90,7 @@ async def send_message(websocket: WebSocketClientProtocol):
                 elif isinstance(option_value, str):
                     try:
                         option_value = int(option_value)
-                    except TypeError:
+                    except (TypeError, ValueError):
                         pass
 
                 data[option_name.replace('<', '').replace('>', '')] = option_value
@@ -114,7 +114,7 @@ async def receive_message(websocket: WebSocketClientProtocol):
 async def main():
     uri = "ws://localhost:1791"
     async with websockets.connect(uri) as websocket:
-        #asyncio.create_task(send_message(websocket))
+        asyncio.create_task(send_message(websocket))
         asyncio.create_task(receive_message(websocket))
         await asyncio.Future()
 
