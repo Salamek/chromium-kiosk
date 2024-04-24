@@ -64,6 +64,9 @@ class Qiosk:
         if self.config.ADDRESS_BAR.get('ENABLED', False):
             command.append('--display-addressbar')
 
+        if self.config.SCROLL_BARS.get('ENABLED', False):
+            command.append('--display-scroll-bars')
+
         return command
 
     def _build_env(self) -> Dict[str, str]:

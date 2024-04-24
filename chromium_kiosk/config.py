@@ -59,6 +59,10 @@ class Config(HardCoded):
         'ENABLED': False
     }
 
+    SCROLL_BARS = {
+        'ENABLED': False
+    }
+
 
 class Testing(Config):
     TESTING = True

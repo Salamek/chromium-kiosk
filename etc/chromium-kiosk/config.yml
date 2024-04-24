@@ -29,6 +29,9 @@ DISPLAY_ROTATION: 'normal' # normal|left|right|inverted
 #ADDRESS_BAR:
 #  ENABLED: false
 
+#SCROLL_BARS:
+#  ENABLED: false
+
 # Allowed features in browser
 # Uncomment feature you want to enable
 #ALLOWED_FEATURES:
