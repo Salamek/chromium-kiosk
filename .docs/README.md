@@ -167,7 +167,10 @@ DISPLAY_ROTATION: 'normal' # normal|left|right|inverted
 #EXTRA_ARGUMENTS: # Pass extra arguments to used browser, in case of qiosk thse arguments are passed to chromium using QTWEBENGINE_CHROMIUM_FLAGS
 
 #ADDRESS_BAR:
-#  ENABLED: false
+#  ENABLED: false  # Show/hide address bar
+
+#SCROLL_BARS:
+#  ENABLED: false  # Show hide scroll bars
 
 # Allowed features in browser
 # Uncomment feature you want to enable

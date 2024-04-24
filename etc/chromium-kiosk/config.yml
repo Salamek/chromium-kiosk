@@ -27,10 +27,10 @@ DISPLAY_ROTATION: 'normal' # normal|left|right|inverted
 
 
 #ADDRESS_BAR:
-#  ENABLED: false
+#  ENABLED: false  # Show/hide address bar
 
 #SCROLL_BARS:
-#  ENABLED: false
+#  ENABLED: false  # Show hide scroll bars
 
 # Allowed features in browser
 # Uncomment feature you want to enable
