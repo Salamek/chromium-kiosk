@@ -18,6 +18,7 @@ Currently `chromium-kiosk` supports these backends:
   - [Screensaver](#screensaver)
   - [Periodic reboot](#periodic-reboot)
   - [VNC](#vnc)
+  - [Remote debugging](#remote-debugging)
 
 
 ## Installation
@@ -303,7 +304,12 @@ systemctl enable x11vnc
 systemctl start x11vnc
 ```
 
-
+## Remote debugging
+You can enable remote debugging by setting port in configuration (`/etc/chromium-kiosk/config.yml`) and using chromium/chrome dev console to connect to this port:
+```
+REMOTE_DEBUGGING: 9988
+```
+(Enabling remote debugging requires restarting the browser (or whole machine)
 
 
 
