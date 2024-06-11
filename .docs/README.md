@@ -30,7 +30,7 @@ Chromium kiosk can be installed on multiple Linux based distributions, officiall
 
 ### Debian
 
-For Debian there are prepared DEB packages in my repository:
+For Debian there are prepared DEB packages in my repository, package is tested for debian netinst with only SSH and base utils installed:
 
 1) Make sure that your system is up-to-date
 
