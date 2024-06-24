@@ -131,7 +131,7 @@ def rotate_touchscreen(rotation: RotationEnum, force_device_name: Optional[str] 
     command = [
         'xinput',
         'set-prop',
-        touch_device.xinput_id,
+        str(touch_device.xinput_id),
         '"Coordinate Transformation Matrix"',
         rotation_to_xinput_coordinate.get(rotation)
     ]
