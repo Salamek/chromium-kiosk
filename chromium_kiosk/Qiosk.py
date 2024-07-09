@@ -72,7 +72,7 @@ class Qiosk:
     def _build_env(self) -> Dict[str, str]:
         my_env = os.environ.copy()
 
-        my_env.update(self.config.EXTRA_ENV_VARS)
+        my_env.update({k: str(v) for k, v in self.config.EXTRA_ENV_VARS.items()})
 
         if self.config.REMOTE_DEBUGGING:
             my_env['QTWEBENGINE_REMOTE_DEBUGGING'] = self.config.REMOTE_DEBUGGING
