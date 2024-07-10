@@ -67,6 +67,9 @@ class Qiosk:
         if self.config.SCROLL_BARS.get('ENABLED', False):
             command.append('--display-scroll-bars')
 
+        if not self.config.CURSOR.get('ENABLED', True):
+            command.append('--hide-cursor')
+
         return command
 
     def _build_env(self) -> Dict[str, str]:

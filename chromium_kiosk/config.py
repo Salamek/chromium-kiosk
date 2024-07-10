@@ -63,6 +63,11 @@ class Config(HardCoded):
         'ENABLED': False
     }
 
+    CURSOR = {
+        'ENABLED': True
+    }
+
+
 
 class Testing(Config):
     TESTING = True

@@ -192,6 +192,10 @@ DISPLAY_ROTATION: 'normal' # normal|left|right|inverted
 #    VAR_NAME: VAR_VALUE
 
 # PROFILE_NAME: 'default' # Name of profile to use, default for default off-the-record profile
+
+#CURSOR:
+#    ENABLED: true  # Cursor enabled by default
+
 ```
 
 # Tips and tricks
