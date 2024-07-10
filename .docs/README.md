@@ -19,6 +19,7 @@ Currently `chromium-kiosk` supports these backends:
   - [Periodic reboot](#periodic-reboot)
   - [VNC](#vnc)
   - [Remote debugging](#remote-debugging)
+  - [Force scale factor](#force-scale-factor)
 
 
 ## Installation
@@ -315,6 +316,13 @@ REMOTE_DEBUGGING: 9988
 ```
 (Enabling remote debugging requires restarting the browser (or whole machine)
 
+## Force scale factor
+On some displays you may need to force screen scale factor, to do that add this to your config.yml:
+
+```yml
+EXTRA_ENV_VARS:
+    QT_SCALE_FACTOR: 1.3  # Change scale factor to required value
+```
 
 
 
