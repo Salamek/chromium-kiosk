@@ -53,6 +53,10 @@ class Qiosk:
             command.extend(['--navbar-width', str(self.config.NAV_BAR.get('WIDTH', 100))])
             command.extend(['--navbar-height', str(self.config.NAV_BAR.get('HEIGHT', 5))])
 
+            enabled_buttons = self.config.NAV_BAR.get('ENABLED_BUTTONS', [])
+            if enabled_buttons:
+                command.append('--navbar-enable-buttons={}'.format(','.join(enabled_buttons).lower()))
+
             if self.config.NAV_BAR.get('UNDERLAY', False):
                 command.append('--underlay-navbar')
 
