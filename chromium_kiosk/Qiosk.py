@@ -82,7 +82,7 @@ class Qiosk:
         my_env.update({k: str(v) for k, v in self.config.EXTRA_ENV_VARS.items()})
 
         if self.config.REMOTE_DEBUGGING:
-            my_env['QTWEBENGINE_REMOTE_DEBUGGING'] = self.config.REMOTE_DEBUGGING
+            my_env['QTWEBENGINE_REMOTE_DEBUGGING'] = str(self.config.REMOTE_DEBUGGING)
 
         if self.config.EXTRA_ARGUMENTS:
             my_env['QTWEBENGINE_CHROMIUM_FLAGS'] = self.config.EXTRA_ARGUMENTS
