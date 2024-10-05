@@ -10,6 +10,7 @@ Currently `chromium-kiosk` supports these backends:
 
 ## Content
 - [Installation](#installation)
+  - [Debian automated install](#debian-automated-install)
   - [Debian](#debian)
   - [Archlinux](#archlinux)
   - [Raspberry Pi](#raspberry-pi)
@@ -29,6 +30,19 @@ Chromium kiosk can be installed on multiple Linux based distributions, officiall
 - **Debian**
 - **Archlinux**
 - **Raspberry Pi**
+
+### Debian automated install
+You can install chromium kiosk using debian automated instal, just:
+1) Download/use latest [Debian net-inst image](https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/) to boot.
+2) In install GRUB menu select "Advanced options" -> "Graphical automated install"
+3) When prompted to provide preseed file, enter this URL:
+```
+https://preseed-api.salamek.cz/t7ScycxDuE
+```
+4) Press `Enter`, install should automatically install `chromium-kiosk` & [tux-control](https://github.com/tux-control) and you should end up with running `chromium-kiosk` Default password for all accounts created is `qiosk`
+
+> [!WARNING]
+> Do not forget to remove install media or change boot order to your HDD/SSD/etc. after first reboot, otherwise you will end up in install GRUB again.
 
 ### Debian
 
