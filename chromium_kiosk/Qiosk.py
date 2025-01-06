@@ -36,8 +36,8 @@ class Qiosk:
     def _build_command(self) -> List[str]:
         command = [self.executable_path, self.config.HOME_PAGE]
 
-        if self.config.FULL_SCREEN:
-            command.append('-f')
+        if self.config.WINDOW_MODE:
+            command.extend(['-m', self.config.WINDOW_MODE])
 
         if self.config.IDLE_TIME:
             command.extend(['-i', str(self.config.IDLE_TIME)])
@@ -119,9 +119,8 @@ class Qiosk:
                 payload_resolver=lambda value: {'url': value}
             ),
             'setWindowMode': QioskCommandValue[bool](
-                value_resolver=lambda: config.FULL_SCREEN,
-                hash_resolver=lambda value: str(value),
-                payload_resolver=lambda value: {'fullscreen': value}
+                value_resolver=lambda: config.WINDOW_MODE,
+                payload_resolver=lambda value: {'windowMode': value}
             ),
             'setIdleTime': QioskCommandValue[int](
                 value_resolver=lambda: config.IDLE_TIME,

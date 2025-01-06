@@ -37,14 +37,10 @@ from docopt import docopt
 from chromium_kiosk.Qiosk import Qiosk
 from chromium_kiosk.config import Config
 from chromium_kiosk.enum.RotationEnum import RotationEnum
-from chromium_kiosk.tools import rotate_screen, \
-    rotate_display, \
-    rotate_touchscreen, \
-    detect_display, \
-    find_touchscreen_device, \
-    detect_primary_screen, \
-    get_screen_rotation, \
-    get_touchscreen_rotation
+if not os.getenv('WAYLAND_DISPLAY'):
+    from chromium_kiosk.tools.X11 import X11 as WindowSystem
+else:
+    from chromium_kiosk.tools.Wayland import Wayland as WindowSystem
 
 import chromium_kiosk as app_root
 
@@ -55,22 +51,22 @@ APP_ROOT_FOLDER = os.path.abspath(os.path.dirname(app_root.__file__))
 
 
 def resolve_rotation_config(options: Config):
-
+    window_system = WindowSystem()
     # Rotation options are set separately, use them
     if options.TOUCHSCREEN_ROTATION and options.SCREEN_ROTATION:
-        rotate_screen(RotationEnum(options.SCREEN_ROTATION))
-        rotate_touchscreen(RotationEnum(options.TOUCHSCREEN_ROTATION), options.TOUCHSCREEN)
+        window_system.rotate_screen(RotationEnum(options.SCREEN_ROTATION))
+        window_system.rotate_touchscreen(RotationEnum(options.TOUCHSCREEN_ROTATION), options.TOUCHSCREEN)
     elif not options.TOUCHSCREEN_ROTATION and options.SCREEN_ROTATION:
-        rotate_screen(RotationEnum(options.SCREEN_ROTATION))
-        rotate_touchscreen(RotationEnum.NORMAL, options.TOUCHSCREEN)
+        window_system.rotate_screen(RotationEnum(options.SCREEN_ROTATION))
+        window_system.rotate_touchscreen(RotationEnum.NORMAL, options.TOUCHSCREEN)
     elif options.TOUCHSCREEN_ROTATION and not options.SCREEN_ROTATION:
-        rotate_screen(RotationEnum.NORMAL)
-        rotate_touchscreen(RotationEnum(options.TOUCHSCREEN_ROTATION), options.TOUCHSCREEN)
+        window_system.rotate_screen(RotationEnum.NORMAL)
+        window_system.rotate_touchscreen(RotationEnum(options.TOUCHSCREEN_ROTATION), options.TOUCHSCREEN)
     elif options.DISPLAY_ROTATION:
-        rotate_display(RotationEnum(options.DISPLAY_ROTATION), force_touchscreen_name=options.TOUCHSCREEN)
+        window_system.rotate_display(RotationEnum(options.DISPLAY_ROTATION), force_touchscreen_name=options.TOUCHSCREEN)
     else:
         # just fallback to normal
-        rotate_display(RotationEnum.NORMAL, force_touchscreen_name=options.TOUCHSCREEN)
+        window_system.rotate_display(RotationEnum.NORMAL, force_touchscreen_name=options.TOUCHSCREEN)
 
 
 class CustomFormatter(logging.Formatter):
@@ -180,6 +176,9 @@ def parse_config() -> Config:
         config_class_string = 'chromium_kiosk.config.Config'
     config_obj = get_config(config_class_string)
 
+    if config_obj.FULL_SCREEN:  # @TODO remove in next minor version
+        config_obj.WINDOW_MODE = 'fullscreen'
+
     return config_obj
 
 
@@ -287,16 +286,16 @@ def watch_config() -> None:
 def system_info() -> None:
     config = parse_config()
     setup_logging('system_info', logging.DEBUG if config.DEBUG else logging.WARNING)
-
-    primary_screen = detect_primary_screen()
-    touchscreen_device = find_touchscreen_device(config.TOUCHSCREEN)
+    window_system = WindowSystem()
+    primary_screen = window_system.detect_primary_screen()
+    touchscreen_device = window_system.find_touchscreen_device(config.TOUCHSCREEN)
 
     info_items = {
-        'Display': detect_display(),
+        'Display': window_system.detect_display(),
         'Touchscreen device': touchscreen_device,
         'Primary screen': primary_screen,
-        'Screen rotation': get_screen_rotation(primary_screen),
-        'Touchscreen rotation': get_touchscreen_rotation(touchscreen_device.xinput_id) if touchscreen_device else None,
+        'Screen rotation': window_system.get_screen_rotation(primary_screen),
+        'Touchscreen rotation': window_system.get_touchscreen_rotation(touchscreen_device) if touchscreen_device else None,
     }
 
     for name, output in info_items.items():

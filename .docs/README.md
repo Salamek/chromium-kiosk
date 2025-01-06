@@ -155,7 +155,7 @@ sync
 **Content of configuration file is self-explanatory**
 
  ```yaml
-FULL_SCREEN: true # Run in full screen mode, browser will use whole screen without any way for user to close it
+WINDOW_MODE: 'fullscreen' # In what mode to run, one of hidden|automaticvisibility|windowed|minimized|maximized|fullscreen
 TOUCHSCREEN: true # Enables support for touchscreen
 HOME_PAGE: 'https://salamek.github.io/chromium-kiosk/'  # Url to load as homepage
 

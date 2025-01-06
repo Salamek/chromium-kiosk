@@ -6,7 +6,8 @@ class HardCoded:
 
 class Config(HardCoded):
     DEBUG = True
-    FULL_SCREEN = True
+    FULL_SCREEN = True  # Deprecated, do not use # @TODO remove in next minor version
+    WINDOW_MODE = 'fullscreen'  # one of hidden|automaticvisibility|windowed|minimized|maximized|fullscreen
     TOUCHSCREEN = None  # None=autodetect, set to device name to force
     HOME_PAGE = 'http://127.0.0.1/'
 
