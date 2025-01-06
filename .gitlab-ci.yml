@@ -58,6 +58,7 @@ package:archlinux:
     - pacman -Sy qiosk git python-setuptools xfwm4 fakeroot xf86-video-fbdev xorg-xrandr binutils sudo chromium xorg-server xorg-xset xorg-xinit xorg-xinput alsa-utils ttf-dejavu unclutter python-yaml python-docopt python-websockets base-devel --noconfirm
     - useradd -m -G users -s /bin/bash package
     - cd archlinux
+    - python compile.py
     - sudo -H -u package makepkg -f
     - cd -
   tags:

@@ -11,7 +11,8 @@ install=chromium_kiosk.install
 makedepends=('python-setuptools')
 replaces=('granad-kiosk')
 depends=(
-    'python'
+    'python>={{python_version}}'
+    'python<{{python_version_up}}'
     'python-setuptools'
     'qiosk'
     'xorg-server'
