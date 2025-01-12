@@ -12,4 +12,4 @@ REGEXPS:
 VERSION_FILES:
     'chromium_kiosk/__init__.py': 'python'
     'setup.py': 'setup.py'
-    'archlinux/PKGBUILD': 'PKGBUILD'
+    'archlinux/PKGBUILD.tmpl': 'PKGBUILD'
