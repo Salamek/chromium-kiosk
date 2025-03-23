@@ -24,19 +24,19 @@ import logging.handlers
 import os
 import signal
 import sys
-import asyncio
+import time
 import json
 
-import websockets
+from websockets.sync.client import connect as ws_connect
 from functools import wraps
 from importlib import import_module
-from typing import Optional, List, Callable, TypeVar
-import inotify.adapters
+from typing import Optional, List, Callable, TypeVar, Dict
 import yaml
 from docopt import docopt
-from inotify.constants import IN_CLOSE_WRITE
+from watchdog import events
+from watchdog.observers import Observer
 
-from chromium_kiosk.Qiosk import Qiosk
+from chromium_kiosk.Qiosk import Qiosk, QioskCommandValue
 from chromium_kiosk.config import Config
 from chromium_kiosk.enum.RotationEnum import RotationEnum
 if not os.getenv('WAYLAND_DISPLAY'):
@@ -242,25 +242,19 @@ def watch_config() -> None:
     config = parse_config()
     setup_logging('watch_config', logging.DEBUG if config.DEBUG else logging.WARNING)
     log = logging.getLogger(__name__)
-    async def receive_message(websocket: websockets.ClientConnection):
-        while True:
-            response = await websocket.recv()
-            logging.debug(response)
 
-    async def send_message(websocket: websockets.ClientConnection):
-        parsed_config = parse_config()
-        current_config = Qiosk.resolve_command_mappings_config(parsed_config)
-        log.debug('Current config: %s', str(current_config))
+    class ConfigEventHandler(events.FileSystemEventHandler):
+        def __init__(self,):
+            parsed_config = parse_config()
+            current_config = Qiosk.resolve_command_mappings_config(parsed_config)
+            log.debug('Current config: %s', str(current_config))
+            self.current_config = current_config
 
-        i = inotify.adapters.Inotify()
-
-        for found_config_file in find_config_files():
-            i.add_watch(found_config_file, IN_CLOSE_WRITE)
-        for event in i.event_gen(yield_nones=False):
+        def on_modified(self, event: events.DirModifiedEvent | events.FileModifiedEvent) -> None:
             raw_config = parse_config()
             check_config = Qiosk.resolve_command_mappings_config(raw_config)
             log.debug('New config: %s', str(check_config))
-            diffs = Qiosk.diff_command_mappings_config_value(current_config, check_config)
+            diffs = Qiosk.diff_command_mappings_config_value(self.current_config, check_config)
 
             if diffs:
                 log.debug(diffs)
@@ -268,29 +262,36 @@ def watch_config() -> None:
 
                 for command_name, config_value in diffs.items():
                     # Emit changes
-                    payload = json.dumps({
+                    payload = {
                         'command': command_name,
                         'data': config_value.payload
-                    })
+                    }
 
-                    await websocket.send(payload)
+                    # offload message
+                    with ws_connect("ws://localhost:1791") as websocket:
+
+                        websocket.send(json.dumps(payload))
+
+                        greeting = websocket.recv()
+                        log.debug(greeting)
+
+
                 # Set new config as old
-                current_config = check_config
+                self.current_config = check_config
 
+    event_handler = ConfigEventHandler()
 
-    async def main():
-        uri = "ws://localhost:1791"
+    observer = Observer()
+    for config_file_path in find_config_files():
+        observer.schedule(event_handler, config_file_path, recursive=False, event_filter=[events.FileModifiedEvent])
+    observer.start()
+    try:
+        while True:
+            time.sleep(1)
+    finally:
+        observer.stop()
+        observer.join()
 
-        async for websocket in websockets.connect(uri):
-            try:
-                await send_message(websocket)
-                #asyncio.create_task(send_message(websocket))
-                #asyncio.create_task(receive_message(websocket))
-                #await asyncio.Future()
-            except websockets.ConnectionClosed:
-                continue
-
-    asyncio.run(main())
 
 
 @command()
