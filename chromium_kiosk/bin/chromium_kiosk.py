@@ -31,9 +31,11 @@ import websockets
 from functools import wraps
 from importlib import import_module
 from typing import Optional, List, Callable, TypeVar
+import inotify.adapters
 import yaml
-from websockets.client import WebSocketClientProtocol
 from docopt import docopt
+from inotify.constants import IN_CLOSE_WRITE
+
 from chromium_kiosk.Qiosk import Qiosk
 from chromium_kiosk.config import Config
 from chromium_kiosk.enum.RotationEnum import RotationEnum
@@ -237,21 +239,31 @@ def run() -> None:
 
 @command()
 def watch_config() -> None:
-    setup_logging('watch_config', logging.WARNING)
-
-    async def receive_message(websocket: WebSocketClientProtocol):
+    config = parse_config()
+    setup_logging('watch_config', logging.DEBUG if config.DEBUG else logging.WARNING)
+    log = logging.getLogger(__name__)
+    async def receive_message(websocket: websockets.ClientConnection):
         while True:
             response = await websocket.recv()
             logging.debug(response)
 
-    async def send_message(websocket: WebSocketClientProtocol):
-        current_config = Qiosk.resolve_command_mappings_config(parse_config())
+    async def send_message(websocket: websockets.ClientConnection):
+        parsed_config = parse_config()
+        current_config = Qiosk.resolve_command_mappings_config(parsed_config)
+        log.debug('Current config: %s', str(current_config))
 
-        while True:
+        i = inotify.adapters.Inotify()
+
+        for found_config_file in find_config_files():
+            i.add_watch(found_config_file, IN_CLOSE_WRITE)
+        for event in i.event_gen(yield_nones=False):
             raw_config = parse_config()
             check_config = Qiosk.resolve_command_mappings_config(raw_config)
+            log.debug('New config: %s', str(check_config))
             diffs = Qiosk.diff_command_mappings_config_value(current_config, check_config)
+
             if diffs:
+                log.debug(diffs)
                 resolve_rotation_config(raw_config)
 
                 for command_name, config_value in diffs.items():
@@ -265,7 +277,6 @@ def watch_config() -> None:
                 # Set new config as old
                 current_config = check_config
 
-            await asyncio.sleep(1)
 
     async def main():
         uri = "ws://localhost:1791"

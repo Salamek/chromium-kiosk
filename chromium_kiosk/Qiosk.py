@@ -20,6 +20,10 @@ class QioskCommandValue(Generic[T]):
         return hashlib.md5(payload.encode()).digest()
 
 
+    def __repr__(self) -> str:
+        return str({'value': self.value, 'payload': self.payload})
+
+
 
 class Qiosk:
     config = None
@@ -118,7 +122,7 @@ class Qiosk:
                 value_resolver=lambda: config.HOME_PAGE,
                 payload_resolver=lambda value: {'url': value}
             ),
-            'setWindowMode': QioskCommandValue[bool](
+            'setWindowMode': QioskCommandValue[str](
                 value_resolver=lambda: config.WINDOW_MODE,
                 payload_resolver=lambda value: {'windowMode': value}
             ),
