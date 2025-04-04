@@ -27,7 +27,6 @@ import sys
 import time
 import json
 
-from websockets.sync.client import connect as ws_connect
 from functools import wraps
 from importlib import import_module
 from typing import Optional, List, Callable, TypeVar, Dict
@@ -35,7 +34,7 @@ import yaml
 from docopt import docopt
 from watchdog import events
 from watchdog.observers import Observer
-
+from websocket import create_connection
 from chromium_kiosk.Qiosk import Qiosk, QioskCommandValue
 from chromium_kiosk.config import Config
 from chromium_kiosk.enum.RotationEnum import RotationEnum
@@ -267,13 +266,12 @@ def watch_config() -> None:
                         'data': config_value.payload
                     }
 
-                    # offload message
-                    with ws_connect("ws://localhost:1791") as websocket:
+                    ws = create_connection("ws://localhost:1791")
+                    ws.send(json.dumps(payload))
+                    result = ws.recv()
+                    ws.close()
 
-                        websocket.send(json.dumps(payload))
-
-                        greeting = websocket.recv()
-                        log.debug(greeting)
+                    log.debug(result)
 
 
                 # Set new config as old

@@ -35,7 +35,7 @@ package:debian:
     - echo "deb     https://repository.salamek.cz/deb/pub all main" | tee /etc/apt/sources.list.d/salamek.cz.list
     - apt-get update -qy
     - apt-get install -y curl gnupg apt-transport-https
-    - apt-get install -y python3-pip python3-stdeb python3-docopt python3-yaml python3-websockets dh-python python3-watchdog
+    - apt-get install -y python3-pip python3-stdeb python3-docopt python3-yaml python3-websocket dh-python python3-watchdog
     - rm -rf "./deb_dist"
     - python3 setup.py --command-packages=stdeb.command sdist_dsc --compat 14 bdist_deb
   tags:
@@ -52,7 +52,7 @@ package:archlinux:
     - echo "[salamek]" >> /etc/pacman.conf
     - echo "Server = https://repository.salamek.cz/arch/pub/x86_64" >> /etc/pacman.conf
     - echo "SigLevel = Optional" >> /etc/pacman.conf
-    - pacman -Sy qiosk git python-setuptools xfwm4 fakeroot xf86-video-fbdev xorg-xrandr binutils sudo chromium xorg-server xorg-xset xorg-xinit xorg-xinput alsa-utils ttf-dejavu unclutter python-yaml python-docopt python-websockets base-devel python-watchdog --noconfirm
+    - pacman -Sy qiosk git python-setuptools xfwm4 fakeroot xf86-video-fbdev xorg-xrandr binutils sudo chromium xorg-server xorg-xset xorg-xinit xorg-xinput alsa-utils ttf-dejavu unclutter python-yaml python-docopt python-websocket-client base-devel python-watchdog --noconfirm
     - useradd -m -G users -s /bin/bash package
     - cd archlinux
     - python compile.py
