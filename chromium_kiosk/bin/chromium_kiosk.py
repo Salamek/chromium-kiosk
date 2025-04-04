@@ -281,7 +281,12 @@ def watch_config() -> None:
 
     observer = Observer()
     for config_file_path in find_config_files():
-        observer.schedule(event_handler, config_file_path, recursive=False, event_filter=[events.FileModifiedEvent])
+        try:
+            observer.schedule(event_handler, config_file_path, recursive=False, event_filter=[events.FileModifiedEvent])
+        except TypeError:
+            # Support for older versions
+            observer.schedule(event_handler, config_file_path, recursive=False)
+
     observer.start()
     try:
         while True:
