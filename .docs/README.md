@@ -21,6 +21,7 @@ Currently `chromium-kiosk` supports these backends:
   - [VNC](#vnc)
   - [Remote debugging](#remote-debugging)
   - [Force scale factor](#force-scale-factor)
+  - [Passing arguments to underlying chromium](#passing-arguments-to-underlying-chromium)
 
 
 ## Installation
@@ -337,6 +338,19 @@ On some displays you may need to force screen scale factor, to do that add this 
 EXTRA_ENV_VARS:
     QT_SCALE_FACTOR: 1.3  # Change scale factor to required value
 ```
+
+## Passing arguments to underlying Chromium
+Sometimes there is a need to pass arguments to underlying chromium for options that are not supported by chromium-kiosk directly, this can be achieved by adding:
+```
+EXTRA_ENV_VARS:
+    QTWEBENGINE_CHROMIUM_FLAGS: '--disable-pinch' # Disables pinch zoom
+````
+into `/etc/chromium-kiosk/config.yml`
+
+(Mostly)All possible options are listed at https://gist.github.com/dodying/34ea4760a699b47825a766051f47d43b or https://peter.sh/experiments/chromium-command-line-switches/ 
+
+
+
 
 
 
