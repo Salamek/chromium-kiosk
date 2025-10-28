@@ -57,9 +57,6 @@ chromium-kiosk = "chromium_kiosk.__main__:main"
 where = ["."]
 exclude = ["tests*"]
 
-[tool.setuptools.package-data]
-"chromium-kiosk" = []
-
 [tool.ruff]
 line-length = 200
 target-version = "py39"
