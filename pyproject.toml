@@ -89,6 +89,7 @@ files = ["cron_descriptor", "tests"]
 python_version = 3.9
 ignore_missing_imports = true
 strict = true
+exclude = "(.venv/.*|build/.*)"
 
 
 
