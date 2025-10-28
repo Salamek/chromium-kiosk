@@ -1,40 +1,40 @@
 
 class HardCoded:
-    ADMINS = ['adam.schubert@sg1-game.net']
-    USER = 'chromium-kiosk'
+    ADMINS = ["adam.schubert@sg1-game.net"]
+    USER = "chromium-kiosk"
 
 
 class Config(HardCoded):
     DEBUG = True
     FULL_SCREEN = None  # Deprecated, do not use # @TODO remove in next minor version
-    WINDOW_MODE = 'fullscreen'  # one of hidden|automaticvisibility|windowed|minimized|maximized|fullscreen
+    WINDOW_MODE = "fullscreen"  # one of hidden|automaticvisibility|windowed|minimized|maximized|fullscreen
     TOUCHSCREEN = None  # None=autodetect, set to device name to force
-    HOME_PAGE = 'http://127.0.0.1/'
+    HOME_PAGE = "http://127.0.0.1/"
 
     IDLE_TIME = 0
     WHITE_LIST = {
-        'ENABLED': False,  # is white list enabled
-        'URLS': [],  # List of whitelisted URLs, glob is supported
-        'IFRAME_ENABLED': True,  # True to enable all iframes, list of urls to specify enabled iframes
+        "ENABLED": False,  # is white list enabled
+        "URLS": [],  # List of whitelisted URLs, glob is supported
+        "IFRAME_ENABLED": True,  # True to enable all iframes, list of urls to specify enabled iframes
     }
 
     NAV_BAR = {
-        'ENABLED': False,  # is nav bar enabled
-        'ENABLED_BUTTONS': ['home', 'reload', 'back', 'forward'],  # Enabled buttons on navbar, order matters
-        'HORIZONTAL_POSITION': 'center',  # horizontal position on the screen
-        'VERTICAL_POSITION': 'bottom',  # Vertical position on the screen
-        'WIDTH': 100,  # Width of a bar in %
-        'HEIGHT': 5,  # Width of a bar in %
-        'UNDERLAY': False  # If set to True, the navbar will be displayed under the web view
+        "ENABLED": False,  # is nav bar enabled
+        "ENABLED_BUTTONS": ["home", "reload", "back", "forward"],  # Enabled buttons on navbar, order matters
+        "HORIZONTAL_POSITION": "center",  # horizontal position on the screen
+        "VERTICAL_POSITION": "bottom",  # Vertical position on the screen
+        "WIDTH": 100,  # Width of a bar in %
+        "HEIGHT": 5,  # Width of a bar in %
+        "UNDERLAY": False,  # If set to True, the navbar will be displayed under the web view
     }
 
     VIRTUAL_KEYBOARD = {
-        'ENABLED': False
+        "ENABLED": False,
     }
 
-    DISPLAY_ROTATION = 'normal'  # normal|left|right|inverted
-    TOUCHSCREEN_ROTATION = 'normal'  # normal|left|right|inverted
-    SCREEN_ROTATION = 'normal'  # normal|left|right|inverted
+    DISPLAY_ROTATION = "normal"  # normal|left|right|inverted
+    TOUCHSCREEN_ROTATION = "normal"  # normal|left|right|inverted
+    SCREEN_ROTATION = "normal"  # normal|left|right|inverted
 
     ALLOWED_FEATURES = [  # Set enabled features
         #'desktop-audio-video-capture',
@@ -57,15 +57,15 @@ class Config(HardCoded):
     PROFILE_NAME = "default"  # Name of profile used by browser, default is name of default off-the-record profile, use custom name to persist cookies and other data
 
     ADDRESS_BAR = {
-        'ENABLED': False
+        "ENABLED": False,
     }
 
     SCROLL_BARS = {
-        'ENABLED': False
+        "ENABLED": False,
     }
 
     CURSOR = {
-        'ENABLED': True
+        "ENABLED": True,
     }
 
 

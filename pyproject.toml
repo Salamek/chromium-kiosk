@@ -1,0 +1,97 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = "chromium-kiosk"
+license = "GPL-3.0"
+version = "2.7.4"
+requires-python = ">= 3.9"
+description = "Chromium Kiosk"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.3",
+    "Programming Language :: Python :: 3.4",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "pyyaml",
+    "docopt",
+    "websocket-client",
+    "watchdog",
+]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[[project.authors]]
+name = "Adam Schubert"
+email = "adam.schubert@sg1-game.net"
+
+[project.urls]
+Homepage = "https://github.com/Salamek/chromium-kiosk"
+
+[project.scripts]
+chromium-kiosk = "chromium_kiosk.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+"chromium-kiosk" = []
+
+[tool.ruff]
+line-length = 200
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["N999", "D"]  #  Invalid module name GetText instead of get_text, comments
+
+[tool.ruff.lint.mccabe]
+max-complexity = 20
+
+[tool.ruff.lint.pylint]
+allow-magic-value-types = ["int", "str"]
+max-args = 8
+max-branches = 16
+max-returns = 10
+
+
+[tool.ruff.lint.per-file-ignores]
+"chromium_kiosk/bin/chromium_kiosk.py" = ["T201"]  # print in code
+"chromium_kiosk/tools/X11.py" = ["S603", "S602"]  # Subprocess
+"chromium_kiosk/Qiosk.py" = ["S603"]
+"chromium_kiosk/config.py" = ["RUF012"]
+"archlinux/compile.py" = ["INP001"]
+
+
+[tool.mypy]
+files = ["cron_descriptor", "tests"]
+python_version = 3.9
+ignore_missing_imports = true
+strict = true
+
+
+
+[tool.pytest.ini_options]
+# Tell pytest where to look for tests
+testpaths = [
+    "tests",
+]
+
+# Pattern to match test files
+python_files = [
+    "test_*.py",
+]

@@ -1,6 +1,7 @@
-import urllib.parse
+from __future__ import annotations
+
 import shutil
-from typing import List, Optional
+import urllib.parse
 
 
 def inject_parameters_to_url(url: str, parameters: dict) -> str:
@@ -14,7 +15,7 @@ def inject_parameters_to_url(url: str, parameters: dict) -> str:
     return urllib.parse.urlunparse(url_parts)
 
 
-def find_binary(names: List[str]) -> Optional[str]:
+def find_binary(names: list[str]) -> str | None:
     """
     Find binary
     :return:
@@ -23,4 +24,6 @@ def find_binary(names: List[str]) -> Optional[str]:
         found = shutil.which(name)
         if found:
             return found
+
+    return None
 
