@@ -30,7 +30,7 @@ import time
 from functools import wraps
 from importlib import import_module
 from pathlib import Path
-from typing import Callable, ClassVar, TypeVar
+from typing import TYPE_CHECKING, Callable, ClassVar, TypeVar
 
 import yaml
 from docopt import docopt
@@ -39,14 +39,16 @@ from watchdog.observers import Observer
 from websocket import create_connection
 
 import chromium_kiosk as app_root
-from chromium_kiosk.config import Config
 from chromium_kiosk.enum.RotationEnum import RotationEnum
 from chromium_kiosk.Qiosk import Qiosk
 
-if not os.getenv("WAYLAND_DISPLAY"):
-    from chromium_kiosk.tools.X11 import X11 as WindowSystem  # noqa: N811
-else:
-    from chromium_kiosk.tools.Wayland import Wayland as WindowSystem
+if TYPE_CHECKING:
+    from chromium_kiosk.config import Config
+
+from chromium_kiosk.tools.Wayland import Wayland
+from chromium_kiosk.tools.X11 import X11
+
+window_system = X11() if not os.getenv("WAYLAND_DISPLAY") else Wayland()
 
 
 CT = TypeVar("CT")
@@ -56,7 +58,6 @@ APP_ROOT_FOLDER = Path(app_root.__file__).parent.absolute()
 
 
 def resolve_rotation_config(options: Config) -> None:
-    window_system = WindowSystem()
     # Rotation options are set separately, use them
     if options.TOUCHSCREEN_ROTATION and options.SCREEN_ROTATION:
         window_system.rotate_screen(RotationEnum(options.SCREEN_ROTATION))
@@ -122,7 +123,7 @@ def setup_logging(name: str | None = None, level: int = logging.DEBUG) -> None:
 
 
 
-def find_config_files(yaml_files: list[str] | None = None) -> list[str]:
+def find_config_files(yaml_files: list[Path] | None = None) -> list[Path]:
     return yaml_files or [f for f in [
         Path("/etc/chromium-kiosk/config.yml"),
         # Compability with old proprietary version
@@ -142,7 +143,7 @@ def get_config(config_class_string: str, yaml_files: list[Path] | None = None) -
     A class object to be fed into app.config.from_object().
     """
     config_module, config_class = config_class_string.rsplit(".", 1)
-    config_obj = getattr(import_module(config_module), config_class)
+    config_obj: Config = getattr(import_module(config_module), config_class)
 
     # Load additional configuration settings.
     yaml_files = find_config_files(yaml_files)
@@ -282,10 +283,10 @@ def watch_config() -> None:
     observer = Observer()
     for config_file_path in find_config_files():
         try:
-            observer.schedule(event_handler, config_file_path, recursive=False, event_filter=[events.FileModifiedEvent])
+            observer.schedule(event_handler, str(config_file_path), recursive=False, event_filter=[events.FileModifiedEvent])
         except TypeError:  # noqa: PERF203
             # Support for older versions
-            observer.schedule(event_handler, config_file_path, recursive=False)
+            observer.schedule(event_handler, str(config_file_path), recursive=False)
 
     observer.start()
     try:
@@ -301,15 +302,15 @@ def watch_config() -> None:
 def system_info() -> None:
     config = parse_config()
     setup_logging("system_info", logging.DEBUG if config.DEBUG else logging.WARNING)
-    window_system = WindowSystem()
     primary_screen = window_system.detect_primary_screen()
     touchscreen_device = window_system.find_touchscreen_device(config.TOUCHSCREEN)
 
     info_items = {
+        "Window system": type(window_system).__name__,
         "Display": window_system.detect_display(),
         "Touchscreen device": touchscreen_device,
         "Primary screen": primary_screen,
-        "Screen rotation": window_system.get_screen_rotation(primary_screen),
+        "Screen rotation": window_system.get_screen_rotation(primary_screen) if primary_screen else None,
         "Touchscreen rotation": window_system.get_touchscreen_rotation(touchscreen_device) if touchscreen_device else None,
     }
 
@@ -319,7 +320,8 @@ def system_info() -> None:
 
 def main() -> None:
     signal.signal(signal.SIGINT, lambda *_: sys.exit(0))  # Properly handle Control+C
-    command.chosen()  # Execute the function specified by the user.
+    if hasattr(command, "chosen"):
+        command.chosen()  # Execute the function specified by the user.
 
 
 if __name__ == "__main__":

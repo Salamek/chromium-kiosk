@@ -3,20 +3,21 @@ from __future__ import annotations
 import hashlib
 import os
 import subprocess
-from typing import Callable, Generic, TypeVar
+from typing import TYPE_CHECKING, Callable, Generic, TypeVar, Union
 
-from chromium_kiosk.config import Config
 from chromium_kiosk.tools import find_binary
+
+if TYPE_CHECKING:
+    from chromium_kiosk.config import Config
 
 T = TypeVar("T")
 
-
 class QioskCommandValue(Generic[T]):
 
-    def __init__(self, value_resolver: Callable[[], T], payload_resolver: Callable[[T], dict], hash_resolver: Callable[[T], str] | None = None) -> None:
+    def __init__(self, value_resolver: Callable[[], T], payload_resolver: Callable[[T], dict[str, str | int | list[str]]], hash_resolver: Callable[[T], str] | None = None) -> None:
         self.value = value_resolver()
         self.payload = payload_resolver(self.value)
-        self.hash = self._generate_hash(hash_resolver(self.value) if hash_resolver else self.value)
+        self.hash = self._generate_hash(hash_resolver(self.value) if hash_resolver else str(self.value))
 
     def _generate_hash(self, payload: str) -> bytes:
         return hashlib.md5(payload.encode(), usedforsecurity=False).digest()
@@ -26,9 +27,12 @@ class QioskCommandValue(Generic[T]):
         return str({"value": self.value, "payload": self.payload})
 
 
+QioskCommandValueType = Union[QioskCommandValue[str], QioskCommandValue[int], QioskCommandValue[bool], QioskCommandValue[list[str]]]
+
+
 
 class Qiosk:
-    config = None
+    config: Config
 
     def __init__(self, config: Config) -> None:
         self.config = config
@@ -100,7 +104,7 @@ class Qiosk:
         return my_env
 
     @staticmethod
-    def resolve_command_mappings_config(config: Config) -> dict[str, QioskCommandValue]:
+    def resolve_command_mappings_config(config: Config) -> dict[str, QioskCommandValueType]:
         def white_list_value_resolver() -> list[str]:
             if not config.WHITE_LIST.get("ENABLED", False):
                 return []
@@ -111,7 +115,7 @@ class Qiosk:
             return "".join(value)
 
         def permissions_value_resolver() -> list[str]:
-            return config.WHITE_LIST.get("ALLOWED_FEATURES", [])
+            return config.ALLOWED_FEATURES
 
         def permissions_hash_resolver(value: list[str]) -> str:
             return "".join(value)
@@ -163,7 +167,7 @@ class Qiosk:
                 payload_resolver=lambda value: {"navbarHeight": value},
             ),
             "setDisplayAddressBar": QioskCommandValue[bool](
-                value_resolver=lambda: config.NAV_BAR.get("ADDRESS_BAR", False),
+                value_resolver=lambda: config.ADDRESS_BAR.get("ENABLED", False),
                 hash_resolver=lambda value: str(value),
                 payload_resolver=lambda value: {"displayAddressBar": value},
             ),
@@ -180,7 +184,7 @@ class Qiosk:
         }
 
     @staticmethod
-    def diff_command_mappings_config_value(old: dict[str, QioskCommandValue], new: dict[str, QioskCommandValue]) -> dict[str, QioskCommandValue]:
+    def diff_command_mappings_config_value(old: dict[str, QioskCommandValueType], new: dict[str, QioskCommandValueType]) -> dict[str, QioskCommandValueType]:
         """
         Diff values of QioskCommandValue
         :param old:
@@ -188,18 +192,20 @@ class Qiosk:
         :return:
         """
 
-        diffs = {}
+        diffs: dict[str, QioskCommandValueType] = {}
         for key, value in old.items():
             if key in new:
                 # We ignore removed config values
                 new_value = new.get(key)
-                if new_value.hash != value.hash:
+                if new_value and new_value.hash != value.hash:
                     diffs[key] = new_value
 
         # Any new keys in new?
         new_keys = new.keys() - old.keys()
         for new_key in new_keys:
-            diffs[new_key] = new.get(new_key)
+            new_value = new.get(new_key)
+            if new_value:
+                diffs[new_key] = new_value
 
         return diffs
 

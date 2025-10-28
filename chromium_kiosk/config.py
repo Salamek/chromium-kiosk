@@ -1,3 +1,24 @@
+from typing import TypedDict
+
+
+class WhiteList(TypedDict):
+    ENABLED: bool
+    URLS: list[str]
+    IFRAME_ENABLED: bool
+
+
+class NavBar(TypedDict):
+    ENABLED: bool
+    ENABLED_BUTTONS: list[str]
+    HORIZONTAL_POSITION: str
+    VERTICAL_POSITION: str
+    WIDTH: int
+    HEIGHT: int
+    UNDERLAY: bool
+
+class VirtualKeyboard(TypedDict):
+    ENABLED: bool
+
 
 class HardCoded:
     ADMINS = ["adam.schubert@sg1-game.net"]
@@ -9,16 +30,16 @@ class Config(HardCoded):
     FULL_SCREEN = None  # Deprecated, do not use # @TODO remove in next minor version
     WINDOW_MODE = "fullscreen"  # one of hidden|automaticvisibility|windowed|minimized|maximized|fullscreen
     TOUCHSCREEN = None  # None=autodetect, set to device name to force
-    HOME_PAGE = "http://127.0.0.1/"
+    HOME_PAGE: str = "http://127.0.0.1/"
 
     IDLE_TIME = 0
-    WHITE_LIST = {
+    WHITE_LIST: WhiteList = {
         "ENABLED": False,  # is white list enabled
         "URLS": [],  # List of whitelisted URLs, glob is supported
         "IFRAME_ENABLED": True,  # True to enable all iframes, list of urls to specify enabled iframes
     }
 
-    NAV_BAR = {
+    NAV_BAR: NavBar = {
         "ENABLED": False,  # is nav bar enabled
         "ENABLED_BUTTONS": ["home", "reload", "back", "forward"],  # Enabled buttons on navbar, order matters
         "HORIZONTAL_POSITION": "center",  # horizontal position on the screen
@@ -28,7 +49,7 @@ class Config(HardCoded):
         "UNDERLAY": False,  # If set to True, the navbar will be displayed under the web view
     }
 
-    VIRTUAL_KEYBOARD = {
+    VIRTUAL_KEYBOARD: VirtualKeyboard = {
         "ENABLED": False,
     }
 
@@ -36,7 +57,7 @@ class Config(HardCoded):
     TOUCHSCREEN_ROTATION = "normal"  # normal|left|right|inverted
     SCREEN_ROTATION = "normal"  # normal|left|right|inverted
 
-    ALLOWED_FEATURES = [  # Set enabled features
+    ALLOWED_FEATURES: list[str] = [  # Set enabled features
         #'desktop-audio-video-capture',
         #'desktop-video-capture',
         #'geolocation',
@@ -52,7 +73,7 @@ class Config(HardCoded):
 
     EXTRA_ARGUMENTS = None  # Pass extra arguments to used browser
 
-    EXTRA_ENV_VARS = {}
+    EXTRA_ENV_VARS: dict[str, str] = {}
 
     PROFILE_NAME = "default"  # Name of profile used by browser, default is name of default off-the-record profile, use custom name to persist cookies and other data
 
@@ -77,8 +98,4 @@ class Testing(Config):
 class Production(Config):
     DEBUG = False
     CLEAN_START = None  # To be overwritten by a YAML file.
-    HOME_PAGE = None  # To be overwritten by a YAML file.
     TOUCHSCREEN = None  # To be overwritten by a YAML file.
-    TOUCHSCREEN_ROTATION = None  # normal|left|right|inverted
-    SCREEN_ROTATION = None  # normal|left|right|inverted
-    DISPLAY_ROTATION = None  # normal|left|right|inverted

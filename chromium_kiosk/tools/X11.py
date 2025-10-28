@@ -3,12 +3,15 @@ from __future__ import annotations
 import os
 import re
 import subprocess
-from collections.abc import Generator
+from typing import TYPE_CHECKING
 
 from chromium_kiosk.enum.RotationEnum import RotationEnum
 from chromium_kiosk.tools import find_binary
 from chromium_kiosk.tools.TouchDevice import TouchDevice
 from chromium_kiosk.tools.WindowSystem import WindowSystem
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 class X11(WindowSystem):
@@ -58,7 +61,12 @@ class X11(WindowSystem):
             msg = "ps binary was not found"
             raise FileNotFoundError(msg)
 
-        output = subprocess.check_output([binary_path, "e", "-u", os.getenv("USER")])
+        user_name = os.getenv("USER")
+        if not user_name:
+            msg = "USER env var is empty or not set"
+            raise FileNotFoundError(msg)
+
+        output = subprocess.check_output([binary_path, "e", "-u", user_name])
         result = re.search(r"DISPLAY=([.0-9A-Za-z:]*)", output.decode("UTF-8"), re.MULTILINE)
         if not result:
             return None
@@ -145,12 +153,17 @@ class X11(WindowSystem):
             msg = "xinput binary was not found"
             raise FileNotFoundError(msg)
 
+        rotation_matrix = self.rotation_to_xinput_coordinate.get(rotation)
+        if not rotation_matrix:
+            msg = "unknown rotation"
+            raise ValueError(msg)
+
         command = [
             binary_path,
             "set-prop",
             touch_device.identifier,
             '"Coordinate Transformation Matrix"',
-            self.rotation_to_xinput_coordinate.get(rotation),
+            rotation_matrix,
         ]
 
         return subprocess.call(" ".join(command), shell=True) == 0

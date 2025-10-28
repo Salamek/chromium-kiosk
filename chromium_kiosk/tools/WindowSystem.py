@@ -1,7 +1,10 @@
 from __future__ import annotations
 
-from chromium_kiosk.enum.RotationEnum import RotationEnum
-from chromium_kiosk.tools.TouchDevice import TouchDevice
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from chromium_kiosk.enum.RotationEnum import RotationEnum
+    from chromium_kiosk.tools.TouchDevice import TouchDevice
 
 
 class WindowSystem:

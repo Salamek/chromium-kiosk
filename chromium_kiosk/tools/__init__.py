@@ -4,7 +4,7 @@ import shutil
 import urllib.parse
 
 
-def inject_parameters_to_url(url: str, parameters: dict) -> str:
+def inject_parameters_to_url(url: str, parameters: dict[str, str]) -> str:
 
     url_parts = list(urllib.parse.urlparse(url))
     query = dict(urllib.parse.parse_qsl(url_parts[4]))

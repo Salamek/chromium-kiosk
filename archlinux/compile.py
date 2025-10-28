@@ -1,7 +1,13 @@
 import pathlib
 import sys
 
-major, minor, _, _, _ = sys.version_info
+(
+    major,
+    minor,
+    _a,
+    _b,
+    _c,
+) = sys.version_info
 
 python_version = f"{major}.{minor}"
 python_version_up = f"{major}.{minor + 1}"
