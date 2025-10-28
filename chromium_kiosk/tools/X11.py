@@ -33,8 +33,8 @@ class X11(WindowSystem):
         for line in output:
             result = xinput_regex.match(line)
             if result:
-                name = result.group(1)
-                identifier = result.group(2)
+                name = result.group(1).decode("UTF-8")
+                identifier = result.group(2).decode("UTF-8")
                 yield TouchDevice(name=name, identifier=identifier)
 
     def detect_display(self) -> Optional[str]:
@@ -51,7 +51,7 @@ class X11(WindowSystem):
     def find_touchscreen_device(self, force_device_name: Optional[str] = None) -> Optional[TouchDevice]:
         xinput_devices = self._get_xinput_devices()
 
-        match_list = [b'touchscreen', b'touchcontroller', b'multi-touch', b'multitouch', b'raspberrypi-ts', b'touch']
+        match_list = ["touchscreen", "touchcontroller", "multi-touch", "multitouch", "raspberrypi-ts", "touch"]
         for xinput_device in xinput_devices:
 
             if force_device_name and force_device_name == xinput_device.name:

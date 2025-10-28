@@ -3,5 +3,5 @@ import dataclasses
 
 @dataclasses.dataclass
 class TouchDevice:
-    name: bytes
+    name: str
     identifier: str
