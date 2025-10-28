@@ -45,6 +45,10 @@ prepare() {
   cp -R "${srcdir}/../../README.md" "${srcdir}/${pkgname}"
 }
 
+build() {
+    cd "${srcdir}/${pkgname}"
+    python -m build --wheel --no-isolation
+}
 
 package() {
   cd "${srcdir}/${pkgname}"
