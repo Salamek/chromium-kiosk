@@ -8,7 +8,7 @@ license=('GPL-3.0')
 url='https://github.com/Salamek/chromium-kiosk'
 #md5sums=('SKIP')
 install=chromium_kiosk.install
-makedepends=('python-setuptools')
+makedepends=(python-build python-installer python-wheel python-setuptools)
 replaces=('granad-kiosk')
 depends=(
     'python>={{python_version}}'
@@ -40,14 +40,23 @@ prepare() {
   cp -R "${srcdir}/../../usr" "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../var" "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../chromium_kiosk" "${srcdir}/${pkgname}"
+  cp -R "${srcdir}/../../pyproject.toml" "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../tests" "${srcdir}/${pkgname}"
-  cp -R "${srcdir}/../../setup.py" "${srcdir}/${pkgname}"
-  cp -R "${srcdir}/../../requirements.txt" "${srcdir}/${pkgname}"
   cp -R "${srcdir}/../../README.md" "${srcdir}/${pkgname}"
 }
 
 
 package() {
   cd "${srcdir}/${pkgname}"
-  python setup.py install --root="$pkgdir/" --optimize=1
+  python -m installer --destdir="$pkgdir" dist/*.whl
+  
+  # Install data files manually since pyproject.toml doesn't support data_files
+  install -Dm644 etc/chromium-kiosk/config.yml "${pkgdir}/etc/chromium-kiosk/config.yml"
+  install -Dm644 usr/lib/systemd/system/getty@tty1.service.d/override.conf "${pkgdir}/usr/lib/systemd/system/getty@tty1.service.d/override.conf"
+  install -Dm644 usr/lib/systemd/system/chromium-kiosk_configwatcher.service "${pkgdir}/usr/lib/systemd/system/chromium-kiosk_configwatcher.service"
+  install -Dm644 usr/lib/sysusers.d/chromium-kiosk.conf "${pkgdir}/usr/lib/sysusers.d/chromium-kiosk.conf"
+  install -Dm644 usr/lib/tmpfiles.d/chromium-kiosk.conf "${pkgdir}/usr/lib/tmpfiles.d/chromium-kiosk.conf"
+  install -Dm644 var/lib/chromium-kiosk/.bash_profile "${pkgdir}/var/lib/chromium-kiosk/.bash_profile"
+  install -Dm644 var/lib/chromium-kiosk/.hushlogin "${pkgdir}/var/lib/chromium-kiosk/.hushlogin"
+  install -Dm644 var/lib/chromium-kiosk/.xinitrc "${pkgdir}/var/lib/chromium-kiosk/.xinitrc"
 }

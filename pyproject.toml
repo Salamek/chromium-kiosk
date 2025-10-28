@@ -30,6 +30,15 @@ dependencies = [
     "watchdog",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "mypy",
+    "types-PyYAML",
+]
+test = ["pytest"]
+
+
 [project.readme]
 file = "README.md"
 content-type = "text/markdown"
@@ -70,6 +79,7 @@ max-returns = 10
 
 
 [tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]  # Use of assert detected
 "chromium_kiosk/bin/chromium_kiosk.py" = ["T201"]  # print in code
 "chromium_kiosk/tools/X11.py" = ["S603", "S602"]  # Subprocess
 "chromium_kiosk/Qiosk.py" = ["S603"]
