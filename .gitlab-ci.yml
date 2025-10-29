@@ -88,7 +88,7 @@ repoupdate:
   script:
     - ssh www-data@192.168.1.27 'rm -rf /var/www/repository.salamek.cz/www/arch/pub/any/chromium-kiosk-2*.pkg.tar.zst'
     - ssh www-data@192.168.1.27 'rm -rf /var/www/repository.salamek.cz/cache/deb/pub/all/chromium-kiosk_2*.deb'
-    - scp archlinux/chromium-kiosk*.pkg.tar.zst www-data@repository:/var/www/repository.salamek.cz/www/arch/pub/any
+    - scp archlinux/chromium-kiosk*.pkg.tar.zst www-data@192.168.1.27:/var/www/repository.salamek.cz/www/arch/pub/any
     - scp deb_dist/*.deb www-data@192.168.1.27:/var/www/repository.salamek.cz/cache/deb/pub/all
     - ssh www-data@192.168.1.27 '/var/www/repository.salamek.cz/deb-pub-update.sh'
     - ssh www-data@192.168.1.27 '/var/www/repository.salamek.cz/arch-pub-update.sh'
