@@ -5,7 +5,7 @@ build-backend = 'setuptools.build_meta'
 [project]
 name = "chromium-kiosk"
 license = "GPL-3.0"
-version = "2.7.4"
+dynamic = ["version"]
 requires-python = ">= 3.9"
 description = "Chromium Kiosk"
 
@@ -49,6 +49,10 @@ email = "adam.schubert@sg1-game.net"
 
 [project.urls]
 Homepage = "https://github.com/Salamek/chromium-kiosk"
+
+[tool.setuptools.dynamic]
+version = {attr = "chromium_kiosk.__version__"}
+
 
 [project.scripts]
 chromium-kiosk = "chromium_kiosk.__main__:main"
