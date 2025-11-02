@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TypedDict
 
 
@@ -54,8 +56,8 @@ class Config(HardCoded):
     }
 
     DISPLAY_ROTATION = "normal"  # normal|left|right|inverted
-    TOUCHSCREEN_ROTATION = "normal"  # normal|left|right|inverted
-    SCREEN_ROTATION = "normal"  # normal|left|right|inverted
+    TOUCHSCREEN_ROTATION: str | None = "normal"  # normal|left|right|inverted
+    SCREEN_ROTATION: str | None = "normal"  # normal|left|right|inverted
 
     ALLOWED_FEATURES: list[str] = [  # Set enabled features
         #'desktop-audio-video-capture',
@@ -99,3 +101,5 @@ class Production(Config):
     DEBUG = False
     CLEAN_START = None  # To be overwritten by a YAML file.
     TOUCHSCREEN = None  # To be overwritten by a YAML file.
+    TOUCHSCREEN_ROTATION = None  # normal|left|right|inverted
+    SCREEN_ROTATION = None  # normal|left|right|inverted
