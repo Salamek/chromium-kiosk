@@ -85,6 +85,9 @@ class Qiosk:
         if not self.config.CURSOR.get("ENABLED", True):
             command.append("--hide-cursor")
 
+        if not self.config.USER_AGENT:
+            command.extend(["--user-agent", self.config.USER_AGENT])
+
         return command
 
     def _build_env(self) -> dict[str, str]:

@@ -1,6 +1,7 @@
 WINDOW_MODE: 'fullscreen' # In what mode to run, one of hidden|automaticvisibility|windowed|minimized|maximized|fullscreen
 TOUCHSCREEN: true # Enables support for touchscreen
 HOME_PAGE: 'https://salamek.github.io/chromium-kiosk/'  # Url to load as homepage
+#USER_AGENT: 'qiosk' #Replace user-agent of kiosk browser
 
 IDLE_TIME: 0 # Seconds, How log must be kiosk idle to redirect to HOME_PAGE, 0=disabled
 WHITE_LIST:
