@@ -33,6 +33,7 @@ class Config(HardCoded):
     WINDOW_MODE = "fullscreen"  # one of hidden|automaticvisibility|windowed|minimized|maximized|fullscreen
     TOUCHSCREEN = None  # None=autodetect, set to device name to force
     HOME_PAGE: str = "http://127.0.0.1/"
+    USER_AGENT = None #None=use default user-agent
 
     IDLE_TIME = 0
     WHITE_LIST: WhiteList = {
