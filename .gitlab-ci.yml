@@ -57,7 +57,7 @@ package:archlinux:
     - echo "[salamek]" >> /etc/pacman.conf
     - echo "Server = https://repository.salamek.cz/arch/pub/x86_64" >> /etc/pacman.conf
     - echo "SigLevel = Optional" >> /etc/pacman.conf
-    - pacman -Sy qiosk git python-setuptools python-build python-installer xfwm4 fakeroot xf86-video-fbdev xorg-xrandr binutils sudo chromium xorg-server xorg-xset xorg-xinit xorg-xinput alsa-utils ttf-dejavu unclutter python-yaml python-docopt python-websocket-client base-devel python-watchdog --noconfirm
+    - pacman -Sy qiosk git python-setuptools python-build python-installer openbox fakeroot xf86-video-fbdev xorg-xrandr binutils sudo chromium xorg-server xorg-xset xorg-xinit xorg-xinput alsa-utils ttf-dejavu unclutter python-yaml python-docopt python-websocket-client base-devel python-watchdog --noconfirm
     - useradd -m -G users -s /bin/bash package
     - cd archlinux
     - python compile.py

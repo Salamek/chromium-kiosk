@@ -1,0 +1,20 @@
+
+LOG_FILE="$HOME/chromium-kiosk-autostart.log"
+
+echo "$(date '+%Y-%m-%d %H:%M:%S') Openbox autostart started" >> "$LOG_FILE"
+
+
+while true
+do
+    if [ -e ~/chromium-kiosk-prehook.sh ] # Check if prehook exists and run it
+    then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') Running chromium-kiosk prehook" >> "$LOG_FILE"
+        ~/chromium-kiosk-prehook.sh >> "$LOG_FILE" 2>&1
+        echo "$(date '+%Y-%m-%d %H:%M:%S') Chromium-kiosk prehook finished with exit code $?" >> "$LOG_FILE"
+    fi
+    echo "$(date '+%Y-%m-%d %H:%M:%S') Starting chromium-kiosk" >> "$LOG_FILE"
+    chromium-kiosk run --config_prod --log_dir="$HOME"
+    EXIT_CODE=$?
+    echo "$(date '+%Y-%m-%d %H:%M:%S') Chromium-kiosk exited with code $EXIT_CODE, restarting in 5 seconds" >> "$LOG_FILE"
+    sleep 5
+done &
